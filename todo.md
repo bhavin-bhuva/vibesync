@@ -63,9 +63,9 @@
 - [x] Frontend services for conversations and messages
 - [x] Connected conversation list to real conversation API
 - [x] Connected chat view to real message API
+- [x] 📋 Read receipts
 - [x] 📋 Real-time message delivery (WebSocket)
 - [x] 📋 Message persistence (Done via DB)
-- [ ] 📋 Read receipts
 
 #### Status Feature
 - [x] Status list page
@@ -182,12 +182,12 @@
 - [ ] 🔥 GET /api/v1/conversations/:id (get conversation)
 - [ ] 🔥 POST /api/v1/conversations (create conversation)
 - [ ] 🔥 GET /api/v1/conversations/:id/messages (get messages)
-- [ ] 📋 PATCH /api/v1/conversations/:id/read (mark as read)
+- [x] 📋 PATCH /api/v1/conversations/:id/read (mark as read)
 - [ ] 📋 DELETE /api/v1/conversations/:id (delete conversation)
 
 #### Message API
 - [ ] 🔥 POST /api/v1/messages (send message)
-- [ ] 🔥 PUT /api/v1/messages/:id/read (mark as read)
+- [x] 🔥 PUT /api/v1/messages/:id/read (mark as read)
 - [ ] 📋 DELETE /api/v1/messages/:id (delete message)
 - [ ] 📋 POST /api/v1/messages/media (upload media)
 - [ ] 📋 GET /api/v1/messages/search (search messages)
@@ -214,7 +214,7 @@
 - [ ] 📋 Room-based messaging
 
 #### File Storage
-- [ ] ⚠️ **Decision:** AWS S3 vs Cloudinary
+- [x] ⚠️ **Decision:** AWS S3 vs Cloudinary - **AWS S3**
 - [ ] 🔥 Setup S3 client configuration
 - [ ] 🔥 Implement avatar upload service
 - [ ] 🔥 Implement status media upload service
@@ -447,7 +447,7 @@
 - [ ] 📋 Create admin dashboard
 
 ### Deployment
-- [ ] 📋 **Decision:** Hosting platform (AWS, Vercel, Railway, Render)
+- [x] 📋 **Decision:** Hosting platform (AWS, Vercel, Railway, Render) - **AWS (MVP Plan Created)**
 - [ ] 📋 Setup production database (AWS RDS/Neon)
 - [ ] 📋 Setup production Redis (AWS ElastiCache/Upstash)
 - [ ] 📋 Setup S3 bucket and CloudFront
