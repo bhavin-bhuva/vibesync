@@ -103,8 +103,10 @@ export default function ConversationsIndex() {
           : lastMessage?.content ?? "No messages yet";
 
       apiConversations.forEach((conv: any) => {
-        const friendId = conv.participants.find((p: any) => p.id !== user.id)?.id;
-        if (friendId) realConversationFriendIds.add(friendId);
+        if (!conv.isGroup) {
+            const friendId = conv.participants.find((p: any) => p.id !== user.id)?.id;
+            if (friendId) realConversationFriendIds.add(friendId);
+        }
 
         conversationsMap.set(conv.id, { 
              id: conv.id,
