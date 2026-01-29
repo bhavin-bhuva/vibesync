@@ -6,7 +6,7 @@ export class FriendService {
   /**
    * Send a friend request by friend code
    */
-  async sendFriendRequest(senderId: number, friendCode: string) {
+  async sendFriendRequest(senderId: string, friendCode: string) {
     // Find the user by friend code
     const [recipient] = await db
       .select()
@@ -81,7 +81,7 @@ export class FriendService {
   /**
    * Get all pending friend requests for a user (received)
    */
-  async getPendingRequests(userId: number) {
+  async getPendingRequests(userId: string) {
     const requests = await db
       .select({
         id: friendRequests.id,
@@ -101,7 +101,7 @@ export class FriendService {
   /**
    * Accept a friend request
    */
-  async acceptFriendRequest(requestId: number, userId: number) {
+  async acceptFriendRequest(requestId: string, userId: string) {
     // Get the friend request
     const [request] = await db
       .select()
@@ -135,7 +135,7 @@ export class FriendService {
   /**
    * Decline a friend request
    */
-  async declineFriendRequest(requestId: number, userId: number) {
+  async declineFriendRequest(requestId: string, userId: string) {
     const [request] = await db
       .select()
       .from(friendRequests)
@@ -161,7 +161,7 @@ export class FriendService {
   /**
    * Get all friends for a user
    */
-  async getFriends(userId: number) {
+  async getFriends(userId: string) {
     const friends = await db
       .select({
         id: users.id,
@@ -185,7 +185,7 @@ export class FriendService {
   /**
    * Remove a friend
    */
-  async removeFriend(userId: number, friendId: number) {
+  async removeFriend(userId: string, friendId: string) {
     // Delete both sides of the friendship
     await db
       .delete(friendships)
@@ -202,7 +202,7 @@ export class FriendService {
   /**
    * Check if two users are friends
    */
-  async areFriends(userId: number, friendId: number): Promise<boolean> {
+  async areFriends(userId: string, friendId: string): Promise<boolean> {
     const [friendship] = await db
       .select()
       .from(friendships)

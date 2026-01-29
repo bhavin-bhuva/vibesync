@@ -6,7 +6,7 @@ export class ConversationService {
   /**
    * Get or create a 1-on-1 conversation between two users
    */
-  async getOrCreateOneOnOneConversation(userId1: number, userId2: number) {
+  async getOrCreateOneOnOneConversation(userId1: string, userId2: string) {
     // 1. Check if a 1-on-1 conversation already exists
     // We need to find a conversation that has exactly these two participants and is_group = false
 
@@ -74,7 +74,7 @@ export class ConversationService {
   /**
    * Get conversation details by ID
    */
-  async getConversationById(conversationId: number) {
+  async getConversationById(conversationId: string) {
     // Fetch conversation details using explicit select
     const [conversation] = await db
       .select()
@@ -106,7 +106,7 @@ export class ConversationService {
   /**
    * List conversations for a user
    */
-  async getUserConversations(userId: number) {
+  async getUserConversations(userId: string) {
     // Get all conversations user is part of
     const userParticipations = await db
       .select({

@@ -37,8 +37,7 @@ export default function ConversationsIndex() {
         setConversations(prev => {
             const index = prev.findIndex(c => c.id === data.conversationId);
             if (index === -1) {
-                // New conversation? We should probably reload or try to fetch it partially
-                // For simplicity, just reload data if we don't have it
+                // New conversation or not in list - reload to be safe
                 loadData(); 
                 return prev;
             }
@@ -46,14 +45,10 @@ export default function ConversationsIndex() {
             const updated = [...prev];
             // Move to top and update last message
             const convo = { ...updated[index] };
-            convo.lastMessage = data.lastMessage.content; // Use content from message object
+            convo.lastMessage = data.lastMessage.content;
             convo.timestamp = "Just now";
-            
-            // Only increment unread if we aren't viewing it (handled by filtering usually, but here we are in index view)
-            // Ideally we'd know if it's read or not. For index view, assume unread update implies unread++
             convo.unread = (convo.unread || 0) + 1;
             
-            // Remove from old position and unshift to top
             updated.splice(index, 1);
             updated.unshift(convo);
             
@@ -68,13 +63,20 @@ export default function ConversationsIndex() {
     };
   }, []);
 
-// ...
+  const formatLastSeen = (dateString: string): string => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    
+    if (diffMs < 60000) return "Just now";
+    return date.toLocaleDateString();
+  };
 
   const loadData = async () => {
     try {
       setLoading(true);
       
-      // Load user data
       const user = await userService.getCurrentUser();
       setCurrentUser({
         id: user.id,
@@ -85,17 +87,19 @@ export default function ConversationsIndex() {
         friendCode: user.friendCode,
       });
 
-      // Load BOTH conversations AND friends
       const [apiConversations, friends] = await Promise.all([
         conversationService.getConversations(),
         friendService.getFriends()
       ]);
       
       const conversationsMap = new Map();
+      const realConversationFriendIds = new Set();
       
-      // 1. Add existing conversations
       apiConversations.forEach((conv: any) => {
-        conversationsMap.set(conv.id, { // Note: ID key here is conversation ID
+        const friendId = conv.participants.find((p: any) => p.id !== user.id)?.id;
+        if (friendId) realConversationFriendIds.add(friendId);
+
+        conversationsMap.set(conv.id, { 
              id: conv.id,
              name: conv.displayName || "Unknown",
              avatar: conv.displayAvatar,
@@ -103,46 +107,17 @@ export default function ConversationsIndex() {
              timestamp: formatLastSeen(conv.updatedAt),
              unread: conv.unread || 0,
              online: conv.online || false,
-             friendId: conv.participants.find((p: any) => p.id !== user.id)?.id // Store friendId to dedup
         });
       });
 
-      // 2. Add friends who DON'T have a conversation yet
-      // We need to create "fake" conversation objects for them that will trigger a create/get on click
-      // BUT, checking if we already have a conversation with them is tricky without friendId in the conversation object
-      // Let's assume we want to show ALL friends. If they have a conversation, use that. If not, show friend.
-      
-      // Since Conversations API didn't return friendId explicitly in the top level (it's in participants), 
-      // we need to be careful. The `apiConversations` includes participants.
-      
       const mergedList: Conversation[] = [...conversationsMap.values()];
 
       for (const friend of friends) {
           // Check if we already have a conversation with this friend
-          const existingConvo = mergedList.find((c: any) => c.friendId === friend.id);
-          
-          if (!existingConvo) {
-              // Create a placeholder conversation
-              // We'll use a negative ID or a special flag to indicate it's not a real conversation yet
-              // OR better: we keep the ID as friend ID but the onClick handler needs to know.
-              // Actually, simply using the friend ID as a 'potential' conversation ID works 
-              // IF the routing handles it. But routing expects conversation ID.
-              // So, we should probably fetch/create the conversation ID on click from the friends list.
-              // But here we want them IN the conversation list.
-              
-              // TRADEOFF: To make this seamless, let's just create conversations for all friends on the backend? 
-              // No, that's spammy.
-              
-              // SOLUTION: We'll list them. When clicked, we route to `/conversations/friend:<friendId>` 
-              // OR we just assume the user will go to "Friends" tab to start new chats.
-              
-              // BUT the user asked for friends to show up here. 
-              // Let's add them with a special property. 
-              // However, `ConversationList` expects `id` to be conversation ID.
-              // If we pass `id: -friend.id`, we can detect it.
-              
+          if (!realConversationFriendIds.has(friend.id)) {
+              // Add as potential conversation
               mergedList.push({
-                  id: -friend.id, // Negative ID indicates "Friend ID that needs conversation"
+                  id: `friend:${friend.id}`, // Prefix ID
                   name: friend.name,
                   avatar: friend.avatar,
                   lastMessage: "Start a conversation",
@@ -153,14 +128,9 @@ export default function ConversationsIndex() {
           }
       }
       
-      // Sort: Real conversations (recent) first, then friends (alphabetical or standard)
-      // Actually updated at is nice. Friends without convos can go at bottom.
-      
-      // setConversations(mergedList); -> We can't simplisticly sort.
-      // Let's sort: real convos by timestamp desc, then friends by name
-      
-      const realConvos = mergedList.filter(c => c.id > 0);
-      const potentialConvos = mergedList.filter(c => c.id < 0);
+      // Sort: Real conversations (without friend: prefix) first, then potential
+      const realConvos = mergedList.filter(c => !c.id.startsWith("friend:"));
+      const potentialConvos = mergedList.filter(c => c.id.startsWith("friend:"));
       
       setConversations([...realConvos, ...potentialConvos]);
 
@@ -172,21 +142,10 @@ export default function ConversationsIndex() {
     }
   };
 
-  const formatLastSeen = (dateString: string): string => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    
-    if (diffMs < 60000) return "Just now";
-    return date.toLocaleDateString();
-  };
-
-  const handleConversationSelect = async (id: number) => {
-    // If ID is negative, it's a friend without a conversation yet
-    if (id < 0) {
+  const handleConversationSelect = async (id: string) => {
+    if (id.startsWith("friend:")) {
         try {
-            const friendId = -id;
+            const friendId = id.split(":")[1];
             // Create or get existing conversation
             const conversation = await conversationService.createConversation(friendId);
             navigate(`/conversations/${conversation.id}`);
@@ -198,12 +157,10 @@ export default function ConversationsIndex() {
     }
   };
 
-  // Import LoadingOverlay at top (Adding import)
   return (
     <div className="flex w-full h-full relative">
       {(loading || !currentUser) && <LoadingOverlay />}
 
-      {/* Placeholder for desktop - Hidden on mobile, LEFT side on desktop */}
       <div className="hidden lg:flex flex-1 h-full items-center justify-center glass-dark">
         <div className="text-center max-w-md px-8">
           <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-full flex items-center justify-center">
@@ -232,7 +189,7 @@ export default function ConversationsIndex() {
           </p>
           {conversations.length === 0 && (
             <button
-              onClick={() => navigate("/add-friend")}
+              onClick={() => navigate("/friend-requests")} // Changed from add-friends to match nav
               className="mt-6 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg transition-all duration-200"
             >
               Find Friends
@@ -241,7 +198,6 @@ export default function ConversationsIndex() {
         </div>
       </div>
 
-      {/* Conversation List - Shows on mobile, RIGHT side on desktop */}
       <div className="w-full lg:w-96 h-full">
         {currentUser ? (
           <ConversationList
@@ -252,8 +208,7 @@ export default function ConversationsIndex() {
             onStatusClick={() => navigate("/status")}
           />
         ) : (
-            // Skeleton / Empty state when loading user
-            <div className="h-full w-full bg-gray-50 dark:bg-white/5 animate-pulse" />
+            <div className="h-full w-full bg-gray-5 dark:bg-white/5 animate-pulse" />
         )}
       </div>
     </div>

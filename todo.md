@@ -128,7 +128,7 @@
   - [ ] Messages table
   - [ ] Status Updates table
   - [ ] Status Views table
-- [x] 🔥 Create database migrations
+- [x] 🔥 Create database migrations (Switched to UUIDs)
 - [ ] 🔥 Add database indexes
 - [ ] 📋 Create seed data for development
 - [ ] 📋 Setup database connection pooling

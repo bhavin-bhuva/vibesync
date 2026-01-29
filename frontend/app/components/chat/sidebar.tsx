@@ -1,7 +1,7 @@
 import { Avatar } from "../ui/avatar";
 
 interface Contact {
-  id: number;
+  id: string;
   name: string;
   avatar?: string;
   lastMessage: string;
@@ -12,7 +12,7 @@ interface Contact {
 
 const mockContacts: Contact[] = [
   {
-    id: 1,
+    id: "1",
     name: "Sarah Johnson",
     lastMessage: "Hey! How are you doing?",
     timestamp: "2m ago",
@@ -20,7 +20,7 @@ const mockContacts: Contact[] = [
     online: true,
   },
   {
-    id: 2,
+    id: "2",
     name: "Mike Chen",
     lastMessage: "Let's catch up tomorrow!",
     timestamp: "1h ago",
@@ -28,7 +28,7 @@ const mockContacts: Contact[] = [
     online: true,
   },
   {
-    id: 3,
+    id: "3",
     name: "Emma Wilson",
     lastMessage: "Thanks for the help!",
     timestamp: "3h ago",
@@ -36,7 +36,7 @@ const mockContacts: Contact[] = [
     online: false,
   },
   {
-    id: 4,
+    id: "4",
     name: "Alex Rodriguez",
     lastMessage: "See you at the meeting",
     timestamp: "5h ago",
@@ -44,7 +44,7 @@ const mockContacts: Contact[] = [
     online: false,
   },
   {
-    id: 5,
+    id: "5",
     name: "Lisa Anderson",
     lastMessage: "That sounds great!",
     timestamp: "1d ago",
@@ -55,8 +55,8 @@ const mockContacts: Contact[] = [
 
 interface SidebarProps {
   currentUser: { name: string; avatar?: string };
-  activeContactId: number;
-  onContactSelect: (id: number) => void;
+  activeContactId: string;
+  onContactSelect: (id: string) => void;
 }
 
 export function Sidebar({

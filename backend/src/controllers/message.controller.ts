@@ -14,7 +14,7 @@ export class MessageController {
     try {
       if (!req.user) throw new Error('User not authenticated');
 
-      const conversationId = parseInt(req.params.id as string);
+      const conversationId = req.params.id;
       const limit = req.query.limit ? parseInt(req.query.limit as string) : 50;
       const offset = req.query.offset ? parseInt(req.query.offset as string) : 0;
 
@@ -41,7 +41,7 @@ export class MessageController {
     try {
       if (!req.user) throw new Error('User not authenticated');
 
-      const conversationId = parseInt(req.params.id as string);
+      const conversationId = req.params.id;
       const schema = z.object({
         content: z.string().min(1),
         type: z.string().default('text'),

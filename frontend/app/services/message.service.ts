@@ -1,9 +1,9 @@
 import { apiRequest } from './api-client';
 
 export interface Message {
-  id: number;
-  conversationId: number;
-  senderId: number;
+  id: string; // uuid
+  conversationId: string; // uuid
+  senderId: string; // uuid
   content: string;
   messageType: 'text' | 'image' | 'file';
   isRead: boolean;
@@ -15,7 +15,7 @@ export interface Message {
 /**
  * Get messages for a conversation
  */
-export async function getMessages(conversationId: number, limit = 50, offset = 0): Promise<Message[]> {
+export async function getMessages(conversationId: string, limit = 50, offset = 0): Promise<Message[]> {
   const query = new URLSearchParams({
     limit: limit.toString(),
     offset: offset.toString(),
@@ -29,7 +29,7 @@ export async function getMessages(conversationId: number, limit = 50, offset = 0
 /**
  * Send a message to a conversation
  */
-export async function sendMessage(conversationId: number, content: string, type = 'text'): Promise<Message> {
+export async function sendMessage(conversationId: string, content: string, type = 'text'): Promise<Message> {
   return apiRequest(`/conversations/${conversationId}/messages`, {
     method: 'POST',
     body: JSON.stringify({ content, type }),

@@ -28,7 +28,7 @@ export class ConversationController {
       if (!req.user) throw new Error('User not authenticated');
 
       const schema = z.object({
-        userId: z.number().positive(),
+        userId: z.string().uuid(),
       });
 
       const { userId: targetUserId } = schema.parse(req.body);
@@ -75,8 +75,8 @@ export class ConversationController {
     try {
       if (!req.user) throw new Error('User not authenticated');
 
-      const conversationId = parseInt(req.params.id as string);
-      if (isNaN(conversationId)) {
+      const conversationId = req.params.id;
+      if (!conversationId) {
         return res.status(400).json({ success: false, error: 'Invalid ID' });
       }
 

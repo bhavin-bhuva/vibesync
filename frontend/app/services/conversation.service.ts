@@ -2,42 +2,30 @@ import { apiRequest } from './api-client';
 import type { User } from './user.service';
 
 export interface Conversation {
-  id: number;
+  id: string;
   isGroup: boolean;
   name?: string;
-  createdAt: string;
   updatedAt: string;
-  participants: (User & { joinedAt: string })[];
-  // Computed fields from backend or frontend
-  displayName?: string;
-  displayAvatar?: string;
-  lastMessage?: string;
+  participants: any[]; // relaxed type to avoid deep dependency issues for now
+  lastMessage?: string | { id: string; content: string; }; // backend sends string or object depending on endpoint
   unread?: number;
   online?: boolean;
+  // Computed properties
+  displayName?: string;
+  displayAvatar?: string;
 }
 
-/**
- * Get all conversations for the current user
- */
 export async function getConversations(): Promise<Conversation[]> {
-  return apiRequest('/conversations', {
-    method: 'GET',
-  });
+  return await apiRequest('/conversations');
 }
 
-/**
- * Get a single conversation by ID
- */
-export async function getConversation(id: number): Promise<Conversation> {
+export async function getConversation(id: string): Promise<Conversation> {
   return apiRequest(`/conversations/${id}`, {
     method: 'GET',
   });
 }
 
-/**
- * Create or get existing conversation with a user
- */
-export async function createConversation(userId: number): Promise<Conversation> {
+export async function createConversation(userId: string): Promise<Conversation> {
   return apiRequest('/conversations', {
     method: 'POST',
     body: JSON.stringify({ userId }),

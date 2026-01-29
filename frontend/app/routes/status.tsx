@@ -11,8 +11,8 @@ export function meta() {
 
 // Mock status data
 interface StatusItem {
-  id: number;
-  userId: number;
+  id: string;
+  userId: string;
   userName: string;
   userAvatar?: string;
   timestamp: string;
@@ -23,8 +23,8 @@ interface StatusItem {
 
 const mockStatuses: StatusItem[] = [
   {
-    id: 1,
-    userId: 1,
+    id: "1",
+    userId: "1",
     userName: "Sarah Johnson",
     timestamp: "30m ago",
     viewed: false,
@@ -51,8 +51,8 @@ const mockStatuses: StatusItem[] = [
     ],
   },
   {
-    id: 2,
-    userId: 2,
+    id: "2",
+    userId: "2",
     userName: "Mike Chen",
     timestamp: "2h ago",
     viewed: false,
@@ -73,8 +73,8 @@ const mockStatuses: StatusItem[] = [
     ],
   },
   {
-    id: 3,
-    userId: 3,
+    id: "3",
+    userId: "3",
     userName: "Emma Wilson",
     timestamp: "5h ago",
     viewed: true,
@@ -89,8 +89,8 @@ const mockStatuses: StatusItem[] = [
     ],
   },
   {
-    id: 4,
-    userId: 4,
+    id: "4",
+    userId: "4",
     userName: "Alex Rodriguez",
     timestamp: "Yesterday",
     viewed: true,
@@ -111,8 +111,8 @@ const mockStatuses: StatusItem[] = [
     ],
   },
   {
-    id: 5,
-    userId: 5,
+    id: "5",
+    userId: "5",
     userName: "Lisa Anderson",
     timestamp: "Yesterday",
     viewed: false,

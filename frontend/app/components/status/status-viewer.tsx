@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { Avatar } from "../ui/avatar";
 
 export interface StatusContent {
-  id: number;
+  id: number | string;
   type: "image" | "video";
   url?: string;
   backgroundColor: string;

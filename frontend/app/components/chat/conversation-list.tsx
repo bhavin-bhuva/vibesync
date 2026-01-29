@@ -7,7 +7,7 @@ import { CallHistoryList } from "./call-history-list";
 import { SettingsList } from "./settings-list";
 
 export interface Conversation {
-  id: number;
+  id: string;
   name: string;
   avatar?: string;
   lastMessage: string;
@@ -17,7 +17,7 @@ export interface Conversation {
 }
 
 export interface CurrentUser {
-  id: number;
+  id: string;
   name: string;
   avatar?: string;
   status: string;
@@ -27,8 +27,8 @@ export interface CurrentUser {
 
 interface ConversationListProps {
   conversations: Conversation[];
-  activeConversationId: number | null;
-  onConversationSelect: (id: number) => void;
+  activeConversationId: string | null | undefined;
+  onConversationSelect: (id: string) => void;
   currentUser: CurrentUser;
   onBack?: () => void;
   showBackButton?: boolean;

@@ -288,7 +288,7 @@ const api_endpoints = {};
 ```typescript
 // ✅ Good
 interface User {
-  id: number;
+  id: string; // UUID
   name: string;
 }
 

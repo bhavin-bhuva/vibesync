@@ -1,5 +1,5 @@
 export interface CallLog {
-  id: number;
+  id: string;
   name: string;
   avatar?: string;
   type: "incoming" | "outgoing" | "missed";
@@ -8,25 +8,25 @@ export interface CallLog {
 
 const mockCalls: CallLog[] = [
   {
-    id: 1,
+    id: "1",
     name: "Sarah Johnson",
     type: "incoming",
     timestamp: "Today, 10:30 AM",
   },
   {
-    id: 2,
+    id: "2",
     name: "Mike Chen",
     type: "outgoing",
     timestamp: "Yesterday, 2:15 PM",
   },
   {
-    id: 3,
+    id: "3",
     name: "Emma Wilson",
     type: "missed",
     timestamp: "Yesterday, 9:45 AM",
   },
   {
-    id: 4,
+    id: "4",
     name: "Alex Rodriguez",
     type: "incoming",
     timestamp: "Monday, 8:20 PM",

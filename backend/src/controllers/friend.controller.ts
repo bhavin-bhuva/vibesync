@@ -65,9 +65,9 @@ export class FriendController {
   async acceptFriendRequest(req: AuthRequest, res: Response) {
     try {
       const userId = req.user!.userId;
-      const requestId = parseInt(Array.isArray(req.params.id) ? req.params.id[0] : req.params.id);
+      const requestId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
 
-      if (isNaN(requestId)) {
+      if (!requestId) {
         return res.status(400).json({
           success: false,
           error: { message: 'Invalid request ID' },
@@ -97,9 +97,9 @@ export class FriendController {
   async declineFriendRequest(req: AuthRequest, res: Response) {
     try {
       const userId = req.user!.userId;
-      const requestId = parseInt(Array.isArray(req.params.id) ? req.params.id[0] : req.params.id);
+      const requestId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
 
-      if (isNaN(requestId)) {
+      if (!requestId) {
         return res.status(400).json({
           success: false,
           error: { message: 'Invalid request ID' },
@@ -152,9 +152,9 @@ export class FriendController {
   async removeFriend(req: AuthRequest, res: Response) {
     try {
       const userId = req.user!.userId;
-      const friendId = parseInt(Array.isArray(req.params.id) ? req.params.id[0] : req.params.id);
+      const friendId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
 
-      if (isNaN(friendId)) {
+      if (!friendId) {
         return res.status(400).json({
           success: false,
           error: { message: 'Invalid friend ID' },
