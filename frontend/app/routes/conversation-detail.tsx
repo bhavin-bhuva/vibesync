@@ -7,7 +7,7 @@ import { MessageInput } from "../components/chat/message-input";
 import * as userService from "../services/user.service";
 import * as conversationService from "../services/conversation.service";
 import * as messageService from "../services/message.service";
-import { initSocket, getSocket } from "../socket";
+import { initSocket } from "../socket";
 import { LoadingOverlay } from "../components/ui/loading-overlay";
 
 export function meta({ params }: Route.MetaArgs) {
@@ -20,7 +20,7 @@ export function meta({ params }: Route.MetaArgs) {
 export default function ConversationDetail() {
   const navigate = useNavigate();
   const params = useParams();
-  const conversationId = parseInt(params.conversationId || "0");
+  const conversationId = params.conversationId;
 
   const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -28,45 +28,41 @@ export default function ConversationDetail() {
   const [messages, setMessages] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Initial Data Load
-  useEffect(() => {
-    loadData();
-  }, [conversationId]);
+  // Helper functions defined before usage to avoid closure issues, or defined inside component scope
+  const formatLastSeen = (dateString: string): string => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    if (diffMs < 60000) return "Just now";
+    return date.toLocaleDateString();
+  };
 
-  // Socket Connection Handling
-  useEffect(() => {
-    if (!currentUser || !conversationId) return;
+  const mapConversation = (conv: any): Conversation => ({
+    id: conv.id,
+    name: conv.displayName || "Unknown",
+    avatar: conv.displayAvatar,
+    lastMessage: typeof conv.lastMessage === 'string' 
+        ? conv.lastMessage 
+        : conv.lastMessage?.content || "No messages yet",
+    timestamp: formatLastSeen(conv.updatedAt),
+    unread: conv.unread || 0,
+    online: conv.online || false,
+    isGroup: conv.isGroup,
+  });
 
-    // Initialize socket with token from storage
-    const token = localStorage.getItem('vibesync_access_token');
-    if (!token) return;
+  const formatTime = (dateString: string): string => {
+      return new Date(dateString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
 
-    const socket = initSocket(token);
-
-    // Join conversation room
-    socket.emit('join_conversation', conversationId.toString());
-
-    // Listen for new messages
-    const handleNewMessage = (message: any) => {
-        console.log("📩 Received new_message event:", message);
-        
-        // Ignore our own messages from socket to avoid duplication with optimistic UI
-        // We handle our own messages via the API response
-        if (message.senderId === currentUser?.id) return;
-
-        setMessages(prev => {
-            if (prev.some(m => m.id === message.id)) return prev; // Avoid duplicates
-            return [...prev, mapMessage(message, currentUser)];
-        });
-    };
-
-    socket.on('new_message', handleNewMessage);
-
-    return () => {
-        socket.emit('leave_conversation', conversationId.toString());
-        socket.off('new_message', handleNewMessage);
-    };
-  }, [currentUser?.id, conversationId]); // Re-run if user or convo changes
+  const mapMessage = (msg: any, user: CurrentUser | null) => ({
+      id: msg.id,
+      senderId: msg.senderId,
+      sender: msg.senderId === user?.id ? "me" as const : "other" as const,
+      text: msg.content,
+      timestamp: formatTime(msg.createdAt),
+      senderName: msg.senderId === user?.id ? "You" : "Friend",
+  });
 
   const loadData = async () => {
     try {
@@ -82,7 +78,7 @@ export default function ConversationDetail() {
         online: user.online,
         friendCode: user.friendCode,
       };
-      setCurrentUser(mappedUser); // Set immediately so other effects can use it
+      setCurrentUser(mappedUser);
 
       // 2. Load Conversation List
       const apiConversations = await conversationService.getConversations();
@@ -106,6 +102,13 @@ export default function ConversationDetail() {
 
         // 4. Load Messages
         if (active) {
+            // Mark as read immediately & optimistically clear unread count
+            conversationService.markAsRead(conversationId).catch(err => console.error("Failed to mark read:", err));
+            
+            setConversations(prev => prev.map(c => 
+                c.id === conversationId ? { ...c, unread: 0 } : c
+            ));
+            
             const apiMessages = await messageService.getMessages(conversationId);
             setMessages(apiMessages.map(msg => mapMessage(msg, mappedUser)).reverse());
         }
@@ -119,40 +122,43 @@ export default function ConversationDetail() {
     }
   };
 
-  const mapConversation = (conv: any): Conversation => ({
-    id: conv.id,
-    name: conv.displayName || "Unknown",
-    avatar: conv.displayAvatar,
-    lastMessage: conv.lastMessage || "No messages yet",
-    timestamp: formatLastSeen(conv.updatedAt),
-    unread: conv.unread || 0,
-    online: conv.online || false,
-  });
+  // Initial Data Load
+  useEffect(() => {
+    loadData();
+  }, [conversationId]);
+  
+  // Socket Connection Handling
+  useEffect(() => {
+    if (!currentUser || !conversationId) return;
 
-  // Updated mapMessage to take user explicitly to avoid stale closure issues
-  const mapMessage = (msg: any, user: CurrentUser | null) => ({
-      id: msg.id,
-      senderId: msg.senderId,
-      sender: msg.senderId === user?.id ? "me" as const : "other" as const,
-      text: msg.content,
-      timestamp: formatTime(msg.createdAt),
-      senderName: msg.senderId === user?.id ? "You" : "Friend", // Can be refined
-  });
+    const token = localStorage.getItem('vibesync_access_token');
+    if (!token) return;
 
-  const formatLastSeen = (dateString: string): string => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    if (diffMs < 60000) return "Just now";
-    return date.toLocaleDateString();
-  };
+    const socket = initSocket(token);
 
-  const formatTime = (dateString: string): string => {
-      return new Date(dateString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  };
+    socket.emit('join_conversation', conversationId);
 
-  const handleConversationSelect = (id: number) => {
+    const handleNewMessage = (message: any) => {
+        if (message.senderId === currentUser?.id) return;
+
+        // Mark as read immediately since we are viewing the conversation
+        conversationService.markAsRead(conversationId).catch(err => console.error("Failed to mark read:", err));
+
+        setMessages(prev => {
+            if (prev.some(m => m.id === message.id)) return prev;
+            return [...prev, mapMessage(message, currentUser)];
+        });
+    };
+
+    socket.on('new_message', handleNewMessage);
+
+    return () => {
+        socket.emit('leave_conversation', conversationId);
+        socket.off('new_message', handleNewMessage);
+    };
+  }, [currentUser?.id, conversationId]);
+
+  const handleConversationSelect = (id: string) => {
     navigate(`/conversations/${id}`);
   };
 
@@ -164,7 +170,7 @@ export default function ConversationDetail() {
     if (!currentUser || !conversationId) return;
 
     // Optimistic UI update
-    const tempId = Date.now();
+    const tempId = Date.now().toString(); // use string for temp ID to match type
     const optimisticMsg = {
         id: tempId,
         sender: "me" as const,
@@ -177,7 +183,6 @@ export default function ConversationDetail() {
 
     try {
         const newMsg = await messageService.sendMessage(conversationId, text);
-        // Replace optimistic message
         setMessages(prev => prev.map(m => m.id === tempId ? mapMessage(newMsg, currentUser) : m));
     } catch (error) {
         console.error("Failed to send message", error);
@@ -185,7 +190,6 @@ export default function ConversationDetail() {
     }
   };
 
-  // Import LoadingOverlay at top (Adding import)
   if (!loading && !activeConversation) {
     return (
       <div className="flex-1 h-full flex items-center justify-center glass-dark">
@@ -230,7 +234,7 @@ export default function ConversationDetail() {
         {currentUser ? (
             <ConversationList
             conversations={conversations}
-            activeConversationId={conversationId}
+            activeConversationId={conversationId} 
             onConversationSelect={handleConversationSelect}
             currentUser={currentUser}
             onStatusClick={() => navigate("/status")}

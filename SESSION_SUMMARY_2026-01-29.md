@@ -36,6 +36,12 @@ Today's session focused on polishing the Real-Time Messaging experience, impleme
    - Fixed issue where valid HTML messages (`<p>Hello</p>`) showed raw tags in the conversation list preview.
    - Implemented Regex-based HTML stripping for clean plain-text previews.
 
+### 4. **Backend Refactoring & UUID Migration**
+- ✅ **Schema Migration**: Migrated all database IDs from `integer` to `UUID` for better security and scalability.
+- ✅ **Codebase Update**: Updated all frontend and backend interfaces, services, and queries to support string-based IDs.
+- ✅ **Database Reset**: Created a reset script and clean-slated the database to enforce the new schema.
+- ✅ **Socket Stability**: Added strict UUID validation in the socket authentication middleware to prevent crashes from stale tokens.
+
 ---
 
 ## 📊 Statistics

@@ -1,9 +1,9 @@
-import { pgTable, serial, integer, varchar, timestamp, boolean } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, timestamp, boolean } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { users } from './users';
 
 export const conversations = pgTable('conversations', {
-  id: serial('id').primaryKey(),
+  id: uuid('id').defaultRandom().primaryKey(),
   isGroup: boolean('is_group').default(false).notNull(),
   name: varchar('name', { length: 255 }), // For group chats
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -15,11 +15,11 @@ export const conversationRelations = relations(conversations, ({ many }) => ({
 }));
 
 export const conversationParticipants = pgTable('conversation_participants', {
-  id: serial('id').primaryKey(),
-  conversationId: integer('conversation_id')
+  id: uuid('id').defaultRandom().primaryKey(),
+  conversationId: uuid('conversation_id')
     .references(() => conversations.id, { onDelete: 'cascade' })
     .notNull(),
-  userId: integer('user_id')
+  userId: uuid('user_id')
     .references(() => users.id, { onDelete: 'cascade' })
     .notNull(),
   joinedAt: timestamp('joined_at').defaultNow().notNull(),

@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import { AuthRequest } from '../middleware/auth.middleware';
 import { FriendService } from '../services/friend.service';
+import { z } from 'zod';
 
 export class FriendController {
   private friendService: FriendService;
@@ -65,13 +66,21 @@ export class FriendController {
   async acceptFriendRequest(req: AuthRequest, res: Response) {
     try {
       const userId = req.user!.userId;
-      const requestId = parseInt(Array.isArray(req.params.id) ? req.params.id[0] : req.params.id);
 
-      if (isNaN(requestId)) {
-        return res.status(400).json({
-          success: false,
-          error: { message: 'Invalid request ID' },
-        });
+      const paramsSchema = z.object({
+        id: z.string().uuid(),
+      });
+
+      let requestId: string;
+      try {
+        const rawId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+        const params = paramsSchema.parse({ id: rawId });
+        requestId = params.id;
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          return res.status(400).json({ success: false, error: { message: 'Invalid request ID format' } });
+        }
+        throw error;
       }
 
       await this.friendService.acceptFriendRequest(requestId, userId);
@@ -97,13 +106,21 @@ export class FriendController {
   async declineFriendRequest(req: AuthRequest, res: Response) {
     try {
       const userId = req.user!.userId;
-      const requestId = parseInt(Array.isArray(req.params.id) ? req.params.id[0] : req.params.id);
 
-      if (isNaN(requestId)) {
-        return res.status(400).json({
-          success: false,
-          error: { message: 'Invalid request ID' },
-        });
+      const paramsSchema = z.object({
+        id: z.string().uuid(),
+      });
+
+      let requestId: string;
+      try {
+        const rawId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+        const params = paramsSchema.parse({ id: rawId });
+        requestId = params.id;
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          return res.status(400).json({ success: false, error: { message: 'Invalid request ID format' } });
+        }
+        throw error;
       }
 
       await this.friendService.declineFriendRequest(requestId, userId);
@@ -152,13 +169,21 @@ export class FriendController {
   async removeFriend(req: AuthRequest, res: Response) {
     try {
       const userId = req.user!.userId;
-      const friendId = parseInt(Array.isArray(req.params.id) ? req.params.id[0] : req.params.id);
 
-      if (isNaN(friendId)) {
-        return res.status(400).json({
-          success: false,
-          error: { message: 'Invalid friend ID' },
-        });
+      const paramsSchema = z.object({
+        id: z.string().uuid(),
+      });
+
+      let friendId: string;
+      try {
+        const rawId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+        const params = paramsSchema.parse({ id: rawId });
+        friendId = params.id;
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          return res.status(400).json({ success: false, error: { message: 'Invalid friend ID format' } });
+        }
+        throw error;
       }
 
       await this.friendService.removeFriend(userId, friendId);

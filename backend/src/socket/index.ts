@@ -9,7 +9,7 @@ import { eq } from 'drizzle-orm';
 
 interface AuthSocket extends Socket {
   user?: {
-    userId: number;
+    userId: string;
     email: string;
   };
 }
@@ -34,8 +34,15 @@ export function initSocket(httpServer: HttpServer) {
         return next(new Error('Authentication error: Token not provided'));
       }
 
-      const decoded = jwt.verify(token, env.JWT_SECRET) as { userId: number; email: string };
+      const decoded = jwt.verify(token, env.JWT_SECRET) as { userId: string; email: string };
       socket.user = decoded;
+
+      // Validate that userId is a valid UUID before querying
+      // This protects against stale tokens with integer IDs causing DB crashes
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      if (!uuidRegex.test(decoded.userId)) {
+        return next(new Error('Authentication error: Invalid user ID format'));
+      }
 
       // Update user online status
       await db.update(users)
@@ -70,10 +77,18 @@ export function initSocket(httpServer: HttpServer) {
     socket.on('disconnect', async () => {
       logger.info(`User disconnected: ${socket.user?.userId}`);
       if (userId) {
-        // Update user online status to false
-        await db.update(users)
-          .set({ online: false, lastSeen: new Date() })
-          .where(eq(users.id, userId));
+        // Validate UUID again just to be safe, though connection wouldn't exist without it
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (uuidRegex.test(userId)) {
+          try {
+            // Update user online status to false
+            await db.update(users)
+              .set({ online: false, lastSeen: new Date() })
+              .where(eq(users.id, userId));
+          } catch (error) {
+            logger.error(`Failed to update status for user ${userId}:`, error);
+          }
+        }
       }
     });
   });

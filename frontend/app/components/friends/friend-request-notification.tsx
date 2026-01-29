@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { Avatar } from "../ui/avatar";
 
 export interface FriendRequest {
-  id: number;
-  userId: number;
+  id: string; // uuid
+  userId: string; // uuid
   userName: string;
   userAvatar?: string;
   timestamp: Date;
@@ -11,9 +11,9 @@ export interface FriendRequest {
 
 interface FriendRequestNotificationProps {
   request: FriendRequest;
-  onAccept: (requestId: number) => void;
-  onDecline: (requestId: number) => void;
-  onDismiss: (requestId: number) => void;
+  onAccept: (requestId: string) => void;
+  onDecline: (requestId: string) => void;
+  onDismiss: (requestId: string) => void;
   autoDismissMs?: number;
 }
 

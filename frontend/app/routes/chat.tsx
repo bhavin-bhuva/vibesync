@@ -17,42 +17,42 @@ const currentUser = {
 };
 
 const mockContacts = [
-  { id: 1, name: "Sarah Johnson", online: true },
-  { id: 2, name: "Mike Chen", online: true },
-  { id: 3, name: "Emma Wilson", online: false },
-  { id: 4, name: "Alex Rodriguez", online: false },
-  { id: 5, name: "Lisa Anderson", online: true },
+  { id: "1", name: "Sarah Johnson", online: true },
+  { id: "2", name: "Mike Chen", online: true },
+  { id: "3", name: "Emma Wilson", online: false },
+  { id: "4", name: "Alex Rodriguez", online: false },
+  { id: "5", name: "Lisa Anderson", online: true },
 ];
 
 const initialMessages = [
   {
-    id: 1,
+    id: "1",
     sender: "other" as const,
     text: "Hey! How are you doing?",
     timestamp: "10:30 AM",
     senderName: "Sarah Johnson",
   },
   {
-    id: 2,
+    id: "2",
     sender: "me" as const,
     text: "I'm doing great! Just working on some projects. How about you?",
     timestamp: "10:32 AM",
   },
   {
-    id: 3,
+    id: "3",
     sender: "other" as const,
     text: "Same here! I've been learning React Router lately.",
     timestamp: "10:33 AM",
     senderName: "Sarah Johnson",
   },
   {
-    id: 4,
+    id: "4",
     sender: "me" as const,
     text: "That's awesome! It's a great framework.",
     timestamp: "10:35 AM",
   },
   {
-    id: 5,
+    id: "5",
     sender: "other" as const,
     text: "Yeah, I'm really enjoying it. The new features are amazing!",
     timestamp: "10:36 AM",
@@ -61,14 +61,14 @@ const initialMessages = [
 ];
 
 export default function Chat() {
-  const [activeContactId, setActiveContactId] = useState(1);
+  const [activeContactId, setActiveContactId] = useState("1");
   const [messages, setMessages] = useState(initialMessages);
 
   const activeContact = mockContacts.find((c) => c.id === activeContactId)!;
 
   const handleSendMessage = (text: string) => {
     const newMessage = {
-      id: messages.length + 1,
+      id: (messages.length + 1).toString(),
       sender: "me" as const,
       text,
       timestamp: "Just now",

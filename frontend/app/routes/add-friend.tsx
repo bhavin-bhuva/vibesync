@@ -63,7 +63,7 @@ export default function AddFriend() {
   };
 
   const handleScanSuccess = async (data: {
-    userId: number;
+    userId: string;
     userName: string;
     friendCode: string;
   }) => {
@@ -99,7 +99,7 @@ export default function AddFriend() {
     setTimeout(() => setSuccessMessage(null), 3000);
   };
 
-  const handleAcceptRequest = async (requestId: number) => {
+  const handleAcceptRequest = async (requestId: string) => {
     try {
       await friendService.acceptFriendRequest(requestId);
       setFriendRequests((prev) => prev.filter((req) => req.id !== requestId));
@@ -109,7 +109,7 @@ export default function AddFriend() {
     }
   };
 
-  const handleDeclineRequest = async (requestId: number) => {
+  const handleDeclineRequest = async (requestId: string) => {
     try {
       await friendService.declineFriendRequest(requestId);
       setFriendRequests((prev) => prev.filter((req) => req.id !== requestId));
@@ -119,7 +119,7 @@ export default function AddFriend() {
     }
   };
 
-  const handleDismissRequest = (requestId: number) => {
+  const handleDismissRequest = (requestId: string) => {
     setFriendRequests((prev) => prev.filter((req) => req.id !== requestId));
   };
 

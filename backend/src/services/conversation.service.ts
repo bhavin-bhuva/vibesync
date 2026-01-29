@@ -1,12 +1,12 @@
 import { db } from '../config/database';
 import { conversations, conversationParticipants, users, messages } from '../db/schema';
-import { eq, and, desc, sql, inArray } from 'drizzle-orm';
+import { eq, and, desc, sql, inArray, gt, count, ne } from 'drizzle-orm';
 
 export class ConversationService {
   /**
    * Get or create a 1-on-1 conversation between two users
    */
-  async getOrCreateOneOnOneConversation(userId1: number, userId2: number) {
+  async getOrCreateOneOnOneConversation(userId1: string, userId2: string) {
     // 1. Check if a 1-on-1 conversation already exists
     // We need to find a conversation that has exactly these two participants and is_group = false
 
@@ -74,7 +74,7 @@ export class ConversationService {
   /**
    * Get conversation details by ID
    */
-  async getConversationById(conversationId: number) {
+  async getConversationById(conversationId: string) {
     // Fetch conversation details using explicit select
     const [conversation] = await db
       .select()
@@ -106,7 +106,7 @@ export class ConversationService {
   /**
    * List conversations for a user
    */
-  async getUserConversations(userId: number) {
+  async getUserConversations(userId: string) {
     // Get all conversations user is part of
     const userParticipations = await db
       .select({
@@ -159,6 +159,34 @@ export class ConversationService {
       // Filter out current user for display logic (if DM)
       const otherParticipants = participants.filter(p => p.id !== userId);
 
+      // Calculate unread count
+      const userParticipant = await db
+        .select({
+          lastReadAt: conversationParticipants.lastReadAt,
+          joinedAt: conversationParticipants.joinedAt
+        })
+        .from(conversationParticipants)
+        .where(
+          and(
+            eq(conversationParticipants.conversationId, conv.id),
+            eq(conversationParticipants.userId, userId)
+          )
+        )
+        .limit(1);
+
+      const coalescedLastRead = userParticipant[0]?.lastReadAt ?? userParticipant[0]?.joinedAt ?? new Date(0);
+
+      const unreadResult = await db
+        .select({ count: count() })
+        .from(messages)
+        .where(
+          and(
+            eq(messages.conversationId, conv.id),
+            gt(messages.createdAt, coalescedLastRead),
+            ne(messages.senderId, userId)
+          )
+        );
+
       return {
         ...conv,
         participants,
@@ -167,9 +195,31 @@ export class ConversationService {
         displayName: conv.isGroup ? conv.name : otherParticipants[0]?.name || 'Unknown User',
         displayAvatar: conv.isGroup ? null : otherParticipants[0]?.avatar,
         online: conv.isGroup ? false : otherParticipants[0]?.online || false, // Logic: if DM and other user is online
+        unread: unreadResult[0]?.count || 0,
       };
     }));
 
     return detailedConversations;
+  }
+
+  /**
+   * Mark conversation as read
+   */
+  async markAsRead(userId: string, conversationId: string) {
+    const result = await db
+      .update(conversationParticipants)
+      .set({
+        lastReadAt: new Date(),
+      })
+      .where(
+        and(
+          eq(conversationParticipants.userId, userId),
+          eq(conversationParticipants.conversationId, conversationId)
+        )
+      );
+
+    // Check if any row was updated. 
+    // Drizzle with pg driver returns a result object with rowCount.
+    return result.rowCount ? result.rowCount > 0 : false;
   }
 }

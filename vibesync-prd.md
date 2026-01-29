@@ -568,7 +568,7 @@ vibesync/
 #### User
 ```typescript
 interface User {
-  id: number;
+  id: string; // UUID
   name: string;
   email: string;
   avatar?: string;
@@ -584,7 +584,7 @@ interface User {
 #### Conversation
 ```typescript
 interface Conversation {
-  id: number;
+  id: string; // UUID
   participants: User[];
   lastMessage: Message;
   unreadCount: number;
@@ -596,9 +596,9 @@ interface Conversation {
 #### Message
 ```typescript
 interface Message {
-  id: number;
-  conversationId: number;
-  senderId: number;
+  id: string; // UUID
+  conversationId: string; // UUID
+  senderId: string; // UUID
   content: string;
   type: 'text' | 'image' | 'video' | 'file';
   timestamp: Date;
@@ -610,24 +610,24 @@ interface Message {
 #### Status
 ```typescript
 interface Status {
-  id: number;
-  userId: number;
+  id: string; // UUID
+  userId: string; // UUID
   type: 'image' | 'video';
   mediaUrl: string;
   caption?: string;
   backgroundColor: string;
   timestamp: Date;
   expiresAt: Date;
-  viewedBy: number[]; // User IDs who viewed
+  viewedBy: string[]; // User IDs who viewed
 }
 ```
 
 #### FriendRequest
 ```typescript
 interface FriendRequest {
-  id: number;
-  senderId: number;
-  receiverId: number;
+  id: string; // UUID
+  senderId: string; // UUID
+  receiverId: string; // UUID
   status: 'pending' | 'accepted' | 'declined';
   createdAt: Date;
 }

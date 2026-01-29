@@ -11,8 +11,8 @@ export function meta() {
 }
 
 interface FriendRequest {
-  id: number;
-  senderId: number;
+  id: string;
+  senderId: string;
   senderName: string;
   senderAvatar?: string;
   senderFriendCode: string;
@@ -24,7 +24,7 @@ export default function FriendRequests() {
   const [requests, setRequests] = useState<FriendRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [processingId, setProcessingId] = useState<number | null>(null);
+  const [processingId, setProcessingId] = useState<string | null>(null);
 
   useEffect(() => {
     loadRequests();
@@ -42,7 +42,7 @@ export default function FriendRequests() {
     }
   };
 
-  const handleAccept = async (requestId: number) => {
+  const handleAccept = async (requestId: string) => {
     setProcessingId(requestId);
     try {
       await friendService.acceptFriendRequest(requestId);
@@ -55,7 +55,7 @@ export default function FriendRequests() {
     }
   };
 
-  const handleDecline = async (requestId: number) => {
+  const handleDecline = async (requestId: string) => {
     setProcessingId(requestId);
     try {
       await friendService.declineFriendRequest(requestId);

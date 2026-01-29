@@ -1,10 +1,10 @@
-import { pgTable, serial, integer, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, timestamp } from 'drizzle-orm/pg-core';
 import { users } from './users';
 
 export const friendships = pgTable('friendships', {
-  id: serial('id').primaryKey(),
-  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  friendId: integer('friend_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  friendId: uuid('friend_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 

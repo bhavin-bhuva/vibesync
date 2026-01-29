@@ -6,7 +6,7 @@ export class MessageService {
   /**
    * Send a message in a conversation
    */
-  async sendMessage(senderId: number, conversationId: number, content: string, type: string = 'text') {
+  async sendMessage(senderId: string, conversationId: string, content: string, type: string = 'text') {
     return await db.transaction(async (tx) => {
       // 1. Create the message
       const [newMessage] = await tx
@@ -32,7 +32,7 @@ export class MessageService {
   /**
    * Get messages for a conversation with pagination
    */
-  async getMessages(conversationId: number, limit: number = 50, offset: number = 0) {
+  async getMessages(conversationId: string, limit: number = 50, offset: number = 0) {
     const result = await db.query.messages.findMany({
       where: eq(messages.conversationId, conversationId),
       orderBy: [desc(messages.createdAt)],

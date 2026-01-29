@@ -33,7 +33,7 @@ export function MessageInput({ onSendMessage }: MessageInputProps) {
         class: 'prose prose-sm dark:prose-invert max-w-none !outline-none !border-none !ring-0 focus:outline-none focus:ring-0 focus:border-none min-h-[40px] px-2 py-2.5 max-h-[200px] overflow-y-auto [&_p]:m-0',
       },
     },
-    onUpdate: ({ editor }) => {
+    onUpdate: ({ editor }: { editor: any }) => {
        setContent(editor.getHTML());
     }
   });

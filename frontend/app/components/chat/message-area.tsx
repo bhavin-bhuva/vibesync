@@ -2,7 +2,7 @@ import { useRef, useEffect } from "react";
 import { Avatar } from "../ui/avatar";
 
 interface Message {
-  id: number;
+  id: string;
   sender: "me" | "other";
   text: string;
   timestamp: string;

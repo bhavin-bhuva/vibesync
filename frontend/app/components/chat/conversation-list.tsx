@@ -7,17 +7,18 @@ import { CallHistoryList } from "./call-history-list";
 import { SettingsList } from "./settings-list";
 
 export interface Conversation {
-  id: number;
+  id: string;
   name: string;
   avatar?: string;
   lastMessage: string;
   timestamp: string;
   unread: number;
   online: boolean;
+  isGroup?: boolean;
 }
 
 export interface CurrentUser {
-  id: number;
+  id: string;
   name: string;
   avatar?: string;
   status: string;
@@ -25,10 +26,13 @@ export interface CurrentUser {
   friendCode: string;
 }
 
+// ... (omitting irrelevant parts, but since replace_file_content replaces a block, I must be careful)
+// I will target the INTERFACE only first, then the JSX separately if needed or together if contiguous.
+// They are not contiguous. I will use multi_replace.
 interface ConversationListProps {
   conversations: Conversation[];
-  activeConversationId: number | null;
-  onConversationSelect: (id: number) => void;
+  activeConversationId: string | null | undefined;
+  onConversationSelect: (id: string) => void;
   currentUser: CurrentUser;
   onBack?: () => void;
   showBackButton?: boolean;
@@ -100,7 +104,7 @@ export function ConversationList({
                     src={conversation.avatar}
                     alt={conversation.name}
                     size="md"
-                    online={conversation.online}
+                    online={conversation.isGroup ? undefined : conversation.online}
                   />
                   <div className="flex-1 text-left min-w-0">
                     <div className="flex items-center justify-between mb-1">

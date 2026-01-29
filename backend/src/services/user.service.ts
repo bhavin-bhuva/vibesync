@@ -3,7 +3,7 @@ import { users } from '../db/schema/users';
 import { eq } from 'drizzle-orm';
 
 export class UserService {
-  async getUserById(userId: number) {
+  async getUserById(userId: string) {
     const user = await db.query.users.findFirst({
       where: eq(users.id, userId),
     });
@@ -17,7 +17,7 @@ export class UserService {
     return userWithoutPassword;
   }
 
-  async updateProfile(userId: number, data: { name?: string; status?: string; avatar?: string }) {
+  async updateProfile(userId: string, data: { name?: string; status?: string; avatar?: string }) {
     const [updatedUser] = await db
       .update(users)
       .set({

@@ -1,7 +1,7 @@
 import { apiRequest } from './api-client';
 
 export interface Friend {
-  id: number;
+  id: string;
   name: string;
   email: string;
   friendCode: string;
@@ -13,8 +13,8 @@ export interface Friend {
 }
 
 export interface FriendRequest {
-  id: number;
-  senderId: number;
+  id: string; // request id is uuid
+  senderId: string;
   senderName: string;
   senderAvatar?: string;
   senderFriendCode: string;
@@ -23,14 +23,14 @@ export interface FriendRequest {
 
 export interface SendFriendRequestResponse {
   request: {
-    id: number;
-    senderId: number;
-    receiverId: number;
+    id: string;
+    senderId: string;
+    receiverId: string;
     status: string;
     createdAt: string;
   };
   recipient: {
-    id: number;
+    id: string;
     name: string;
     avatar?: string;
     friendCode: string;
@@ -59,7 +59,7 @@ export async function getPendingFriendRequests(): Promise<FriendRequest[]> {
 /**
  * Accept a friend request
  */
-export async function acceptFriendRequest(requestId: number): Promise<{ success: boolean }> {
+export async function acceptFriendRequest(requestId: string): Promise<{ success: boolean }> {
   return apiRequest(`/friends/request/${requestId}/accept`, {
     method: 'PUT',
   });
@@ -68,7 +68,7 @@ export async function acceptFriendRequest(requestId: number): Promise<{ success:
 /**
  * Decline a friend request
  */
-export async function declineFriendRequest(requestId: number): Promise<{ success: boolean }> {
+export async function declineFriendRequest(requestId: string): Promise<{ success: boolean }> {
   return apiRequest(`/friends/request/${requestId}/decline`, {
     method: 'PUT',
   });
@@ -86,7 +86,7 @@ export async function getFriends(): Promise<Friend[]> {
 /**
  * Remove a friend
  */
-export async function removeFriend(friendId: number): Promise<{ success: boolean }> {
+export async function removeFriend(friendId: string): Promise<{ success: boolean }> {
   return apiRequest(`/friends/${friendId}`, {
     method: 'DELETE',
   });

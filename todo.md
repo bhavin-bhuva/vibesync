@@ -128,7 +128,7 @@
   - [ ] Messages table
   - [ ] Status Updates table
   - [ ] Status Views table
-- [x] 🔥 Create database migrations
+- [x] 🔥 Create database migrations (Switched to UUIDs)
 - [ ] 🔥 Add database indexes
 - [ ] 📋 Create seed data for development
 - [ ] 📋 Setup database connection pooling
@@ -206,7 +206,7 @@
 - [x] 🔥 Handle connection/disconnection
 - [x] 🔥 Implement message:send event
 - [x] 🔥 Implement message:new event
-- [ ] 🔥 Implement message:read event
+- [x] 🔥 Implement message:read event (Backend & Socket emitted)
 - [x] 🔥 Update online status on connect/disconnect
 - [ ] 📋 Implement typing:start event
 - [ ] 📋 Implement typing:stop event
