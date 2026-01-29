@@ -1,5 +1,5 @@
 import { db } from '../config/database';
-import { conversations, conversationParticipants, users } from '../db/schema';
+import { conversations, conversationParticipants, users, messages } from '../db/schema';
 import { eq, and, desc, sql, inArray } from 'drizzle-orm';
 
 export class ConversationService {
@@ -146,12 +146,23 @@ export class ConversationService {
         .innerJoin(users, eq(users.id, conversationParticipants.userId))
         .where(eq(conversationParticipants.conversationId, conv.id));
 
+      // Fetch last message
+      const [lastMsg] = await db
+        .select({
+          content: messages.content
+        })
+        .from(messages)
+        .where(eq(messages.conversationId, conv.id))
+        .orderBy(desc(messages.createdAt))
+        .limit(1);
+
       // Filter out current user for display logic (if DM)
       const otherParticipants = participants.filter(p => p.id !== userId);
 
       return {
         ...conv,
         participants,
+        lastMessage: lastMsg?.content || null,
         // For DMs, name/avatar is the other person if not set specifically
         displayName: conv.isGroup ? conv.name : otherParticipants[0]?.name || 'Unknown User',
         displayAvatar: conv.isGroup ? null : otherParticipants[0]?.avatar,

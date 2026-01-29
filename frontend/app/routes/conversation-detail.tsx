@@ -8,6 +8,7 @@ import * as userService from "../services/user.service";
 import * as conversationService from "../services/conversation.service";
 import * as messageService from "../services/message.service";
 import { initSocket, getSocket } from "../socket";
+import { LoadingOverlay } from "../components/ui/loading-overlay";
 
 export function meta({ params }: Route.MetaArgs) {
   return [
@@ -184,15 +185,8 @@ export default function ConversationDetail() {
     }
   };
 
-  if (loading || !currentUser) {
-    return (
-      <div className="flex items-center justify-center h-screen glass-dark">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
-      </div>
-    );
-  }
-
-  if (!activeConversation) {
+  // Import LoadingOverlay at top (Adding import)
+  if (!loading && !activeConversation) {
     return (
       <div className="flex-1 h-full flex items-center justify-center glass-dark">
         <div className="text-center">
@@ -204,31 +198,47 @@ export default function ConversationDetail() {
   }
 
   return (
-    <>
+    <div className="flex w-full h-full relative">
+      {(loading || !currentUser) && <LoadingOverlay />}
+
       {/* Chat View */}
       <div className="flex-1 h-full flex flex-col overflow-hidden">
-        <MessageArea
-          contactName={activeConversation.name}
-          contactAvatar={activeConversation.avatar}
-          contactOnline={activeConversation.online}
-          messages={messages} 
-          onBack={handleBackToList}
-          showBackButton={true}
-          // messages already has 'sender' and 'senderName' mapped correctly
-        />
-        <MessageInput onSendMessage={handleSendMessage} />
+        {activeConversation ? (
+            <>
+                <MessageArea
+                contactName={activeConversation.name}
+                contactAvatar={activeConversation.avatar}
+                contactOnline={activeConversation.online}
+                messages={messages} 
+                onBack={handleBackToList}
+                showBackButton={true}
+                />
+                <MessageInput onSendMessage={handleSendMessage} />
+            </>
+        ) : (
+            // Chat Skeleton
+            <div className="flex-1 flex flex-col h-full animate-pulse">
+                <div className="h-16 border-b border-gray-700/20 glass-dark" />
+                <div className="flex-1 bg-white/5" />
+                <div className="h-20 border-t border-gray-700/20 glass-dark" />
+            </div>
+        )}
       </div>
 
       {/* Conversation List */}
       <div className="hidden lg:block lg:w-96 h-full">
-        <ConversationList
-          conversations={conversations}
-          activeConversationId={conversationId}
-          onConversationSelect={handleConversationSelect}
-          currentUser={currentUser}
-          onStatusClick={() => navigate("/status")}
-        />
+        {currentUser ? (
+            <ConversationList
+            conversations={conversations}
+            activeConversationId={conversationId}
+            onConversationSelect={handleConversationSelect}
+            currentUser={currentUser}
+            onStatusClick={() => navigate("/status")}
+            />
+        ) : (
+             <div className="h-full w-full bg-white/5 animate-pulse" />
+        )}
       </div>
-    </>
+    </div>
   );
 }

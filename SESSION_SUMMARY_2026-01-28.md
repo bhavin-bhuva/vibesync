@@ -140,12 +140,20 @@ Today's session focused on completing and enhancing the Friend Management system
 
 ### 7. **UI Enhancements (Rich Chat Input)**
 - ✅ Implemented **TipTap Editor** (True WYSIWYG)
-- ✅ Replaced raw Markdown with rich text formatting
-- ✅ Sending/Rendering HTML messages safe-guarded
-- ✅ Glassmorphic toolbar integration
+- ✅ **Expandable Drawer Design**: Single line default, expands for tools.
+- ✅ Redesigned Input Container (Rounded 24px Card style)
+- ✅ Added extended toolbar actions (Plus, Bookmark, Quick Actions)
+- ✅ Styled "Send" button as Pill with Label + Icon
 - ✅ Shortcuts: `Cmd/Ctrl+B` for bold, `Shift+Enter` for newline
+- ✅ Maintained Glassmorphic aesthetic while adopting clean layout
+
+### 8. **Bug Fixes & Refinements**
+- ✅ **Loader UX**: Replaced flashing screens with **Transparent Overlay Loader**.
+- ✅ **Layout Fix**: Fixed loader alignment in Conversation List.
+- ✅ **Backend Fix**: Implemented `lastMessage` fetching in `getUserConversations` API to fix missing previews.
+- ✅ **Preview Polish**: Stripped HTML tags from Conversation List previews.
+- ✅ **Input Alignment**: Perfected single-line input alignment.
 
 ---
 
-**Session Status:** ✅ Messaging System Core + UI Polish Complete.
-
+**Session Status:** ✅ Messaging System Core + Design Refresh + Critical Fixes Complete.

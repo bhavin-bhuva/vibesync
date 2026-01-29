@@ -6,6 +6,7 @@ import * as userService from "../services/user.service";
 import * as conversationService from "../services/conversation.service";
 import * as friendService from "../services/friend.service";
 import { initSocket } from "../socket";
+import { LoadingOverlay } from "../components/ui/loading-overlay";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -197,16 +198,11 @@ export default function ConversationsIndex() {
     }
   };
 
-  if (loading || !currentUser) {
-    return (
-      <div className="flex items-center justify-center h-screen glass-dark">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
-      </div>
-    );
-  }
-
+  // Import LoadingOverlay at top (Adding import)
   return (
-    <>
+    <div className="flex w-full h-full relative">
+      {(loading || !currentUser) && <LoadingOverlay />}
+
       {/* Placeholder for desktop - Hidden on mobile, LEFT side on desktop */}
       <div className="hidden lg:flex flex-1 h-full items-center justify-center glass-dark">
         <div className="text-center max-w-md px-8">
@@ -247,14 +243,19 @@ export default function ConversationsIndex() {
 
       {/* Conversation List - Shows on mobile, RIGHT side on desktop */}
       <div className="w-full lg:w-96 h-full">
-        <ConversationList
-          conversations={conversations}
-          activeConversationId={null}
-          onConversationSelect={handleConversationSelect}
-          currentUser={currentUser}
-          onStatusClick={() => navigate("/status")}
-        />
+        {currentUser ? (
+          <ConversationList
+            conversations={conversations}
+            activeConversationId={null}
+            onConversationSelect={handleConversationSelect}
+            currentUser={currentUser}
+            onStatusClick={() => navigate("/status")}
+          />
+        ) : (
+            // Skeleton / Empty state when loading user
+            <div className="h-full w-full bg-gray-50 dark:bg-white/5 animate-pulse" />
+        )}
       </div>
-    </>
+    </div>
   );
 }

@@ -113,7 +113,7 @@ export function ConversationList({
                     </div>
                     <div className="flex items-center justify-between">
                       <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
-                        {conversation.lastMessage}
+                        {conversation.lastMessage.replace(/<[^>]*>?/gm, '')}
                       </p>
                       {conversation.unread > 0 && (
                         <span className="flex-shrink-0 ml-2 min-w-[20px] h-5 bg-purple-600 text-white text-xs rounded-full flex items-center justify-center px-1.5">

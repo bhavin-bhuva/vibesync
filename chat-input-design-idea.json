@@ -1,0 +1,166 @@
+{
+  "component": "ChatInputField",
+  "version": "1.0",
+  "variants": [
+    {
+      "name": "default",
+      "state": "idle",
+      "container": {
+        "width": "100%",
+        "maxWidth": "1048px",
+        "height": "auto",
+        "minHeight": "120px",
+        "backgroundColor": "#FFFFFF",
+        "borderRadius": "24px",
+        "padding": "24px",
+        "boxShadow": "0 2px 8px rgba(0, 0, 0, 0.08)",
+        "display": "flex",
+        "flexDirection": "column",
+        "gap": "16px"
+      },
+      "inputField": {
+        "type": "textarea",
+        "placeholder": "Start Typing or Press 'Space' for AI or Press '/' for saved replied",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "color": "#9CA3AF",
+        "lineHeight": "1.5",
+        "border": "none",
+        "outline": "none",
+        "resize": "none",
+        "minHeight": "48px",
+        "fontFamily": "system-ui, -apple-system, sans-serif"
+      },
+      "toolbar": {
+        "display": "flex",
+        "alignItems": "center",
+        "justifyContent": "space-between",
+        "gap": "12px",
+        "paddingTop": "8px"
+      },
+      "actionButtons": {
+        "left": {
+          "display": "flex",
+          "gap": "8px",
+          "alignItems": "center",
+          "buttons": [
+            {
+              "icon": "plus",
+              "label": "Add",
+              "size": "20px",
+              "color": "#374151"
+            },
+            {
+              "icon": "divider",
+              "type": "separator",
+              "height": "20px",
+              "width": "1px",
+              "backgroundColor": "#E5E7EB"
+            },
+            {
+              "icon": "attachment",
+              "label": "Attach file",
+              "size": "20px",
+              "color": "#374151"
+            },
+            {
+              "icon": "bookmark",
+              "label": "Saved replies",
+              "size": "20px",
+              "color": "#374151"
+            },
+            {
+              "icon": "lightning",
+              "label": "Quick actions",
+              "size": "20px",
+              "color": "#374151"
+            }
+          ]
+        },
+        "right": {
+          "button": {
+            "type": "primary",
+            "label": "Send",
+            "icon": "arrow-right",
+            "backgroundColor": "#000000",
+            "color": "#FFFFFF",
+            "borderRadius": "12px",
+            "padding": "12px 24px",
+            "fontSize": "15px",
+            "fontWeight": "500",
+            "display": "flex",
+            "alignItems": "center",
+            "gap": "8px",
+            "cursor": "pointer",
+            "border": "none"
+          }
+        }
+      }
+    },
+    {
+      "name": "focused",
+      "state": "active",
+      "container": {
+        "boxShadow": "0 4px 16px rgba(0, 0, 0, 0.12)",
+        "borderColor": "#3B82F6"
+      }
+    }
+  ],
+  "theme": {
+    "colors": {
+      "background": "#F9FAFB",
+      "cardBackground": "#FFFFFF",
+      "primary": "#000000",
+      "textPrimary": "#111827",
+      "textSecondary": "#6B7280",
+      "textPlaceholder": "#9CA3AF",
+      "border": "#E5E7EB",
+      "iconDefault": "#374151",
+      "shadow": "rgba(0, 0, 0, 0.08)"
+    },
+    "spacing": {
+      "xs": "4px",
+      "sm": "8px",
+      "md": "12px",
+      "lg": "16px",
+      "xl": "24px"
+    },
+    "borderRadius": {
+      "sm": "8px",
+      "md": "12px",
+      "lg": "16px",
+      "xl": "24px"
+    },
+    "typography": {
+      "fontFamily": "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+      "fontSize": {
+        "sm": "14px",
+        "md": "15px",
+        "base": "16px"
+      },
+      "fontWeight": {
+        "normal": "400",
+        "medium": "500",
+        "semibold": "600"
+      }
+    }
+  },
+  "interactions": {
+    "shortcuts": {
+      "space": "Trigger AI assistance",
+      "slash": "Open saved replies",
+      "enter": "Send message (with modifier)",
+      "shift+enter": "New line"
+    },
+    "hover": {
+      "icons": {
+        "opacity": "0.7",
+        "transition": "opacity 0.2s ease"
+      },
+      "sendButton": {
+        "backgroundColor": "#1a1a1a",
+        "transition": "background-color 0.2s ease"
+      }
+    }
+  }
+}
