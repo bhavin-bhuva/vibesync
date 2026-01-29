@@ -75,9 +75,19 @@ export class ConversationController {
     try {
       if (!req.user) throw new Error('User not authenticated');
 
-      const conversationId = req.params.id;
-      if (!conversationId) {
-        return res.status(400).json({ success: false, error: 'Invalid ID' });
+      const paramsSchema = z.object({
+        id: z.string().uuid(),
+      });
+
+      let conversationId: string;
+      try {
+        const params = paramsSchema.parse(req.params);
+        conversationId = params.id;
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          return res.status(400).json({ success: false, error: 'Invalid Conversation ID format' });
+        }
+        throw error;
       }
 
       const conversation = await conversationService.getConversationById(conversationId);

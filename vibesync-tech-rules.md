@@ -299,7 +299,7 @@ interface ButtonProps {
 
 // ❌ Bad
 interface user {
-  id: number;
+  id: string; // UUID
   name: string;
 }
 
@@ -379,14 +379,14 @@ const click = () => {};
 ```typescript
 // ✅ Good
 interface User {
-  id: number;
+  id: string; // UUID
   name: string;
   email: string;
 }
 
 // ❌ Avoid (unless you need union/intersection)
 type User = {
-  id: number;
+  id: string; // UUID
   name: string;
   email: string;
 };
@@ -477,7 +477,7 @@ export function Button(props: any) {
 ```typescript
 // ✅ Good - Export types for reuse
 export interface User {
-  id: number;
+  id: string; // UUID
   name: string;
 }
 

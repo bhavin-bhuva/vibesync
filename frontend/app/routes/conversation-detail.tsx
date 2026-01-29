@@ -42,7 +42,9 @@ export default function ConversationDetail() {
     id: conv.id,
     name: conv.displayName || "Unknown",
     avatar: conv.displayAvatar,
-    lastMessage: conv.lastMessage || "No messages yet",
+    lastMessage: typeof conv.lastMessage === 'string' 
+        ? conv.lastMessage 
+        : conv.lastMessage?.content || "No messages yet",
     timestamp: formatLastSeen(conv.updatedAt),
     unread: conv.unread || 0,
     online: conv.online || false,

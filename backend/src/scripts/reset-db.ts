@@ -15,6 +15,13 @@ async function resetDb() {
       process.exit(1);
     }
 
+    // Require explicit opt-in
+    if (env.ALLOW_DB_RESET !== 'true' && env.ALLOW_DB_RESET !== '1') {
+      console.error('❌ ALLOW_DB_RESET must be set to "true" or "1" to perform this action.');
+      console.error('   Please check your .env file or environment variables.');
+      process.exit(1);
+    }
+
     // Drop schema public and recreate it
     await pool.query('DROP SCHEMA public CASCADE;');
     await pool.query('CREATE SCHEMA public;');

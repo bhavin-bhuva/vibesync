@@ -208,7 +208,7 @@ export default function ConversationsIndex() {
             onStatusClick={() => navigate("/status")}
           />
         ) : (
-            <div className="h-full w-full bg-gray-5 dark:bg-white/5 animate-pulse" />
+            <div className="h-full w-full bg-gray-50 dark:bg-white/5 animate-pulse" />
         )}
       </div>
     </div>

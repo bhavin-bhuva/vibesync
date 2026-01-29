@@ -14,7 +14,21 @@ export class MessageController {
     try {
       if (!req.user) throw new Error('User not authenticated');
 
-      const conversationId = req.params.id;
+      const paramsSchema = z.object({
+        id: z.string().uuid(),
+      });
+
+      let conversationId: string;
+      try {
+        const params = paramsSchema.parse(req.params);
+        conversationId = params.id;
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          return res.status(400).json({ success: false, error: 'Invalid Conversation ID format' });
+        }
+        throw error;
+      }
+
       const limit = req.query.limit ? parseInt(req.query.limit as string) : 50;
       const offset = req.query.offset ? parseInt(req.query.offset as string) : 0;
 
@@ -41,7 +55,21 @@ export class MessageController {
     try {
       if (!req.user) throw new Error('User not authenticated');
 
-      const conversationId = req.params.id;
+      const paramsSchema = z.object({
+        id: z.string().uuid(),
+      });
+
+      let conversationId: string;
+      try {
+        const params = paramsSchema.parse(req.params);
+        conversationId = params.id;
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          return res.status(400).json({ success: false, error: 'Invalid Conversation ID format' });
+        }
+        throw error;
+      }
+
       const schema = z.object({
         content: z.string().min(1),
         type: z.string().default('text'),
