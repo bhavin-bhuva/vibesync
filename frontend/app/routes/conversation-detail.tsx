@@ -102,8 +102,12 @@ export default function ConversationDetail() {
 
         // 4. Load Messages
         if (active) {
-            // Mark as read immediately
+            // Mark as read immediately & optimistically clear unread count
             conversationService.markAsRead(conversationId).catch(err => console.error("Failed to mark read:", err));
+            
+            setConversations(prev => prev.map(c => 
+                c.id === conversationId ? { ...c, unread: 0 } : c
+            ));
             
             const apiMessages = await messageService.getMessages(conversationId);
             setMessages(apiMessages.map(msg => mapMessage(msg, mappedUser)).reverse());
