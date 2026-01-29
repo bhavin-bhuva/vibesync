@@ -1,0 +1,244 @@
+import { useState } from "react";
+import type { Route } from "./+types/conversations";
+import { ConversationList, type Conversation } from "../components/chat/conversation-list";
+import { MessageArea } from "../components/chat/message-area";
+import { MessageInput } from "../components/chat/message-input";
+
+export function meta({}: Route.MetaArgs) {
+  return [
+    { title: "Conversations - VibeSync" },
+    { name: "description", content: "Your conversations on VibeSync" },
+  ];
+}
+
+// Mock conversations data
+const mockConversations: Conversation[] = [
+  {
+    id: 1,
+    name: "Sarah Johnson",
+    lastMessage: "Hey! How are you doing?",
+    timestamp: "2m ago",
+    unread: 3,
+    online: true,
+  },
+  {
+    id: 2,
+    name: "Mike Chen",
+    lastMessage: "Let's catch up tomorrow!",
+    timestamp: "1h ago",
+    unread: 0,
+    online: true,
+  },
+  {
+    id: 3,
+    name: "Emma Wilson",
+    lastMessage: "Thanks for the help!",
+    timestamp: "3h ago",
+    unread: 1,
+    online: false,
+  },
+  {
+    id: 4,
+    name: "Alex Rodriguez",
+    lastMessage: "See you at the meeting",
+    timestamp: "5h ago",
+    unread: 0,
+    online: false,
+  },
+  {
+    id: 5,
+    name: "Lisa Anderson",
+    lastMessage: "That sounds great!",
+    timestamp: "1d ago",
+    unread: 0,
+    online: true,
+  },
+  {
+    id: 6,
+    name: "David Kim",
+    lastMessage: "Can you send me the files?",
+    timestamp: "2d ago",
+    unread: 5,
+    online: false,
+  },
+  {
+    id: 7,
+    name: "Rachel Green",
+    lastMessage: "Perfect! See you then.",
+    timestamp: "3d ago",
+    unread: 0,
+    online: true,
+  },
+  {
+    id: 8,
+    name: "Tom Brady",
+    lastMessage: "The project looks amazing!",
+    timestamp: "4d ago",
+    unread: 2,
+    online: false,
+  },
+];
+
+// Mock messages for each conversation
+const mockMessages: Record<number, any[]> = {
+  1: [
+    {
+      id: 1,
+      sender: "other" as const,
+      text: "Hey! How are you doing?",
+      timestamp: "10:30 AM",
+      senderName: "Sarah Johnson",
+    },
+    {
+      id: 2,
+      sender: "me" as const,
+      text: "I'm doing great! Just working on some projects. How about you?",
+      timestamp: "10:32 AM",
+    },
+    {
+      id: 3,
+      sender: "other" as const,
+      text: "Same here! I've been learning React Router lately.",
+      timestamp: "10:33 AM",
+      senderName: "Sarah Johnson",
+    },
+  ],
+  2: [
+    {
+      id: 1,
+      sender: "other" as const,
+      text: "Let's catch up tomorrow!",
+      timestamp: "9:15 AM",
+      senderName: "Mike Chen",
+    },
+    {
+      id: 2,
+      sender: "me" as const,
+      text: "Sounds good! What time works for you?",
+      timestamp: "9:20 AM",
+    },
+  ],
+  3: [
+    {
+      id: 1,
+      sender: "me" as const,
+      text: "Here's the information you needed.",
+      timestamp: "Yesterday",
+    },
+    {
+      id: 2,
+      sender: "other" as const,
+      text: "Thanks for the help!",
+      timestamp: "Yesterday",
+      senderName: "Emma Wilson",
+    },
+  ],
+};
+
+export default function Conversations() {
+  const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
+  const [messages, setMessages] = useState<Record<number, any[]>>(mockMessages);
+  const [isMobileView, setIsMobileView] = useState(false);
+
+  const activeConversation = mockConversations.find(
+    (c) => c.id === activeConversationId
+  );
+
+  const handleSendMessage = (text: string) => {
+    if (!activeConversationId) return;
+
+    const newMessage = {
+      id: (messages[activeConversationId]?.length || 0) + 1,
+      sender: "me" as const,
+      text,
+      timestamp: new Date().toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+      }),
+    };
+
+    setMessages({
+      ...messages,
+      [activeConversationId]: [
+        ...(messages[activeConversationId] || []),
+        newMessage,
+      ],
+    });
+  };
+
+  const handleConversationSelect = (id: number) => {
+    setActiveConversationId(id);
+    setIsMobileView(true);
+  };
+
+  const handleBackToList = () => {
+    setIsMobileView(false);
+  };
+
+  return (
+    <div className="h-screen flex overflow-hidden">
+      {/* Conversation List - Left on desktop, full screen on mobile when no chat selected */}
+      <div
+        className={`
+          h-full
+          ${isMobileView && activeConversationId ? "hidden lg:block lg:w-96" : "w-full lg:w-96"}
+        `}
+      >
+        <ConversationList
+          conversations={mockConversations}
+          activeConversationId={activeConversationId}
+          onConversationSelect={handleConversationSelect}
+        />
+      </div>
+
+
+      {/* Chat View - Right on desktop, full screen on mobile when chat selected */}
+      <div
+        className={`
+          flex-1 h-full
+          ${activeConversationId && isMobileView ? "block" : "hidden lg:block"}
+        `}
+      >
+        {activeConversation && activeConversationId ? (
+          <div className="h-full flex flex-col">
+            <MessageArea
+              contactName={activeConversation.name}
+              contactAvatar={activeConversation.avatar}
+              contactOnline={activeConversation.online}
+              messages={messages[activeConversationId] || []}
+              onBack={handleBackToList}
+              showBackButton={true}
+            />
+            <MessageInput onSendMessage={handleSendMessage} />
+          </div>
+        ) : (
+          <div className="h-full flex items-center justify-center glass-dark">
+            <div className="text-center max-w-md px-8">
+              <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-full flex items-center justify-center">
+                <svg
+                  className="w-12 h-12 text-purple-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-2">
+                Select a conversation
+              </h3>
+              <p className="text-gray-400">
+                Choose a conversation from the list to start messaging
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
