@@ -13,7 +13,7 @@ const updateProfileSchema = z.object({
   avatar: z.string().url().optional(),
 });
 
-router.get('/me', authenticate, userController.getMe.bind(userController) as any);
-router.put('/me', authenticate, validate(updateProfileSchema), userController.updateProfile.bind(userController) as any);
+router.get('/me', authenticate as any, userController.getMe.bind(userController) as any);
+router.put('/me', authenticate as any, validate(updateProfileSchema), userController.updateProfile.bind(userController) as any);
 
 export default router;

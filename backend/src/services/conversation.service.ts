@@ -1,6 +1,6 @@
 import { db } from '../config/database';
 import { conversations, conversationParticipants, users, messages } from '../db/schema';
-import { eq, and, desc, sql, inArray, gt, count } from 'drizzle-orm';
+import { eq, and, desc, sql, inArray, gt, count, ne } from 'drizzle-orm';
 
 export class ConversationService {
   /**
@@ -179,7 +179,8 @@ export class ConversationService {
         .where(
           and(
             eq(messages.conversationId, conv.id),
-            gt(messages.createdAt, lastReadAt)
+            gt(messages.createdAt, lastReadAt),
+            ne(messages.senderId, userId)
           )
         );
 
@@ -202,7 +203,7 @@ export class ConversationService {
    * Mark conversation as read
    */
   async markAsRead(userId: string, conversationId: string) {
-    await db
+    const result = await db
       .update(conversationParticipants)
       .set({
         lastReadAt: new Date(),
@@ -214,6 +215,8 @@ export class ConversationService {
         )
       );
 
-    return true;
+    // Check if any row was updated. 
+    // Drizzle with pg driver returns a result object with rowCount.
+    return result.rowCount ? result.rowCount > 0 : false;
   }
 }

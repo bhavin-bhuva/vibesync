@@ -133,7 +133,12 @@ export class ConversationController {
         throw error;
       }
 
-      await conversationService.markAsRead(req.user.userId, conversationId);
+      const updated = await conversationService.markAsRead(req.user.userId, conversationId);
+
+      if (!updated) {
+        // If no row was updated, user likely isn't a participant or conversation doesn't exist (from their perspective)
+        return res.status(404).json({ success: false, error: 'Conversation not found or access denied' });
+      }
 
       // Notify other participants (or just the conversation room)
       const io = getIO();
@@ -144,7 +149,8 @@ export class ConversationController {
       });
 
       res.status(200).json({
-        success: true
+        success: true,
+        data: true
       });
 
     } catch (error) {
