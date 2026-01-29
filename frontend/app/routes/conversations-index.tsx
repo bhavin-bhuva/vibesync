@@ -116,6 +116,7 @@ export default function ConversationsIndex() {
              timestamp: formatLastSeen(conv.updatedAt),
              unread: conv.unread || 0,
              online: conv.online || false,
+             isGroup: conv.isGroup,
         });
       });
 

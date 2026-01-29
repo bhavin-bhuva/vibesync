@@ -31,3 +31,9 @@ export async function createConversation(userId: string): Promise<Conversation> 
     body: JSON.stringify({ userId }),
   });
 }
+
+export async function markAsRead(id: string): Promise<boolean> {
+  return apiRequest(`/conversations/${id}/read`, {
+    method: 'PUT',
+  });
+}

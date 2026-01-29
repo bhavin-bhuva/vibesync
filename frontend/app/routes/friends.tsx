@@ -42,7 +42,7 @@ export default function Friends() {
     navigate("/add-friend");
   };
 
-  const handleStartConversation = async (friendId: number) => {
+  const handleStartConversation = async (friendId: string) => {
     try {
       // Create or get existing conversation
       const conversation = await conversationService.createConversation(friendId);

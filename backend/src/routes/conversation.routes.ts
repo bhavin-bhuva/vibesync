@@ -13,6 +13,7 @@ router.use(authenticate as express.RequestHandler);
 router.get('/', conversationController.listConversations as express.RequestHandler);
 router.post('/', conversationController.createConversation as express.RequestHandler);
 router.get('/:id', conversationController.getConversation as express.RequestHandler);
+router.put('/:id/read', conversationController.markAsRead as express.RequestHandler);
 
 // Messages (nested under conversations usually, or separate. Let's keep nested REST style here)
 router.get('/:id/messages', messageController.getMessages as express.RequestHandler);

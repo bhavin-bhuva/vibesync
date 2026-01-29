@@ -1,6 +1,6 @@
 import { db } from '../config/database';
 import { conversations, conversationParticipants, users, messages } from '../db/schema';
-import { eq, and, desc, sql, inArray } from 'drizzle-orm';
+import { eq, and, desc, sql, inArray, gt, count } from 'drizzle-orm';
 
 export class ConversationService {
   /**
@@ -159,6 +159,30 @@ export class ConversationService {
       // Filter out current user for display logic (if DM)
       const otherParticipants = participants.filter(p => p.id !== userId);
 
+      // Calculate unread count
+      const userParticipant = await db
+        .select({ lastReadAt: conversationParticipants.lastReadAt })
+        .from(conversationParticipants)
+        .where(
+          and(
+            eq(conversationParticipants.conversationId, conv.id),
+            eq(conversationParticipants.userId, userId)
+          )
+        )
+        .limit(1);
+
+      const lastReadAt = userParticipant[0]?.lastReadAt || new Date(0);
+
+      const unreadResult = await db
+        .select({ count: count() })
+        .from(messages)
+        .where(
+          and(
+            eq(messages.conversationId, conv.id),
+            gt(messages.createdAt, lastReadAt)
+          )
+        );
+
       return {
         ...conv,
         participants,
@@ -167,9 +191,29 @@ export class ConversationService {
         displayName: conv.isGroup ? conv.name : otherParticipants[0]?.name || 'Unknown User',
         displayAvatar: conv.isGroup ? null : otherParticipants[0]?.avatar,
         online: conv.isGroup ? false : otherParticipants[0]?.online || false, // Logic: if DM and other user is online
+        unread: unreadResult[0]?.count || 0,
       };
     }));
 
     return detailedConversations;
+  }
+
+  /**
+   * Mark conversation as read
+   */
+  async markAsRead(userId: string, conversationId: string) {
+    await db
+      .update(conversationParticipants)
+      .set({
+        lastReadAt: new Date(),
+      })
+      .where(
+        and(
+          eq(conversationParticipants.userId, userId),
+          eq(conversationParticipants.conversationId, conversationId)
+        )
+      );
+
+    return true;
   }
 }

@@ -48,6 +48,7 @@ export default function ConversationDetail() {
     timestamp: formatLastSeen(conv.updatedAt),
     unread: conv.unread || 0,
     online: conv.online || false,
+    isGroup: conv.isGroup,
   });
 
   const formatTime = (dateString: string): string => {
@@ -101,6 +102,9 @@ export default function ConversationDetail() {
 
         // 4. Load Messages
         if (active) {
+            // Mark as read immediately
+            conversationService.markAsRead(conversationId).catch(err => console.error("Failed to mark read:", err));
+            
             const apiMessages = await messageService.getMessages(conversationId);
             setMessages(apiMessages.map(msg => mapMessage(msg, mappedUser)).reverse());
         }

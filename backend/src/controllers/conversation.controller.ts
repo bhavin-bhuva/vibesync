@@ -3,6 +3,7 @@ import { AuthRequest } from '../middleware/auth.middleware';
 import { ConversationService } from '../services/conversation.service';
 import { z } from 'zod';
 
+import { getIO } from '../socket';
 const conversationService = new ConversationService();
 
 export class ConversationController {
@@ -105,6 +106,45 @@ export class ConversationController {
       res.status(200).json({
         success: true,
         data: conversation
+      });
+
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // PUT /api/v1/conversations/:id/read
+  async markAsRead(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) throw new Error('User not authenticated');
+
+      const paramsSchema = z.object({
+        id: z.string().uuid(),
+      });
+
+      let conversationId: string;
+      try {
+        const params = paramsSchema.parse(req.params);
+        conversationId = params.id;
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          return res.status(400).json({ success: false, error: 'Invalid Conversation ID format' });
+        }
+        throw error;
+      }
+
+      await conversationService.markAsRead(req.user.userId, conversationId);
+
+      // Notify other participants (or just the conversation room)
+      const io = getIO();
+      io.to(`conversation:${conversationId}`).emit('conversation_read', {
+        conversationId,
+        userId: req.user.userId,
+        readAt: new Date()
+      });
+
+      res.status(200).json({
+        success: true
       });
 
     } catch (error) {
