@@ -139,6 +139,9 @@ export default function ConversationDetail() {
         
         if (message.senderId === currentUser?.id) return;
 
+        // Mark as read immediately since we are viewing the conversation
+        conversationService.markAsRead(conversationId).catch(err => console.error("Failed to mark read:", err));
+
         setMessages(prev => {
             if (prev.some(m => m.id === message.id)) return prev;
             return [...prev, mapMessage(message, currentUser)];
