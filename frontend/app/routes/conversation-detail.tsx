@@ -135,8 +135,6 @@ export default function ConversationDetail() {
     socket.emit('join_conversation', conversationId);
 
     const handleNewMessage = (message: any) => {
-        console.log("📩 Received new_message event:", message);
-        
         if (message.senderId === currentUser?.id) return;
 
         // Mark as read immediately since we are viewing the conversation
@@ -232,10 +230,8 @@ export default function ConversationDetail() {
         {currentUser ? (
             <ConversationList
             conversations={conversations}
-            // We need to cast here temporarily if ConversationList still expects number, 
-            // but we will update ConversationList next.
-            activeConversationId={conversationId as any} 
-            onConversationSelect={handleConversationSelect as any}
+            activeConversationId={conversationId} 
+            onConversationSelect={handleConversationSelect}
             currentUser={currentUser}
             onStatusClick={() => navigate("/status")}
             />

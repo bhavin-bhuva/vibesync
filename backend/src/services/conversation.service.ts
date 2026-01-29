@@ -161,7 +161,10 @@ export class ConversationService {
 
       // Calculate unread count
       const userParticipant = await db
-        .select({ lastReadAt: conversationParticipants.lastReadAt })
+        .select({
+          lastReadAt: conversationParticipants.lastReadAt,
+          joinedAt: conversationParticipants.joinedAt
+        })
         .from(conversationParticipants)
         .where(
           and(
@@ -171,7 +174,7 @@ export class ConversationService {
         )
         .limit(1);
 
-      const lastReadAt = userParticipant[0]?.lastReadAt || new Date(0);
+      const coalescedLastRead = userParticipant[0]?.lastReadAt ?? userParticipant[0]?.joinedAt ?? new Date(0);
 
       const unreadResult = await db
         .select({ count: count() })
@@ -179,7 +182,7 @@ export class ConversationService {
         .where(
           and(
             eq(messages.conversationId, conv.id),
-            gt(messages.createdAt, lastReadAt),
+            gt(messages.createdAt, coalescedLastRead),
             ne(messages.senderId, userId)
           )
         );
