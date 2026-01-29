@@ -1,0 +1,45 @@
+# CodeRabbit Configuration File
+# Documentation: https://coderabbit.ai/docs
+
+language: en-US
+early_access: false
+
+reviews:
+  # Profile: 'chill' (relaxed), 'assertive' (strict), or 'professional' (balanced)
+  profile: professional
+  
+  # When to ask for changes
+  request_changes_workflow: false
+  
+  # Summary settings
+  high_level_summary: true
+  poem: true # Adds a fun summary poem (optional, set to false if unwanted)
+
+  # Auto-review settings
+  auto_review:
+    enabled: true
+    ignore_title_keywords:
+      - "WIP"
+      - "Draft"
+      - "Do not review"
+    drafts: false # Do not review draft PRs until ready
+
+  # Static Analysis Tools (Enable tools relevant to your stack)
+  tools:
+    ast-grep:
+      enabled: true
+      rule_dirs:
+        - .
+    # JavaScript/TypeScript Linters
+    eslint:
+      enabled: true
+    # Security Scanners
+    trivy:
+      enabled: true
+
+chat:
+  auto_reply: true # Allows you to chat with the bot in PR comments
+
+knowledge_base:
+  learnings:
+    enabled: true # Learns from your feedback over time
