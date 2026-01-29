@@ -95,6 +95,13 @@ export default function ConversationsIndex() {
       const conversationsMap = new Map();
       const realConversationFriendIds = new Set();
       
+      const normalizeLastMessage = (
+        lastMessage?: string | { content?: string }
+      ) =>
+        typeof lastMessage === "string"
+          ? lastMessage
+          : lastMessage?.content ?? "No messages yet";
+
       apiConversations.forEach((conv: any) => {
         const friendId = conv.participants.find((p: any) => p.id !== user.id)?.id;
         if (friendId) realConversationFriendIds.add(friendId);
@@ -103,7 +110,7 @@ export default function ConversationsIndex() {
              id: conv.id,
              name: conv.displayName || "Unknown",
              avatar: conv.displayAvatar,
-             lastMessage: conv.lastMessage || "No messages yet",
+             lastMessage: normalizeLastMessage(conv.lastMessage),
              timestamp: formatLastSeen(conv.updatedAt),
              unread: conv.unread || 0,
              online: conv.online || false,

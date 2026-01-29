@@ -7,8 +7,6 @@ async function resetDb() {
   });
 
   try {
-    console.log('🗑️  Dropping all tables...');
-
     // Check if we are in production to prevent accidents (basic check)
     if (env.NODE_ENV === 'production') {
       console.error('❌ Cannot reset database in production!');
@@ -21,6 +19,8 @@ async function resetDb() {
       console.error('   Please check your .env file or environment variables.');
       process.exit(1);
     }
+
+    console.log('🗑️  Dropping all tables...');
 
     // Drop schema public and recreate it
     await pool.query('DROP SCHEMA public CASCADE;');
