@@ -20,6 +20,11 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
       <div className="relative w-full max-w-md animate-fade-in">
         {/* Logo/Brand */}
         <div className="text-center mb-8">
+          <img 
+            src="/images/logo-white.svg" 
+            alt="VibeSync Logo" 
+            className="w-20 h-20 mx-auto mb-4 drop-shadow-[0_0_15px_rgba(168,85,247,0.5)]" 
+          />
           <h1 className="text-5xl font-bold gradient-text mb-2">VibeSync</h1>
           <p className="text-gray-600 dark:text-gray-400">Connect. Chat. Vibe.</p>
         </div>

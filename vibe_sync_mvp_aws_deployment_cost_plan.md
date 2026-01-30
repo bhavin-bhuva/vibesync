@@ -84,29 +84,54 @@ DATABASE_URL=postgresql://user:password@host/dbname?sslmode=require
 
 ---
 
-## 3. Frontend Hosting (Zero Servers)
+## 3. Frontend Hosting (Firebase Hosting)
 
-### Deployment
+### Platform
+
+* **Firebase Hosting** (Google CDN)
+
+### Why Firebase for MVP
+
+* Extremely fast setup
+* Free SSL + CDN
+* Very generous free tier
+* Perfect for low-traffic MVPs
+
+### Deployment Steps
 
 ```bash
 npm run build
-aws s3 sync dist/ s3://your-frontend-bucket
+npm install -g firebase-tools
+firebase login
+firebase init hosting
+firebase deploy
 ```
 
-### Setup
+### SPA Configuration (Important)
 
-* S3 for static hosting
-* CloudFront for CDN + HTTPS
+Ensure all routes fallback to `index.html`:
 
-### Benefits
+```json
+{
+  "hosting": {
+    "public": "dist",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [{ "source": "**", "destination": "/index.html" }]
+  }
+}
+```
 
-* No EC2 needed
-* Extremely cheap
-* Fast global delivery
+### CORS
+
+Allow Firebase domain in backend:
+
+```env
+CORS_ORIGIN=https://your-project.web.app
+```
 
 ### Approx Cost
 
-* ₹100–200 / month
+* ₹0 / month for MVP scale
 
 ---
 
@@ -166,13 +191,13 @@ Potential savings: **30–50%**
 
 ## Monthly Cost Breakdown (India Region)
 
-| Component       | Approx Cost              |
-| --------------- | ------------------------ |
-| EC2 (t3.micro)  | ₹800                     |
-| Free PostgreSQL | ₹0                       |
-| S3 + CloudFront | ₹150                     |
-| Logs & misc     | ₹100                     |
-| **Total**       | **₹1,000–1,200 / month** |
+| Component        | Approx Cost              |
+| ---------------- | ------------------------ |
+| EC2 (t3.micro)   | ₹800                     |
+| Free PostgreSQL  | ₹0                       |
+| Firebase Hosting | ₹0                       |
+| Logs & misc      | ₹100                     |
+| **Total**        | **₹1,000–1,200 / month** |
 
 ---
 
@@ -200,7 +225,7 @@ No rewrite required.
 
 For an MVP with ~20 users:
 
-> **EC2 (t3.micro) + Free PostgreSQL (Neon) + S3 + CloudFront**
+> **EC2 (t3.micro) + Free PostgreSQL (Neon) + Firebase Hosting**
 
 This is the lowest-cost setup that still behaves like a real production system.
 

@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeSync Brand Kit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --purple: #A259FF;
+            --blue: #6CD7FF;
+            --pink: #FF64AA;
+            --yellow: #FFC850;
+            --bg-dark: #0a0a14;
+            --bg-secondary: #1a0a2e;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-secondary) 100%);
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* Header */
+        .brand-header {
+            text-align: center;
+            margin-bottom: 80px;
+            padding: 60px 40px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 32px;
+        }
+
+        .brand-logo-hero {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 32px;
+        }
+
+        .brand-header h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--purple), var(--pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+        }
+
+        .brand-header p {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .version-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(162, 89, 255, 0.2);
+            border: 1px solid rgba(162, 89, 255, 0.4);
+            border-radius: 50px;
+            font-size: 0.875rem;
+            color: var(--purple);
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+
+        /* Table of Contents */
+        .toc {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 60px;
+        }
+
+        .toc h2 {
+            font-size: 1.75rem;
+            margin-bottom: 24px;
+            color: var(--blue);
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+        }
+
+        .toc-item {
+            padding: 16px 24px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            text-decoration: none;
+            color: #fff;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .toc-item:hover {
+            background: rgba(162, 89, 255, 0.1);
+            border-color: rgba(162, 89, 255, 0.4);
+            transform: translateX(8px);
+        }
+
+        .toc-number {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--purple);
+            opacity: 0.5;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 80px;
+            scroll-margin-top: 100px;
+        }
+
+        .section-header {
+            margin-bottom: 40px;
+        }
+
+        .section-number {
+            font-size: 1rem;
+            color: var(--purple);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #fff, rgba(255, 255, 255, 0.7));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-description {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 800px;
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 60px rgba(162, 89, 255, 0.3);
+            border-color: rgba(162, 89, 255, 0.4);
+        }
+
+        /* Color Palette */
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+        }
+
+        .color-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .color-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .color-swatch {
+            height: 200px;
+            width: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .color-label {
+            position: absolute;
+            font-size: 2rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .color-info {
+            padding: 24px;
+        }
+
+        .color-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .color-values {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .color-value {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+        }
+
+        .copy-btn {
+            padding: 4px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Typography */
+        .typography-showcase {
+            display: grid;
+            gap: 32px;
+        }
+
+        .type-sample {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+        }
+
+        .type-label {
+            font-size: 0.875rem;
+            color: var(--purple);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .type-example {
+            margin-bottom: 16px;
+        }
+
+        .type-specs {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .type-spec {
+            display: flex;
+            gap: 8px;
+        }
+
+        .type-spec strong {
+            color: #fff;
+        }
+
+        /* Logo Grid */
+        .logo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .logo-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .logo-preview-box {
+            width: 100%;
+            height: 200px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .logo-preview-box.light {
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .logo-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .logo-description {
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 16px;
+        }
+
+        /* Spacing System */
+        .spacing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+        }
+
+        .spacing-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .spacing-visual {
+            height: 80px;
+            background: var(--purple);
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+
+        .spacing-label {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .spacing-value {
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Usage Guidelines */
+        .guidelines-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+        }
+
+        .guideline-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 32px;
+        }
+
+        .guideline-card.do {
+            border-color: rgba(80, 200, 120, 0.4);
+            background: rgba(80, 200, 120, 0.05);
+        }
+
+        .guideline-card.dont {
+            border-color: rgba(255, 100, 100, 0.4);
+            background: rgba(255, 100, 100, 0.05);
+        }
+
+        .guideline-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .guideline-card.do .guideline-icon {
+            background: rgba(80, 200, 120, 0.2);
+            color: #50C878;
+        }
+
+        .guideline-card.dont .guideline-icon {
+            background: rgba(255, 100, 100, 0.2);
+            color: #FF6464;
+        }
+
+        .guideline-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .guideline-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .guideline-list li {
+            padding-left: 24px;
+            position: relative;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .guideline-list li:before {
+            content: "•";
+            position: absolute;
+            left: 8px;
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+
+        .guideline-card.do .guideline-list li:before {
+            color: #50C878;
+        }
+
+        .guideline-card.dont .guideline-list li:before {
+            color: #FF6464;
+        }
+
+        /* Download Section */
+        .download-section {
+            background: linear-gradient(135deg, rgba(162, 89, 255, 0.2), rgba(108, 215, 255, 0.2));
+            border: 1px solid rgba(162, 89, 255, 0.3);
+            border-radius: 32px;
+            padding: 60px 40px;
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        .download-section h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .download-section p {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 40px;
+        }
+
+        .download-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .download-btn {
+            padding: 16px 40px;
+            background: linear-gradient(135deg, var(--purple), var(--pink));
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 24px rgba(162, 89, 255, 0.4);
+            border: none;
+            cursor: pointer;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(162, 89, 255, 0.5);
+        }
+
+        .download-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .brand-header h1 {
+                font-size: 2.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .color-grid,
+            .logo-grid,
+            .spacing-grid,
+            .guidelines-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="brand-header">
+            <div class="brand-logo-hero">
+                <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" class="animate-float">
+                    <defs>
+                        <linearGradient id="header-purple" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#A259FF;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#6CD7FF;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="header-pink" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#FF64AA;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#FFC850;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <circle cx="80" cy="100" r="45" fill="url(#header-purple)" opacity="0.8"/>
+                    <circle cx="120" cy="100" r="45" fill="url(#header-pink)" opacity="0.8"/>
+                    <circle cx="100" cy="100" r="25" fill="rgba(255, 255, 255, 0.15)"/>
+                    <circle cx="100" cy="100" r="18" fill="url(#header-purple)"/>
+                    <circle cx="100" cy="100" r="10" fill="white" opacity="0.3"/>
+                </svg>
+            </div>
+            <span class="version-badge">Version 1.0 • January 2026</span>
+            <h1>VibeSync Brand Kit</h1>
+            <p>Complete brand guidelines and assets for VibeSync - The modern messaging platform</p>
+        </div>
+
+        <!-- Table of Contents -->
+        <div class="toc">
+            <h2>📋 Contents</h2>
+            <div class="toc-grid">
+                <a href="#brand-overview" class="toc-item">
+                    <span class="toc-number">01</span>
+                    <span>Brand Overview</span>
+                </a>
+                <a href="#logo" class="toc-item">
+                    <span class="toc-number">02</span>
+                    <span>Logo & Usage</span>
+                </a>
+                <a href="#colors" class="toc-item">
+                    <span class="toc-number">03</span>
+                    <span>Color Palette</span>
+                </a>
+                <a href="#typography" class="toc-item">
+                    <span class="toc-number">04</span>
+                    <span>Typography</span>
+                </a>
+                <a href="#spacing" class="toc-item">
+                    <span class="toc-number">05</span>
+                    <span>Spacing System</span>
+                </a>
+                <a href="#guidelines" class="toc-item">
+                    <span class="toc-number">06</span>
+                    <span>Usage Guidelines</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Section 1: Brand Overview -->
+        <section id="brand-overview" class="section">
+            <div class="section-header">
+                <div class="section-number">01. Brand Overview</div>
+                <h2 class="section-title">Who We Are</h2>
+                <p class="section-description">VibeSync is a modern real-time messaging app that makes staying connected effortless, engaging, and visually delightful.</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+                <div class="card">
+                    <h3 style="font-size: 1.5rem; margin-bottom: 16px; color: var(--purple);">Mission</h3>
+                    <p style="color: rgba(255, 255, 255, 0.8);">To create a next-generation chat application that reimagines how people stay connected with friends and family through innovative features and stunning design.</p>
+                </div>
+
+                <div class="card">
+                    <h3 style="font-size: 1.5rem; margin-bottom: 16px; color: var(--blue);">Vision</h3>
+                    <p style="color: rgba(255, 255, 255, 0.8);">A world where digital communication is seamless, beautiful, and respects user privacy while fostering genuine connections.</p>
+                </div>
+
+                <div class="card">
+                    <h3 style="font-size: 1.5rem; margin-bottom: 16px; color: var(--pink);">Values</h3>
+                    <ul style="color: rgba(255, 255, 255, 0.8); list-style: none; padding-left: 0;">
+                        <li style="margin-bottom: 8px;">✨ Modern & Innovative</li>
+                        <li style="margin-bottom: 8px;">🤝 User-Centric</li>
+                        <li style="margin-bottom: 8px;">🔒 Privacy-First</li>
+                        <li style="margin-bottom: 8px;">💎 Premium Quality</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 24px;">
+                <h3 style="font-size: 1.5rem; margin-bottom: 16px; color: var(--yellow);">Brand Personality</h3>
+                <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                    <span style="padding: 12px 24px; background: rgba(162, 89, 255, 0.2); border-radius: 50px; font-weight: 600;">Modern</span>
+                    <span style="padding: 12px 24px; background: rgba(108, 215, 255, 0.2); border-radius: 50px; font-weight: 600;">Friendly</span>
+                    <span style="padding: 12px 24px; background: rgba(255, 100, 170, 0.2); border-radius: 50px; font-weight: 600;">Premium</span>
+                    <span style="padding: 12px 24px; background: rgba(255, 200, 80, 0.2); border-radius: 50px; font-weight: 600;">Innovative</span>
+                    <span style="padding: 12px 24px; background: rgba(80, 200, 120, 0.2); border-radius: 50px; font-weight: 600;">Trustworthy</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Logo -->
+        <section id="logo" class="section">
+            <div class="section-header">
+                <div class="section-number">02. Logo & Usage</div>
+                <h2 class="section-title">Abstract Sync Logo</h2>
+                <p class="section-description">Two overlapping circles representing connection and synchronization with a glassmorphic center.</p>
+            </div>
+
+            <div class="logo-grid">
+                <div class="logo-card">
+                    <div class="logo-preview-box">
+                        <svg width="140" height="140" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="logo1-purple" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#A259FF;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#6CD7FF;stop-opacity:1" />
+                                </linearGradient>
+                                <linearGradient id="logo1-pink" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#FF64AA;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#FFC850;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <circle cx="80" cy="100" r="45" fill="url(#logo1-purple)" opacity="0.8"/>
+                            <circle cx="120" cy="100" r="45" fill="url(#logo1-pink)" opacity="0.8"/>
+                            <circle cx="100" cy="100" r="25" fill="rgba(255, 255, 255, 0.15)"/>
+                            <circle cx="100" cy="100" r="18" fill="url(#logo1-purple)"/>
+                            <circle cx="100" cy="100" r="10" fill="white" opacity="0.3"/>
+                        </svg>
+                    </div>
+                    <h3 class="logo-title">Primary - Full Color</h3>
+                    <p class="logo-description">Use on dark backgrounds</p>
+                </div>
+
+                <div class="logo-card">
+                    <div class="logo-preview-box">
+                        <svg width="140" height="140" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="80" cy="100" r="45" fill="white" opacity="0.7"/>
+                            <circle cx="120" cy="100" r="45" fill="white" opacity="0.5"/>
+                            <circle cx="100" cy="100" r="25" fill="rgba(255, 255, 255, 0.3)"/>
+                            <circle cx="100" cy="100" r="18" fill="white"/>
+                            <circle cx="100" cy="100" r="10" fill="rgba(0, 0, 0, 0.2)"/>
+                        </svg>
+                    </div>
+                    <h3 class="logo-title">White</h3>
+                    <p class="logo-description">For dark backgrounds</p>
+                </div>
+
+                <div class="logo-card">
+                    <div class="logo-preview-box light">
+                        <svg width="140" height="140" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="80" cy="100" r="45" fill="#000" opacity="0.7"/>
+                            <circle cx="120" cy="100" r="45" fill="#000" opacity="0.5"/>
+                            <circle cx="100" cy="100" r="25" fill="rgba(0, 0, 0, 0.3)"/>
+                            <circle cx="100" cy="100" r="18" fill="#000"/>
+                            <circle cx="100" cy="100" r="10" fill="rgba(255, 255, 255, 0.3)"/>
+                        </svg>
+                    </div>
+                    <h3 class="logo-title" style="color: #333;">Black</h3>
+                    <p class="logo-description" style="color: #666;">For light backgrounds</p>
+                </div>
+
+                <div class="logo-card">
+                    <div class="logo-preview-box">
+                        <svg width="140" height="140" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="80" cy="100" r="45" fill="#A259FF" opacity="0.7"/>
+                            <circle cx="120" cy="100" r="45" fill="#A259FF" opacity="0.5"/>
+                            <circle cx="100" cy="100" r="25" fill="rgba(162, 89, 255, 0.3)"/>
+                            <circle cx="100" cy="100" r="18" fill="#A259FF"/>
+                            <circle cx="100" cy="100" r="10" fill="white" opacity="0.3"/>
+                        </svg>
+                    </div>
+                    <h3 class="logo-title">Purple Monochrome</h3>
+                    <p class="logo-description">Single color version</p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 32px; padding: 48px;">
+                <h3 style="font-size: 1.75rem; margin-bottom: 32px; text-align: center; color: var(--blue);">Clear Space & Minimum Size</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; text-align: center;">
+                    <div>
+                        <div style="font-size: 3rem; font-weight: 800; color: var(--purple); margin-bottom: 8px;">X</div>
+                        <div style="font-weight: 700; margin-bottom: 8px;">Clear Space</div>
+                        <p style="color: rgba(255, 255, 255, 0.6); font-size: 0.875rem;">Maintain X space on all sides</p>
+                    </div>
+                    <div>
+                        <div style="font-size: 3rem; font-weight: 800; color: var(--pink); margin-bottom: 8px;">32px</div>
+                        <div style="font-weight: 700; margin-bottom: 8px;">Minimum Size</div>
+                        <p style="color: rgba(255, 255, 255, 0.6); font-size: 0.875rem;">Never use smaller than 32×32px</p>
+                    </div>
+                    <div>
+                        <div style="font-size: 3rem; font-weight: 800; color: var(--blue); margin-bottom: 8px;">1:1</div>
+                        <div style="font-weight: 700; margin-bottom: 8px;">Aspect Ratio</div>
+                        <p style="color: rgba(255, 255, 255, 0.6); font-size: 0.875rem;">Always maintain square ratio</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Colors -->
+        <section id="colors" class="section">
+            <div class="section-header">
+                <div class="section-number">03. Color Palette</div>
+                <h2 class="section-title">Brand Colors</h2>
+                <p class="section-description">Our vibrant, modern color system designed for both light and dark modes.</p>
+            </div>
+
+            <div class="color-grid">
+                <!-- Purple -->
+                <div class="color-card">
+                    <div class="color-swatch" style="background: linear-gradient(135deg, #A259FF, #8040CC);">
+                        <div class="color-label">Purple</div>
+                    </div>
+                    <div class="color-info">
+                        <div class="color-name">Primary Purple</div>
+                        <div class="color-values">
+                            <div class="color-value">
+                                <span>HEX</span>
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <span>#A259FF</span>
+                                    <button class="copy-btn" onclick="copyToClipboard('#A259FF')">Copy</button>
+                                </div>
+                            </div>
+                            <div class="color-value">
+                                <span>RGB</span>
+                                <span>162, 89, 255</span>
+                            </div>
+                            <div class="color-value">
+                                <span>HSL</span>
+                                <span>262°, 83%, 58%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blue -->
+                <div class="color-card">
+                    <div class="color-swatch" style="background: linear-gradient(135deg, #6CD7FF, #40B8E0);">
+                        <div class="color-label">Blue</div>
+                    </div>
+                    <div class="color-info">
+                        <div class="color-name">Secondary Blue</div>
+                        <div class="color-values">
+                            <div class="color-value">
+                                <span>HEX</span>
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <span>#6CD7FF</span>
+                                    <button class="copy-btn" onclick="copyToClipboard('#6CD7FF')">Copy</button>
+                                </div>
+                            </div>
+                            <div class="color-value">
+                                <span>RGB</span>
+                                <span>108, 215, 255</span>
+                            </div>
+                            <div class="color-value">
+                                <span>HSL</span>
+                                <span>198°, 93%, 60%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pink -->
+                <div class="color-card">
+                    <div class="color-swatch" style="background: linear-gradient(135deg, #FF64AA, #E04080);">
+                        <div class="color-label">Pink</div>
+                    </div>
+                    <div class="color-info">
+                        <div class="color-name">Accent Pink</div>
+                        <div class="color-values">
+                            <div class="color-value">
+                                <span>HEX</span>
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <span>#FF64AA</span>
+                                    <button class="copy-btn" onclick="copyToClipboard('#FF64AA')">Copy</button>
+                                </div>
+                            </div>
+                            <div class="color-value">
+                                <span>RGB</span>
+                                <span>255, 100, 170</span>
+                            </div>
+                            <div class="color-value">
+                                <span>HSL</span>
+                                <span>330°, 85%, 65%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Yellow -->
+                <div class="color-card">
+                    <div class="color-swatch" style="background: linear-gradient(135deg, #FFC850, #E0A840);">
+                        <div class="color-label">Yellow</div>
+                    </div>
+                    <div class="color-info">
+                        <div class="color-name">Accent Yellow</div>
+                        <div class="color-values">
+                            <div class="color-value">
+                                <span>HEX</span>
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <span>#FFC850</span>
+                                    <button class="copy-btn" onclick="copyToClipboard('#FFC850')">Copy</button>
+                                </div>
+                            </div>
+                            <div class="color-value">
+                                <span>RGB</span>
+                                <span>255, 200, 80</span>
+                            </div>
+                            <div class="color-value">
+                                <span>HSL</span>
+                                <span>45°, 100%, 65%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gradient Combinations -->
+            <div class="card" style="margin-top: 32px;">
+                <h3 style="font-size: 1.75rem; margin-bottom: 24px; color: var(--blue);">Gradient Combinations</h3>
+                <div style="display: grid; gap: 16px;">
+                    <div style="height: 120px; border-radius: 16px; background: linear-gradient(135deg, #A259FF, #FF64AA); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.25rem;">
+                        Purple → Pink (Primary)
+                    </div>
+                    <div style="height: 120px; border-radius: 16px; background: linear-gradient(135deg, #A259FF, #6CD7FF); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.25rem;">
+                        Purple → Blue (Secondary)
+                    </div>
+                    <div style="height: 120px; border-radius: 16px; background: linear-gradient(135deg, #FF64AA, #FFC850); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.25rem;">
+                        Pink → Yellow (Accent)
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Typography -->
+        <section id="typography" class="section">
+            <div class="section-header">
+                <div class="section-number">04. Typography</div>
+                <h2 class="section-title">Type System</h2>
+                <p class="section-description">Outfit font family for a modern, geometric aesthetic.</p>
+            </div>
+
+            <div class="typography-showcase">
+                <div class="type-sample">
+                    <div class="type-label">Heading 1</div>
+                    <div class="type-example" style="font-size: 4.5rem; font-weight: 800; line-height: 1.1;">
+                        Connect & Vibe
+                    </div>
+                    <div class="type-specs">
+                        <div class="type-spec"><strong>Font:</strong> Outfit</div>
+                        <div class="type-spec"><strong>Size:</strong> 72px / 4.5rem</div>
+                        <div class="type-spec"><strong>Weight:</strong> 800 (Extrabold)</div>
+                        <div class="type-spec"><strong>Line Height:</strong> 1.1</div>
+                    </div>
+                </div>
+
+                <div class="type-sample">
+                    <div class="type-label">Heading 2</div>
+                    <div class="type-example" style="font-size: 3.5rem; font-weight: 800; line-height: 1.2;">
+                        Real-time Messaging
+                    </div>
+                    <div class="type-specs">
+                        <div class="type-spec"><strong>Font:</strong> Outfit</div>
+                        <div class="type-spec"><strong>Size:</strong> 56px / 3.5rem</div>
+                        <div class="type-spec"><strong>Weight:</strong> 800 (Extrabold)</div>
+                        <div class="type-spec"><strong>Line Height:</strong> 1.2</div>
+                    </div>
+                </div>
+
+                <div class="type-sample">
+                    <div class="type-label">Heading 3</div>
+                    <div class="type-example" style="font-size: 2.5rem; font-weight: 700; line-height: 1.3;">
+                        Seamless Experience
+                    </div>
+                    <div class="type-specs">
+                        <div class="type-spec"><strong>Font:</strong> Outfit</div>
+                        <div class="type-spec"><strong>Size:</strong> 40px / 2.5rem</div>
+                        <div class="type-spec"><strong>Weight:</strong> 700 (Bold)</div>
+                        <div class="type-spec"><strong>Line Height:</strong> 1.3</div>
+                    </div>
+                </div>
+
+                <div class="type-sample">
+                    <div class="type-label">Body Text</div>
+                    <div class="type-example" style="font-size: 1rem; font-weight: 400; line-height: 1.6;">
+                        Experience seamless real-time messaging with friends through QR codes, share ephemeral moments, and stay connected with stunning glassmorphic design. VibeSync makes communication effortless and delightful.
+                    </div>
+                    <div class="type-specs">
+                        <div class="type-spec"><strong>Font:</strong> Outfit</div>
+                        <div class="type-spec"><strong>Size:</strong> 16px / 1rem</div>
+                        <div class="type-spec"><strong>Weight:</strong> 400 (Regular)</div>
+                        <div class="type-spec"><strong>Line Height:</strong> 1.6</div>
+                    </div>
+                </div>
+
+                <div class="type-sample">
+                    <div class="type-label">Button / Label</div>
+                    <div class="type-example" style="font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+                        Get Started →
+                    </div>
+                    <div class="type-specs">
+                        <div class="type-spec"><strong>Font:</strong> Outfit</div>
+                        <div class="type-spec"><strong>Size:</strong> 16px / 1rem</div>
+                        <div class="type-spec"><strong>Weight:</strong> 700 (Bold)</div>
+                        <div class="type-spec"><strong>Transform:</strong> Uppercase</div>
+                        <div class="type-spec"><strong>Letter Spacing:</strong> 0.5px</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Spacing -->
+        <section id="spacing" class="section">
+            <div class="section-header">
+                <div class="section-number">05. Spacing System</div>
+                <h2 class="section-title">Spacing Scale</h2>
+                <p class="section-description">Consistent 4px base unit system for layouts and components.</p>
+            </div>
+
+            <div class="spacing-grid">
+                <div class="spacing-card">
+                    <div class="spacing-visual" style="width: 32px; height: 32px;">2</div>
+                    <div class="spacing-label">XS</div>
+                    <div class="spacing-value">8px / 0.5rem</div>
+                </div>
+                <div class="spacing-card">
+                    <div class="spacing-visual" style="width: 48px; height: 48px;">3</div>
+                    <div class="spacing-label">SM</div>
+                    <div class="spacing-value">12px / 0.75rem</div>
+                </div>
+                <div class="spacing-card">
+                    <div class="spacing-visual" style="width: 64px; height: 64px;">4</div>
+                    <div class="spacing-label">MD</div>
+                    <div class="spacing-value">16px / 1rem</div>
+                </div>
+                <div class="spacing-card">
+                    <div class="spacing-visual" style="width: 96px; height: 96px;">6</div>
+                    <div class="spacing-label">LG</div>
+                    <div class="spacing-value">24px / 1.5rem</div>
+                </div>
+                <div class="spacing-card">
+                    <div class="spacing-visual" style="width: 128px; height: 80px;">8</div>
+                    <div class="spacing-label">XL</div>
+                    <div class="spacing-value">32px / 2rem</div>
+                </div>
+                <div class="spacing-card">
+                    <div class="spacing-visual" style="width: 160px; height: 80px;">12</div>
+                    <div class="spacing-label">2XL</div>
+                    <div class="spacing-value">48px / 3rem</div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 32px;">
+                <h3 style="font-size: 1.5rem; margin-bottom: 24px; color: var(--yellow);">Border Radius</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 24px;">
+                    <div style="text-align: center;">
+                        <div style="width: 80px; height: 80px; background: var(--purple); border-radius: 8px; margin: 0 auto 12px;"></div>
+                        <div style="font-weight: 700;">SM: 8px</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="width: 80px; height: 80px; background: var(--blue); border-radius: 12px; margin: 0 auto 12px;"></div>
+                        <div style="font-weight: 700;">MD: 12px</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="width: 80px; height: 80px; background: var(--pink); border-radius: 16px; margin: 0 auto 12px;"></div>
+                        <div style="font-weight: 700;">LG: 16px</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="width: 80px; height: 80px; background: var(--yellow); border-radius: 24px; margin: 0 auto 12px;"></div>
+                        <div style="font-weight: 700;">XL: 24px</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="width: 80px; height: 80px; background: var(--purple); border-radius: 9999px; margin: 0 auto 12px;"></div>
+                        <div style="font-weight: 700;">Full: ∞</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: Guidelines -->
+        <section id="guidelines" class="section">
+            <div class="section-header">
+                <div class="section-number">06. Usage Guidelines</div>
+                <h2 class="section-title">Do's & Don'ts</h2>
+                <p class="section-description">Best practices for maintaining brand consistency.</p>
+            </div>
+
+            <div class="guidelines-grid">
+                <div class="guideline-card do">
+                    <div class="guideline-icon">✓</div>
+                    <h3 class="guideline-title">Do</h3>
+                    <ul class="guideline-list">
+                        <li>Use approved logo variations</li>
+                        <li>Maintain clear space around logo</li>
+                        <li>Use brand colors from palette</li>
+                        <li>Follow typography hierarchy</li>
+                        <li>Keep designs modern and clean</li>
+                        <li>Use glassmorphic effects tastefully</li>
+                    </ul>
+                </div>
+
+                <div class="guideline-card dont">
+                    <div class="guideline-icon">✗</div>
+                    <h3 class="guideline-title">Don't</h3>
+                    <ul class="guideline-list">
+                        <li>Distort or stretch the logo</li>
+                        <li>Use logo smaller than 32px</li>
+                        <li>Add effects or filters to logo</li>
+                        <li>Use non-brand colors</li>
+                        <li>Rotate or tilt the logo</li>
+                        <li>Place logo on busy backgrounds</li>
+                    </ul>
+                </div>
+
+                <div class="guideline-card do">
+                    <div class="guideline-icon">✓</div>
+                    <h3 class="guideline-title">Accessibility</h3>
+                    <ul class="guideline-list">
+                        <li>Ensure WCAG AA color contrast</li>
+                        <li>Use proper heading hierarchy</li>
+                        <li>Include alt text for images</li>
+                        <li>Make interactive elements 44×44px min</li>
+                        <li>Support keyboard navigation</li>
+                        <li>Test with screen readers</li>
+                    </ul>
+                </div>
+
+                <div class="guideline-card do">
+                    <div class="guideline-icon">✓</div>
+                    <h3 class="guideline-title">Communication</h3>
+                    <ul class="guideline-list">
+                        <li>Be friendly and approachable</li>
+                        <li>Use clear, concise language</li>
+                        <li>Show empathy and care</li>
+                        <li>Focus on user benefits</li>
+                        <li>Celebrate user achievements</li>
+                        <li>Be transparent about features</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Download Section -->
+        <div class="download-section">
+            <h2>Download Complete Brand Kit</h2>
+            <p>Get all assets, guidelines, and resources in one package</p>
+            <div class="download-buttons">
+                <button class="download-btn" onclick="alert('Right-click logos on this page to save as SVG/PNG, or use browser inspector to copy SVG code!')">Download Assets</button>
+                <button class="download-btn secondary" onclick="alert('JSON brand kit file has been generated separately!')">View JSON</button>
+            </div>
+            <p style="margin-top: 32px; font-size: 0.875rem; color: rgba(255, 255, 255, 0.5);">
+                Last Updated: January 30, 2026 • Version 1.0
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert(`Copied ${text} to clipboard!`);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+            });
+        }
+    </script>
+</body>
+</html>
