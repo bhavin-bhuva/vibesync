@@ -68,12 +68,45 @@ Today's session focused on polishing the Real-Time Messaging experience, impleme
 
 ---
 
-## 🚀 What's Next
+### 5. **Chat Logic Refinements (Unread Counts & Read Receipts)**
+- ✅ **Unread Counts**: Implemented accurate unread count logic in backend, accounting for user join times (via `joinedAt` fallback).
+- ✅ **Read Receipts**: Verified `markAsRead` functionality with explicit API endpoint and socket events.
+- ✅ **Group Chat Logic**: Updated frontend to correctly display group chat names vs participants and hide misleading online status.
+- ✅ **Optimistic UI**: Implemented immediate UI updates for unread counts when opening a conversation, eliminating lag.
+- ✅ **Auto-Read**: New messages are automatically marked as read when the conversation is active.
 
-1.  **Media Attachments**: The UI for "File" exists, but backend upload logic is next.
-2.  **Typing Indicators**: Socket events for `typing_start` / `typing_stop`.
-3.  **Message Status**: Read receipts (Double check marks).
+### 6. **Deployment Planning**
+- ✅ **AWS Strategy**: Created `vibe_sync_mvp_aws_deployment_cost_plan.md` outlining a cost-effective MVP deployment strategy on AWS (EC2 + Docker + RDS + S3).
 
 ---
 
-**Session Status:** ✅ UI/UX Polish & Critical Bux Fixes Complete.
+## 📊 Statistics
+
+**Files Modified:** 10+
+- `conversation.service.ts`: Unread logic update.
+- `conversation.controller.ts`: markAsRead endpoint.
+- `conversation-detail.tsx`: Socket listeners & optimistic updates.
+- `add-friend.tsx`, `friends.tsx`, `chat.tsx`: Type fixes (UUID migration).
+- `todo.md`: Roadmap update.
+
+---
+
+## 🔧 Technical Highlights
+
+### Unread Count "Coalescing"
+- To solve the issue where new group members saw old messages as "unread", we implemented a logic where `lastReadAt` falls back to `joinedAt`. Queries now filter `createdAt > (lastReadAt ?? joinedAt ?? 0)`.
+
+### Optimistic Updates
+- API calls for `markAsRead` are non-blocking for the UI. The frontend immediately sets the unread badge to 0, ensuring a snappy feel.
+
+---
+
+## 🚀 What's Next
+
+1.  **Media Attachments**: Backend upload logic (AWS S3 integration).
+2.  **Typing Indicators**: Socket events for `typing_start` / `typing_stop`.
+3.  **Deployment**: Execute the AWS MVP plan.
+
+---
+
+**Session Status:** ✅ Chat Logic Refined, Build Fixed, Deployment Planned.

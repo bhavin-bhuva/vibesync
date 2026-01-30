@@ -6,7 +6,7 @@ import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { register, storeTokens } from "../services/auth.service";
 
-export function meta({}: Route.MetaArgs) {
+export function meta({ }: Route.MetaArgs) {
   return [
     { title: "Register - VibeSync" },
     { name: "description", content: "Create your VibeSync account" },
@@ -140,15 +140,14 @@ export default function Register() {
                 {[1, 2, 3].map((level) => (
                   <div
                     key={level}
-                    className={`h-1 flex-1 rounded-full transition-all duration-300 ${
-                      level <= passwordStrength.strength
+                    className={`h-1 flex-1 rounded-full transition-all duration-300 ${level <= passwordStrength.strength
                         ? passwordStrength.strength === 1
                           ? "bg-red-500"
                           : passwordStrength.strength === 2
-                          ? "bg-yellow-500"
-                          : "bg-green-500"
+                            ? "bg-yellow-500"
+                            : "bg-green-500"
                         : "bg-white/10"
-                    }`}
+                      }`}
                   />
                 ))}
               </div>
@@ -224,7 +223,8 @@ export default function Register() {
             variant="secondary"
             className="w-full"
             onClick={() => {
-              window.location.href = "http://localhost:3001/api/v1/auth/google";
+              const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+              window.location.href = `${API_URL}/api/v1/auth/google`;
             }}
           >
             <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
