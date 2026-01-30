@@ -154,7 +154,7 @@ On your **local machine**:
 
 1. **Create production docker-compose file**
 
-Create `docker-compose.prod.yml` in project root:
+Create `docker-compose.ec2.yml` in project root:
 
 ```yaml
 services:
@@ -202,8 +202,8 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Install dependencies including devDependencies
+RUN npm ci
 
 # Copy source code
 COPY . .
@@ -212,20 +212,26 @@ COPY . .
 RUN npm run build
 
 # Production image
-FROM node:20-alpine
+FROM node:20-alpine AS runner
 
 WORKDIR /app
 
-# Copy built files and dependencies
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
+ENV NODE_ENV=production
+
+# Copy package.json and lockfile
 COPY --from=builder /app/package*.json ./
+
+# Install only production dependencies
+RUN npm ci --only=production
+
+# Copy built files
+COPY --from=builder /app/dist ./dist
 
 # Expose port
 EXPOSE 3001
 
 # Start application
-CMD ["node", "dist/index.js"]
+CMD ["npm", "start"]
 ```
 
 3. **Create .env.production file**
@@ -264,8 +270,8 @@ ssh -i your-key.pem ubuntu@<EC2_PUBLIC_IP> "mkdir -p ~/vibesync"
 # Transfer backend code
 scp -i your-key.pem -r ./backend ubuntu@<EC2_PUBLIC_IP>:~/vibesync/
 
-# Transfer docker-compose.prod.yml
-scp -i your-key.pem docker-compose.prod.yml ubuntu@<EC2_PUBLIC_IP>:~/vibesync/
+# Transfer docker-compose.ec2.yml
+scp -i your-key.pem docker-compose.ec2.yml ubuntu@<EC2_PUBLIC_IP>:~/vibesync/
 
 # Transfer .env.production
 scp -i your-key.pem backend/.env.production ubuntu@<EC2_PUBLIC_IP>:~/vibesync/backend/.env
@@ -284,10 +290,10 @@ On EC2:
 cd ~/vibesync
 
 # Build and start backend
-docker compose -f docker-compose.prod.yml up -d --build
+docker compose -f docker-compose.ec2.yml up -d --build
 
 # Check logs
-docker compose -f docker-compose.prod.yml logs -f backend
+docker compose -f docker-compose.ec2.yml logs -f backend
 
 # Verify backend is running
 curl http://localhost:3001/health
@@ -297,10 +303,10 @@ curl http://localhost:3001/health
 
 ```bash
 # On EC2, run migrations
-docker compose -f docker-compose.prod.yml exec backend npm run db:push
+docker compose -f docker-compose.ec2.yml exec backend npm run db:push
 
 # Or if using migrations
-docker compose -f docker-compose.prod.yml exec backend npm run migrate
+docker compose -f docker-compose.ec2.yml exec backend npm run migrate
 ```
 
 ---
@@ -544,17 +550,18 @@ VITE_API_URL=https://api.yourdomain.com
 # VITE_API_URL=http://<EC2_PUBLIC_IP>
 ```
 
-### Step 6: Build and Deploy Frontend
+### Step 6: Deploy Frontend
+
+We have created a helper script to handle the build and deployment process.
 
 ```bash
-# Build for production
-npm run build
+# From project root
+./frontend/deploy.sh
 
-# Preview locally (optional)
-firebase serve
-
-# Deploy to Firebase Hosting
-firebase deploy --only hosting
+# Or manually:
+# cd frontend
+# npm run build
+# firebase deploy --only hosting
 ```
 
 **Output will show:**
@@ -623,7 +630,7 @@ Restart backend:
 
 ```bash
 cd ~/vibesync
-docker compose -f docker-compose.prod.yml restart backend
+docker compose -f docker-compose.ec2.yml restart backend
 ```
 
 ### Step 9: Test Deployment
@@ -686,7 +693,7 @@ CORS_ORIGIN=https://yourdomain.com,https://www.yourdomain.com
 Restart backend:
 ```bash
 cd ~/vibesync
-docker compose -f docker-compose.prod.yml restart backend
+docker compose -f docker-compose.ec2.yml restart backend
 ```
 
 ### Step 2: Configure Google OAuth
@@ -737,7 +744,7 @@ if curl -f http://localhost:3001/health > /dev/null 2>&1; then
     echo "✅ Backend is healthy"
 else
     echo "❌ Backend is down - restarting"
-    cd ~/vibesync && docker compose -f docker-compose.prod.yml restart backend
+    cd ~/vibesync && docker compose -f docker-compose.ec2.yml restart backend
 fi
 
 # Check Nginx
@@ -797,8 +804,8 @@ echo "🔧 Deploying backend..."
 ssh -i your-key.pem ubuntu@<EC2_PUBLIC_IP> << 'EOF'
   cd ~/vibesync
   git pull origin main  # If using git
-  docker compose -f docker-compose.prod.yml up -d --build backend
-  docker compose -f docker-compose.prod.yml exec backend npm run db:push
+  docker compose -f docker-compose.ec2.yml up -d --build backend
+  docker compose -f docker-compose.ec2.yml exec backend npm run db:push
 EOF
 
 echo "✅ Backend deployed!"
@@ -848,7 +855,7 @@ Create lifecycle rule to delete old logs after 30 days.
 docker ps
 
 # Check logs
-docker compose -f docker-compose.prod.yml logs backend
+docker compose -f docker-compose.ec2.yml logs backend
 
 # Check Nginx
 sudo nginx -t
@@ -862,7 +869,7 @@ sudo ufw status
 
 ```bash
 # Test connection from EC2
-docker compose -f docker-compose.prod.yml exec backend sh
+docker compose -f docker-compose.ec2.yml exec backend sh
 # Inside container:
 npm run db:push
 ```
@@ -911,10 +918,10 @@ sudo nginx -t
 cd ~/vibesync
 
 # Stop current version
-docker compose -f docker-compose.prod.yml down
+docker compose -f docker-compose.ec2.yml down
 
 # Restore previous image
-docker compose -f docker-compose.prod.yml up -d
+docker compose -f docker-compose.ec2.yml up -d
 
 # Or restore from backup
 ```
