@@ -5,6 +5,7 @@ import { AuthLayout } from "../components/auth-layout";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { login, storeTokens } from "../services/auth.service";
+import { useCall } from "../contexts/call-context";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -24,6 +25,7 @@ export default function Login() {
     {}
   );
   const [isLoading, setIsLoading] = useState(false);
+  const { connect } = useCall();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,6 +56,7 @@ export default function Login() {
     try {
       const response = await login(formData.email, formData.password);
       storeTokens(response.tokens.accessToken, response.tokens.refreshToken);
+      connect(response.tokens.accessToken);
       navigate("/conversations");
     } catch (error) {
       setErrors({ api: error instanceof Error ? error.message : "Login failed" });

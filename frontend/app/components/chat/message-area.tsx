@@ -17,6 +17,8 @@ interface MessageAreaProps {
   messages: Message[];
   onBack?: () => void;
   showBackButton?: boolean;
+  onVoiceCall?: () => void;
+  onVideoCall?: () => void;
 }
 
 export function MessageArea({
@@ -26,6 +28,8 @@ export function MessageArea({
   messages,
   onBack,
   showBackButton = false,
+  onVoiceCall,
+  onVideoCall,
 }: MessageAreaProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -76,9 +80,13 @@ export function MessageArea({
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+            <button 
+              onClick={onVoiceCall}
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors text-purple-400 hover:text-purple-300"
+              title="Voice Call"
+            >
               <svg
-                className="w-5 h-5 text-gray-400"
+                className="w-5 h-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -91,7 +99,11 @@ export function MessageArea({
                 />
               </svg>
             </button>
-            <button className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+            <button 
+              onClick={onVideoCall}
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors text-purple-400 hover:text-purple-300"
+              title="Video Call"
+            >
               <svg
                 className="w-5 h-5 text-gray-400"
                 fill="none"

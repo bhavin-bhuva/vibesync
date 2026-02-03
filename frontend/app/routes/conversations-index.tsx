@@ -58,8 +58,24 @@ export default function ConversationsIndex() {
 
     socket.on('conversation_updated', handleConversationUpdate);
 
+    // Handle user status updates (online/offline)
+    const handleUserStatus = (data: { userId: string, online: boolean, lastSeen: string }) => {
+        setConversations(prev => prev.map(conv => {
+            const c = conv as Conversation & { otherParticipantId?: string };
+            
+            // Check if this is the user who changed status
+            if (c.otherParticipantId === data.userId) {
+                return { ...conv, online: data.online };
+            }
+            return conv;
+        }));
+    };
+
+    socket.on('user:status', handleUserStatus);
+
     return () => {
         socket.off('conversation_updated', handleConversationUpdate);
+        socket.off('user:status', handleUserStatus);
     };
   }, []);
 
@@ -103,9 +119,13 @@ export default function ConversationsIndex() {
           : lastMessage?.content ?? "No messages yet";
 
       apiConversations.forEach((conv: any) => {
+        let otherParticipantId = null;
         if (!conv.isGroup) {
             const friendId = conv.participants.find((p: any) => p.id !== user.id)?.id;
-            if (friendId) realConversationFriendIds.add(friendId);
+            if (friendId) {
+                realConversationFriendIds.add(friendId);
+                otherParticipantId = friendId;
+            }
         }
 
         conversationsMap.set(conv.id, { 
@@ -117,6 +137,7 @@ export default function ConversationsIndex() {
              unread: conv.unread || 0,
              online: conv.online || false,
              isGroup: conv.isGroup,
+             otherParticipantId: otherParticipantId, // Store this for realtime updates
         });
       });
 
@@ -134,7 +155,8 @@ export default function ConversationsIndex() {
                   timestamp: "", 
                   unread: 0,
                   online: friend.online,
-              });
+                  otherParticipantId: friend.id, // Store friend ID here too
+              } as Conversation & { otherParticipantId?: string });
           }
       }
       

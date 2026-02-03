@@ -15,6 +15,7 @@ export interface Conversation {
   unread: number;
   online: boolean;
   isGroup?: boolean;
+  otherUserId?: string;
 }
 
 export interface CurrentUser {

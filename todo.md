@@ -286,7 +286,7 @@
 - [x] 🔥 Update UI on real-time messages
 - [ ] 📋 Listen for typing events
 - [ ] 📋 Emit typing events
-- [ ] 📋 Handle online/offline status updates
+- [x] 📋 Handle online/offline status updates
 
 #### Data Integration
 - [ ] 🔥 Replace mock user data with API calls
@@ -321,15 +321,15 @@
 ## Phase 3: Enhanced Features (Q3 2026)
 
 ### Voice & Video Calls
-- [ ] 📋 **Decision:** Choose WebRTC library (peer.js, simple-peer)
-- [ ] 📋 Implement voice call UI
-- [ ] 📋 Implement video call UI
-- [ ] 📋 Implement call initiation
-- [ ] 📋 Implement call acceptance/rejection
-- [ ] 📋 Implement call controls (mute, camera toggle)
-- [ ] 📋 Implement call history
-- [ ] 📋 Add call notifications
-- [ ] 📋 Backend signaling server
+- [x] 🔥 **Decision:** Choose WebRTC library (simple-peer)
+- [x] 🔥 Implement voice call UI (CallModal)
+- [x] 🔥 Implement video call UI
+- [x] 🔥 Implement call initiation
+- [x] 🔥 Implement call acceptance/rejection
+- [x] 🔥 Implement call controls (mute, camera toggle)
+- [ ] 📋 Implement call history (UI exists, requires backend)
+- [x] 🔥 Add call notifications
+- [x] 🔥 Backend signaling server
 
 ### Group Chats
 - [ ] 📋 Design group chat schema
@@ -666,17 +666,17 @@ These are high-impact, relatively easy tasks to get momentum:
 ## Progress Tracking
 
 **Phase 1 (MVP):** ████████████████████ 100% Complete  
-**Phase 2 (Backend):** ░░░░░░░░░░░░░░░░░░░░ 0% Complete  
+**Phase 2 (Backend):** ██████████░░░░░░░░░░ 50% Complete  
 **Phase 3 (Enhanced):** ░░░░░░░░░░░░░░░░░░░░ 0% Complete  
 **Phase 4 (Advanced):** ░░░░░░░░░░░░░░░░░░░░ 0% Complete  
 **Phase 5 (Premium):** ░░░░░░░░░░░░░░░░░░░░ 0% Complete
 
-**Overall Progress:** █████░░░░░░░░░░░░░░░ 25% Complete
+**Overall Progress:** ███████░░░░░░░░░░░░░ 35% Complete
 
 ---
 
-**Last Review:** January 22, 2026  
-**Next Review:** Start of Phase 2 (Backend Setup)
+**Last Review:** February 3, 2026  
+**Next Review:** Backend Testing & S3 Integration
 
 ---
 
