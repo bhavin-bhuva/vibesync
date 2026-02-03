@@ -14,7 +14,7 @@ export const initSocket = (token: string) => {
     }
   }
 
-  const SOCKET_URL = 'http://localhost:3001'; // Make sure this matches backend
+  const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
   socket = io(SOCKET_URL, {
     auth: {
