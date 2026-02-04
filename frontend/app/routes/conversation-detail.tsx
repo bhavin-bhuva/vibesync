@@ -42,8 +42,8 @@ export default function ConversationDetail() {
 
   const mapConversation = (conv: any, currentUserId?: string): Conversation => {
     let otherUserId = undefined;
-    // Try to find the other participant
-    if (conv.participants && Array.isArray(conv.participants) && currentUserId) {
+    // Try to find the other participant only if not a group
+    if (!conv.isGroup && conv.participants && Array.isArray(conv.participants) && currentUserId) {
         const other = conv.participants.find((p: any) => p.id !== currentUserId);
         if (other) otherUserId = other.id;
     }
@@ -74,6 +74,7 @@ export default function ConversationDetail() {
       text: msg.content,
       timestamp: formatTime(msg.createdAt),
       senderName: msg.senderId === user?.id ? "You" : "Friend",
+      type: msg.messageType,
   });
 
   const loadData = async () => {

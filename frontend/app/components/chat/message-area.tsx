@@ -8,6 +8,7 @@ interface Message {
   timestamp: string;
   avatar?: string;
   senderName?: string;
+  type?: string;
 }
 
 interface MessageAreaProps {
@@ -140,6 +141,25 @@ export function MessageArea({
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((message, index) => {
+          if (message.type === 'system') {
+            return (
+              <div key={message.id} className="flex justify-center my-4">
+                <span className="bg-gray-200 dark:bg-white/10 text-gray-500 dark:text-gray-400 text-xs py-1 px-3 rounded-full flex items-center gap-1.5">
+                   {message.text.includes('started') && (
+                     <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+                   )}
+                   {message.text.includes('ended') && (
+                     <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 8l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M5 3a2 2 0 00-2 2v1c0 8.284 6.716 15 15 15h1a2 2 0 002-2v-3.28a1 1 0 00-.684-.948l-4.493-1.498a1 1 0 00-1.21.502l-1.13 2.257a11.042 11.042 0 01-5.516-5.516l2.257-1.13a1 1 0 00.502-1.21L8.228 3.683A1 1 0 007.28 3H5z" /></svg>
+                   )}
+                   {message.text.includes('declined') && (
+                     <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                   )}
+                   {message.text} • {message.timestamp}
+                </span>
+              </div>
+            );
+          }
+
           const showAvatar =
             message.sender === "other" &&
             (index === 0 || messages[index - 1].sender !== "other");
@@ -174,7 +194,7 @@ export function MessageArea({
                     message.sender === "me"
                       ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-br-sm prose-invert"
                       : "bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white rounded-bl-sm"
-                  } max-w-none text-sm break-words message-content`}
+                  } max-w-none text-sm break-words message-content shadow-sm`}
                 >
                     {/* Render HTML safely-ish */}
                     <div 
@@ -182,7 +202,7 @@ export function MessageArea({
                         className="prose prose-sm dark:prose-invert max-w-none [&>p]:m-0 [&>ul]:list-disc [&>ul]:pl-4 [&>ol]:list-decimal [&>ol]:pl-4"
                     />
                 </div>
-                <span className="text-xs text-gray-500 px-2">
+                <span className="text-xs text-gray-500 px-2 opacity-70">
                   {message.timestamp}
                 </span>
               </div>

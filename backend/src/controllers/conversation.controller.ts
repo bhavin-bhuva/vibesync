@@ -157,4 +157,19 @@ export class ConversationController {
       next(error);
     }
   }
+  // GET /api/v1/conversations/calls
+  async getCallHistory(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) throw new Error('User not authenticated');
+
+      const history = await conversationService.getCallHistory(req.user.userId);
+
+      res.status(200).json({
+        success: true,
+        data: history,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }

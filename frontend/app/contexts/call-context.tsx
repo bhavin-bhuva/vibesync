@@ -18,7 +18,7 @@ interface CallContextType {
   initiateCall: (recipientId: string, isVideo: boolean, conversationId: string, recipientName?: string, recipientAvatar?: string) => Promise<void>;
   answerCall: () => void;
   rejectCall: () => void;
-  endCall: () => void;
+  endCall: (emitEvent?: boolean) => void;
   toggleMute: () => void;
   toggleVideo: () => void;
   isMuted: boolean;
@@ -37,6 +37,13 @@ export function CallProvider({ children }: { children: React.ReactNode }) {
   
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+  
+  // Ref to track localStream for cleanup on unmount
+  const localStreamRef = useRef<MediaStream | null>(null);
+
+  useEffect(() => {
+    localStreamRef.current = localStream;
+  }, [localStream]);
   
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
@@ -69,10 +76,13 @@ export function CallProvider({ children }: { children: React.ReactNode }) {
   }, [connect]);
 
   // Cleanup effect
+  // Cleanup effect
   useEffect(() => {
     return () => {
-      if (localStream) {
-        localStream.getTracks().forEach(track => track.stop());
+      if (localStreamRef.current) {
+        localStreamRef.current.getTracks().forEach((track) => {
+          track.stop();
+        });
       }
       if (connectionRef.current) {
         connectionRef.current.destroy();
@@ -80,53 +90,7 @@ export function CallProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  // Listen for socket events
-  useEffect(() => {
-    if (!socket) return;
 
-    const handleIncomingCall = (data: { callerId: string; callerName?: string; callerAvatar?: string; conversationId: string; signalData: any; isVideo: boolean }) => {
-      console.log('Incoming call received:', data);
-      if (callStatus !== 'idle') {
-        // Busy - could emit a 'busy' signal back
-        return;
-      }
-      
-      setCallStatus('incoming');
-      setCaller({ id: data.callerId, name: data.callerName, avatar: data.callerAvatar });
-      setConversationId(data.conversationId);
-      setCallType(data.isVideo ? 'video' : 'audio');
-      incomingSignalRef.current = data.signalData;
-    };
-
-    const handleCallAccepted = (data: { responderId: string; signal: any }) => {
-      console.log('Call accepted by:', data.responderId);
-      setCallStatus('connected');
-      connectionRef.current?.signal(data.signal);
-    };
-
-    const handleCallRejected = (data: { responderId: string }) => {
-      console.log('Call rejected by:', data.responderId);
-      endCall();
-      alert('Call rejected');
-    };
-
-    const handleCallEnded = (data: { enderId: string }) => {
-      console.log('Call ended by:', data.enderId);
-      endCall();
-    };
-
-    socket.on('call:incoming', handleIncomingCall);
-    socket.on('call:accepted', handleCallAccepted);
-    socket.on('call:rejected', handleCallRejected);
-    socket.on('call:ended', handleCallEnded);
-
-    return () => {
-      socket.off('call:incoming', handleIncomingCall);
-      socket.off('call:accepted', handleCallAccepted);
-      socket.off('call:rejected', handleCallRejected);
-      socket.off('call:ended', handleCallEnded);
-    };
-  }, [socket, callStatus]);
 
   const initiateCall = async (recipientId: string, isVideo: boolean, convId: string, recipientName?: string, recipientAvatar?: string) => {
     setCallStatus('calling');
@@ -196,10 +160,11 @@ export function CallProvider({ children }: { children: React.ReactNode }) {
       });
 
       peer.on('signal', (data) => {
-        if (caller) {
+        if (caller && conversationId) {
           socket?.emit('call:answer', {
             to: caller.id,
-            signal: data
+            signal: data,
+            conversationId
           });
         }
       });
@@ -222,16 +187,16 @@ export function CallProvider({ children }: { children: React.ReactNode }) {
   };
 
   const rejectCall = () => {
-    if (caller) {
-      socket?.emit('call:reject', { to: caller.id });
+    if (caller && conversationId) {
+      socket?.emit('call:reject', { to: caller.id, conversationId });
     }
-    endCall();
+    endCall(false);
   };
 
-  const endCall = () => {
+  const endCall = useCallback((emitEvent: boolean = true) => {
     // Notify other peer if we are in a call
-    if ((callStatus === 'connected' || callStatus === 'calling') && caller) {
-       socket?.emit('call:end', { to: caller.id });
+    if (emitEvent && (callStatus === 'connected' || callStatus === 'calling') && caller && conversationId) {
+       socket?.emit('call:end', { to: caller.id, conversationId });
     }
 
     setCallStatus('idle');
@@ -245,12 +210,12 @@ export function CallProvider({ children }: { children: React.ReactNode }) {
     }
     
     if (localStream) {
-      localStream.getTracks().forEach(track => track.stop());
+      localStream.getTracks().forEach((track) => { track.stop(); });
       setLocalStream(null);
     }
     
     incomingSignalRef.current = null;
-  };
+  }, [callStatus, caller, conversationId, socket, localStream]);
 
   const toggleMute = () => {
     if (localStream) {
@@ -271,6 +236,53 @@ export function CallProvider({ children }: { children: React.ReactNode }) {
       }
     }
   };
+  // Listen for socket events
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleIncomingCall = (data: { callerId: string; callerName?: string; callerAvatar?: string; conversationId: string; signalData: any; isVideo: boolean }) => {
+      console.log('Incoming call received:', data);
+      if (callStatus !== 'idle') {
+        // Busy - could emit a 'busy' signal back
+        return;
+      }
+      
+      setCallStatus('incoming');
+      setCaller({ id: data.callerId, name: data.callerName, avatar: data.callerAvatar });
+      setConversationId(data.conversationId);
+      setCallType(data.isVideo ? 'video' : 'audio');
+      incomingSignalRef.current = data.signalData;
+    };
+
+    const handleCallAccepted = (data: { responderId: string; signal: any }) => {
+      console.log('Call accepted by:', data.responderId);
+      setCallStatus('connected');
+      connectionRef.current?.signal(data.signal);
+    };
+
+    const handleCallRejected = (data: { responderId: string }) => {
+      console.log('Call rejected by:', data.responderId);
+      endCall(false);
+      alert('Call rejected');
+    };
+
+    const handleCallEnded = (data: { enderId: string }) => {
+      console.log('Call ended by:', data.enderId);
+      endCall(false);
+    };
+
+    socket.on('call:incoming', handleIncomingCall);
+    socket.on('call:accepted', handleCallAccepted);
+    socket.on('call:rejected', handleCallRejected);
+    socket.on('call:ended', handleCallEnded);
+
+    return () => {
+      socket.off('call:incoming', handleIncomingCall);
+      socket.off('call:accepted', handleCallAccepted);
+      socket.off('call:rejected', handleCallRejected);
+      socket.off('call:ended', handleCallEnded);
+    };
+  }, [socket, callStatus, endCall]);
 
   return (
     <CallContext.Provider value={{

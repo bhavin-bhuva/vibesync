@@ -6,6 +6,11 @@ import { logger } from '../utils/logger.util';
 import { db } from '../config/database';
 import { users } from '../db/schema';
 import { eq } from 'drizzle-orm';
+import { ConversationService } from '../services/conversation.service';
+import { MessageService } from '../services/message.service';
+
+const conversationService = new ConversationService();
+const messageService = new MessageService();
 
 interface AuthSocket extends Socket {
   user?: {
@@ -15,6 +20,8 @@ interface AuthSocket extends Socket {
 }
 
 let io: Server;
+// Track call start times in memory: conversationId -> timestamp
+const callStartTimes = new Map<string, number>();
 
 export function initSocket(httpServer: HttpServer) {
   io = new Server(httpServer, {
@@ -83,6 +90,25 @@ export function initSocket(httpServer: HttpServer) {
 
     // --- Call Signaling Events ---
     socket.on('call:initiate', async (data: { conversationId: string; recipientId: string; signalData: any; isVideo: boolean }) => {
+      // Security Check: Access Control
+      const conversation = await conversationService.getConversationById(data.conversationId);
+      if (!conversation) {
+        logger.warn(`User ${userId} attempted call:initiate on missing conversation ${data.conversationId}`);
+        return;
+      }
+
+      const isParticipant = conversation.participants.some((p: any) => p.id === userId);
+      const isRecipient = conversation.participants.some((p: any) => p.id === data.recipientId);
+
+      if (!isParticipant) {
+        logger.warn(`User ${userId} attempted call:initiate on conversation ${data.conversationId} without membership`);
+        return;
+      }
+      if (!isRecipient) {
+        logger.warn(`User ${userId} attempted call:initiate to non-member ${data.recipientId} in conversation ${data.conversationId}`);
+        return;
+      }
+
       logger.info(`User ${userId} initiating call to ${data.recipientId}`);
 
       try {
@@ -115,26 +141,111 @@ export function initSocket(httpServer: HttpServer) {
       }
     });
 
-    socket.on('call:answer', (data: { to: string; signal: any }) => {
+    socket.on('call:answer', async (data: { to: string; signal: any; conversationId: string }) => {
+      // Security Check
+      if (!data.conversationId) return;
+
+      const conversation = await conversationService.getConversationById(data.conversationId);
+      if (!conversation) return;
+
+      const isParticipant = conversation.participants.some((p: any) => p.id === userId);
+      const isTargetParticipant = conversation.participants.some((p: any) => p.id === data.to);
+
+      if (!isParticipant || !isTargetParticipant) {
+        logger.warn(`Authorization failed for call:answer from ${userId} to ${data.to}`);
+        return;
+      }
+
       logger.info(`User ${userId} answered call from ${data.to}`);
+
+      // 1. Send signaling
       io.to(`user:${data.to}`).emit('call:accepted', {
         responderId: userId,
         signal: data.signal
       });
+
+      // 2. Track start time (don't send message yet)
+      callStartTimes.set(data.conversationId, Date.now());
     });
 
-    socket.on('call:reject', (data: { to: string }) => {
+    socket.on('call:reject', async (data: { to: string; conversationId: string }) => {
+      // Security Check
+      if (!data.conversationId) return;
+
+      const conversation = await conversationService.getConversationById(data.conversationId);
+      if (!conversation) return;
+
+      const isParticipant = conversation.participants.some((p: any) => p.id === userId);
+      const isTargetParticipant = conversation.participants.some((p: any) => p.id === data.to);
+
+      if (!isParticipant || !isTargetParticipant) {
+        logger.warn(`Authorization failed for call:reject from ${userId} to ${data.to}`);
+        return;
+      }
+
       logger.info(`User ${userId} rejected call from ${data.to}`);
+
+      // 1. Send signaling
       io.to(`user:${data.to}`).emit('call:rejected', {
         responderId: userId
       });
+
+      // 2. Persist "Call declined" system message
+      try {
+        const message = await messageService.sendMessage(userId!, data.conversationId, 'Call declined', 'system');
+        io.to(`conversation:${data.conversationId}`).emit('new_message', message);
+      } catch (err) {
+        logger.error('Failed to create call declined message:', err);
+      }
     });
 
-    socket.on('call:end', (data: { to: string }) => {
+    socket.on('call:end', async (data: { to: string; conversationId: string }) => {
+      // Security Check
+      if (!data.conversationId) return;
+
+      const conversation = await conversationService.getConversationById(data.conversationId);
+      if (!conversation) return;
+
+      const isParticipant = conversation.participants.some((p: any) => p.id === userId);
+      const isTargetParticipant = conversation.participants.some((p: any) => p.id === data.to);
+
+      if (!isParticipant || !isTargetParticipant) {
+        logger.warn(`Authorization failed for call:end from ${userId} to ${data.to}`);
+        return;
+      }
+
       logger.info(`User ${userId} ended call with ${data.to}`);
+
+      // 1. Send signaling
       io.to(`user:${data.to}`).emit('call:ended', {
         enderId: userId
       });
+
+      // 2. Calculate duration and persist "Call ended" system message
+      const startTime = callStartTimes.get(data.conversationId);
+      let durationText = "";
+
+      if (startTime) {
+        const durationMs = Date.now() - startTime;
+        const seconds = Math.floor((durationMs / 1000) % 60);
+        const minutes = Math.floor((durationMs / (1000 * 60)) % 60);
+        const hours = Math.floor(durationMs / (1000 * 60 * 60));
+
+        if (hours > 0) durationText = `${hours}h ${minutes}m ${seconds}s`;
+        else if (minutes > 0) durationText = `${minutes}m ${seconds}s`;
+        else durationText = `${seconds}s`;
+
+        callStartTimes.delete(data.conversationId);
+      }
+
+      const messageContent = durationText ? `Call ended • ${durationText}` : `Call ended`;
+
+      try {
+        const message = await messageService.sendMessage(userId!, data.conversationId, messageContent, 'system');
+        io.to(`conversation:${data.conversationId}`).emit('new_message', message);
+      } catch (err) {
+        logger.error('Failed to create call ended message:', err);
+      }
     });
 
     socket.on('disconnect', async () => {
