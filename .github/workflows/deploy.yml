@@ -19,8 +19,11 @@ jobs:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.EC2_SSH_KEY }}
+        command_timeout: 30m
         script: |
           cd /home/ubuntu/vibesync
           git pull origin master
           docker compose -f docker-compose.ec2.yml down
-          docker compose -f docker-compose.ec2.yml up -d --build
+          docker compose -f docker-compose.ec2.yml build --no-cache
+          docker compose -f docker-compose.ec2.yml up -d
+          echo "Deployment completed successfully!"
