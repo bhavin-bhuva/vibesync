@@ -121,6 +121,7 @@ export function initSocket(httpServer: HttpServer) {
       }
       if (!isRecipient) {
         logger.warn(`User ${userId} attempted call:initiate to non-member ${data.recipientId} in conversation ${data.conversationId}`);
+        logger.info(`Debug - Conversation participants: ${JSON.stringify(conversation.participants.map((p: any) => p.id))}`);
         return;
       }
 
@@ -144,6 +145,7 @@ export function initSocket(httpServer: HttpServer) {
           signalData: data.signalData,
           isVideo: data.isVideo
         });
+        logger.info(`Signal call:incoming emitted to user:${data.recipientId} from ${userId}`);
       } catch (error) {
         logger.error(`Error fetching caller details for call init:`, error);
         // Fallback if DB fetch fails
@@ -232,6 +234,7 @@ export function initSocket(httpServer: HttpServer) {
 
       // Atomic guard: Prevent duplicate "Call ended" events/messages
       if (endedCalls.has(data.conversationId)) {
+        logger.info(`Duplicate call:end blocked for conversation ${data.conversationId}`);
         return;
       }
       endedCalls.add(data.conversationId);
