@@ -21,9 +21,24 @@ interface AuthSocket extends Socket {
 
 let io: Server;
 // Track call start times in memory: conversationId -> timestamp
+// Track call start times in memory: conversationId -> timestamp
 const callStartTimes = new Map<string, number>();
+// Track ended calls to prevent duplicate messages (atomic guard)
+const endedCalls = new Set<string>();
 
 export function initSocket(httpServer: HttpServer) {
+  // Setup periodic cleanup for stale call timers (TTL strategy)
+  // Scans every hour to remove calls older than 24 hours
+  setInterval(() => {
+    const now = Date.now();
+    const MAX_DURATION = 24 * 60 * 60 * 1000;
+    for (const [id, start] of callStartTimes.entries()) {
+      if (now - start > MAX_DURATION) {
+        callStartTimes.delete(id);
+      }
+    }
+  }, 60 * 60 * 1000);
+
   io = new Server(httpServer, {
     cors: {
       origin: env.CORS_ORIGIN,
@@ -165,6 +180,7 @@ export function initSocket(httpServer: HttpServer) {
       });
 
       // 2. Track start time (don't send message yet)
+      callStartTimes.delete(data.conversationId); // Clean up any stale entry
       callStartTimes.set(data.conversationId, Date.now());
     });
 
@@ -213,6 +229,14 @@ export function initSocket(httpServer: HttpServer) {
         logger.warn(`Authorization failed for call:end from ${userId} to ${data.to}`);
         return;
       }
+
+      // Atomic guard: Prevent duplicate "Call ended" events/messages
+      if (endedCalls.has(data.conversationId)) {
+        return;
+      }
+      endedCalls.add(data.conversationId);
+      // Clear the guard after 10 seconds to allow future calls
+      setTimeout(() => endedCalls.delete(data.conversationId), 10000);
 
       logger.info(`User ${userId} ended call with ${data.to}`);
 

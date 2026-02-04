@@ -1,5 +1,6 @@
 import { useRef, useEffect } from "react";
 import { Avatar } from "../ui/avatar";
+import DOMPurify from "dompurify";
 
 interface Message {
   id: string;
@@ -198,7 +199,9 @@ export function MessageArea({
                 >
                     {/* Render HTML safely-ish */}
                     <div 
-                        dangerouslySetInnerHTML={{ __html: message.text }}
+                        dangerouslySetInnerHTML={{ 
+                          __html: typeof window !== 'undefined' ? DOMPurify.sanitize(message.text) : message.text 
+                        }}
                         className="prose prose-sm dark:prose-invert max-w-none [&>p]:m-0 [&>ul]:list-disc [&>ul]:pl-4 [&>ol]:list-decimal [&>ol]:pl-4"
                     />
                 </div>

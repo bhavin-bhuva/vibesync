@@ -270,7 +270,10 @@ export class ConversationService {
         if (msg.senderId === userId) {
           type = 'outgoing';
         } else {
-          if (msg.content.includes('declined')) {
+          // If message is from other user
+          if (msg.content.includes('declined') || msg.content.includes('ended')) {
+            // "Call declined" or "Call ended" (even with duration) from OTHER user
+            // We treat "Call ended" from other as 'missed' per requirement to avoid "incoming" classification for ended calls
             type = 'missed';
           } else {
             type = 'incoming';
