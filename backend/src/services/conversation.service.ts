@@ -271,10 +271,17 @@ export class ConversationService {
           type = 'outgoing';
         } else {
           // If message is from other user
-          if (msg.content.includes('declined') || msg.content.includes('ended')) {
-            // "Call declined" or "Call ended" (even with duration) from OTHER user
-            // We treat "Call ended" from other as 'missed' per requirement to avoid "incoming" classification for ended calls
+          if (msg.content.includes('declined')) {
             type = 'missed';
+          } else if (msg.content.includes('ended')) {
+            // Check for duration indicator (bullet "•")
+            // If it has duration, it's a completed incoming call.
+            // If no duration, it implies it was ended before connection/answer (missed).
+            if (msg.content.includes('•')) {
+              type = 'incoming';
+            } else {
+              type = 'missed';
+            }
           } else {
             type = 'incoming';
           }
