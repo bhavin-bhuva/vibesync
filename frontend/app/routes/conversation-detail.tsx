@@ -9,6 +9,7 @@ import * as conversationService from "../services/conversation.service";
 import * as messageService from "../services/message.service";
 import { initSocket } from "../socket";
 import { LoadingOverlay } from "../components/ui/loading-overlay";
+import { useCall } from "../contexts/call-context";
 
 export function meta({ params }: Route.MetaArgs) {
   return [
@@ -27,6 +28,7 @@ export default function ConversationDetail() {
   const [activeConversation, setActiveConversation] = useState<Conversation | null>(null);
   const [messages, setMessages] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { initiateCall } = useCall();
 
   // Helper functions defined before usage to avoid closure issues, or defined inside component scope
   const formatLastSeen = (dateString: string): string => {
@@ -38,18 +40,28 @@ export default function ConversationDetail() {
     return date.toLocaleDateString();
   };
 
-  const mapConversation = (conv: any): Conversation => ({
-    id: conv.id,
-    name: conv.displayName || "Unknown",
-    avatar: conv.displayAvatar,
-    lastMessage: typeof conv.lastMessage === 'string' 
-        ? conv.lastMessage 
-        : conv.lastMessage?.content || "No messages yet",
-    timestamp: formatLastSeen(conv.updatedAt),
-    unread: conv.unread || 0,
-    online: conv.online || false,
-    isGroup: conv.isGroup,
-  });
+  const mapConversation = (conv: any, currentUserId?: string): Conversation => {
+    let otherUserId = undefined;
+    // Try to find the other participant only if not a group
+    if (!conv.isGroup && conv.participants && Array.isArray(conv.participants) && currentUserId) {
+        const other = conv.participants.find((p: any) => p.id !== currentUserId);
+        if (other) otherUserId = other.id;
+    }
+
+    return {
+        id: conv.id,
+        name: conv.displayName || "Unknown",
+        avatar: conv.displayAvatar,
+        lastMessage: typeof conv.lastMessage === 'string' 
+            ? conv.lastMessage 
+            : conv.lastMessage?.content || "No messages yet",
+        timestamp: formatLastSeen(conv.updatedAt),
+        unread: conv.unread || 0,
+        online: conv.online || false,
+        isGroup: conv.isGroup,
+        otherUserId: otherUserId
+    };
+  };
 
   const formatTime = (dateString: string): string => {
       return new Date(dateString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -62,6 +74,7 @@ export default function ConversationDetail() {
       text: msg.content,
       timestamp: formatTime(msg.createdAt),
       senderName: msg.senderId === user?.id ? "You" : "Friend",
+      type: msg.messageType,
   });
 
   const loadData = async () => {
@@ -82,7 +95,7 @@ export default function ConversationDetail() {
 
       // 2. Load Conversation List
       const apiConversations = await conversationService.getConversations();
-      const mappedConversations = apiConversations.map(mapConversation);
+      const mappedConversations = apiConversations.map(c => mapConversation(c, user.id));
       setConversations(mappedConversations);
 
       // 3. Load Active Conversation Details
@@ -92,7 +105,7 @@ export default function ConversationDetail() {
         if (!active) {
             try {
                 const apiConv = await conversationService.getConversation(conversationId);
-                active = mapConversation(apiConv);
+                active = mapConversation(apiConv, user.id);
                 setConversations(prev => [active!, ...prev]);
             } catch (err) {
                 console.error("Failed to fetch active conversation", err);
@@ -216,6 +229,32 @@ export default function ConversationDetail() {
                 messages={messages} 
                 onBack={handleBackToList}
                 showBackButton={true}
+                onVoiceCall={() => {
+                   if (activeConversation.otherUserId) {
+                       initiateCall(
+                           activeConversation.otherUserId, 
+                           false, 
+                           activeConversation.id,
+                           activeConversation.name,
+                           activeConversation.avatar
+                       );
+                   } else {
+                       console.warn("No otherUserId found for call");
+                   }
+                }}
+                onVideoCall={() => {
+                   if (activeConversation.otherUserId) {
+                       initiateCall(
+                           activeConversation.otherUserId, 
+                           true, 
+                           activeConversation.id,
+                           activeConversation.name,
+                           activeConversation.avatar
+                       );
+                   } else {
+                        console.warn("No otherUserId found for call");
+                   }
+                }}
                 />
                 <MessageInput onSendMessage={handleSendMessage} />
             </>

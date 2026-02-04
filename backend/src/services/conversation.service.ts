@@ -222,4 +222,81 @@ export class ConversationService {
     // Drizzle with pg driver returns a result object with rowCount.
     return result.rowCount ? result.rowCount > 0 : false;
   }
+  /**
+   * Get call history for a user
+   */
+  async getCallHistory(userId: string) {
+    // Find all conversations user is in
+    const userConvos = await this.getUserConversations(userId);
+    const conversationIds = userConvos.map(c => c.id);
+
+    if (conversationIds.length === 0) return [];
+
+    // Query messages that look like call logs
+    // We filter for system messages that start with "Call"
+    const callMessages = await db.query.messages.findMany({
+      where: and(
+        inArray(messages.conversationId, conversationIds),
+        eq(messages.messageType, 'system'),
+      ),
+      orderBy: [desc(messages.createdAt)],
+      with: {
+        conversation: true,
+      }
+    });
+
+    // We filter in memory for 'Call%' content since 'like' operator varies by driver/adapter sometimes
+    // and we need to map to friendly object
+    const history = await Promise.all(callMessages
+      .filter(m => m.content.startsWith('Call'))
+      .map(async (msg) => {
+        // Find the other participant info
+        // We can reuse logic from getUserConversations or just fetch freshly
+        const participants = await db
+          .select({
+            id: users.id,
+            name: users.name,
+            avatar: users.avatar
+          })
+          .from(conversationParticipants)
+          .innerJoin(users, eq(users.id, conversationParticipants.userId))
+          .where(eq(conversationParticipants.conversationId, msg.conversationId));
+
+        const other = participants.find(p => p.id !== userId);
+        const me = participants.find(p => p.id === userId);
+
+        let type: 'incoming' | 'outgoing' | 'missed' = 'incoming';
+
+        if (msg.senderId === userId) {
+          type = 'outgoing';
+        } else {
+          // If message is from other user
+          if (msg.content.includes('declined')) {
+            type = 'missed';
+          } else if (msg.content.includes('ended')) {
+            // Check for duration indicator (bullet "•")
+            // If it has duration, it's a completed incoming call.
+            // If no duration, it implies it was ended before connection/answer (missed).
+            if (msg.content.includes('•')) {
+              type = 'incoming';
+            } else {
+              type = 'missed';
+            }
+          } else {
+            type = 'incoming';
+          }
+        }
+
+        return {
+          id: msg.id,
+          name: other?.name || 'Unknown',
+          avatar: other?.avatar,
+          type,
+          timestamp: msg.createdAt, // Return Date object or string
+          content: msg.content
+        };
+      }));
+
+    return history;
+  }
 }

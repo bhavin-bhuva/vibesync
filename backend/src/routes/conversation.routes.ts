@@ -12,6 +12,7 @@ router.use(authenticate as express.RequestHandler);
 // Conversations
 router.get('/', conversationController.listConversations as express.RequestHandler);
 router.post('/', conversationController.createConversation as express.RequestHandler);
+router.get('/calls', conversationController.getCallHistory as express.RequestHandler);
 router.get('/:id', conversationController.getConversation as express.RequestHandler);
 router.put('/:id/read', conversationController.markAsRead as express.RequestHandler);
 

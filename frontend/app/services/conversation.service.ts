@@ -37,3 +37,16 @@ export async function markAsRead(id: string): Promise<boolean> {
     method: 'PUT',
   });
 }
+
+export interface CallLog {
+  id: string;
+  name: string;
+  avatar?: string;
+  type: "incoming" | "outgoing" | "missed";
+  timestamp: string;
+  content: string;
+}
+
+export async function getCallHistory(): Promise<CallLog[]> {
+  return apiRequest('/conversations/calls');
+}
