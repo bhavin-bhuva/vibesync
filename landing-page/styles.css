@@ -255,7 +255,7 @@ header .logo-image {
 /* Hero Section */
 .hero {
     padding: 180px 48px 120px;
-    min-height: 90vh;
+    min-height: 100vh;
     display: flex;
     align-items: center;
     background: radial-gradient(ellipse at top, hsl(262, 83%, 15%), hsl(240, 10%, 8%));
@@ -522,7 +522,7 @@ h1.hero-title {
 }
 
 .steps-timeline::before {
-    content: '';
+    /* content: ''; */
     position: absolute;
     top: 40px;
     left: 100px;
@@ -552,7 +552,6 @@ h1.hero-title {
     line-height: 1;
     margin-bottom: 32px;
     font-family: var(--font-primary);
-    background: var(--bg-primary); /* Match section bg to mask line */
     display: inline-block;
     padding: 0 16px; /* Padding to mask the line effectively */
     position: relative;
@@ -782,7 +781,8 @@ html, body {
     
     /* Hero adjustments */
     .hero { 
-        padding: 100px 24px 64px; /* Reduced top padding slightly */
+        padding: 80px 24px 80px; /* Balanced padding */
+        justify-content: center; /* Center content vertically */
     }
     h1.hero-title { font-size: 2.25rem; } /* Slightly smaller for better fit */
     .hero-subtitle { font-size: 1rem; margin-bottom: 24px; }
