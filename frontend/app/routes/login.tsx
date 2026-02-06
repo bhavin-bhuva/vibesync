@@ -19,11 +19,23 @@ export default function Login() {
   const { connect } = useCall(); // Ensure call context is available if needed, though mostly checking token here
 
   useEffect(() => {
-    const token = localStorage.getItem('vibesync_access_token');
-    if (token) {
-      navigate("/conversations");
-    }
-  }, [navigate]);
+    const initializeSession = async () => {
+      const token = localStorage.getItem('vibesync_access_token');
+      if (token) {
+        try {
+          // Attempt to connect socket before navigating
+          // We await in case connect becomes async in the future or acts as a promise
+          await connect(token);
+          navigate("/conversations");
+        } catch (error) {
+          console.error("Failed to restore session:", error);
+          // Stay on login page if connection fails
+        }
+      }
+    };
+
+    initializeSession();
+  }, [navigate, connect]);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
