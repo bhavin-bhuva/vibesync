@@ -43,9 +43,9 @@ export function MessageArea({
   }, [messages]);
 
   return (
-    <div className="flex-1 flex flex-col min-h-0">
+    <div className="flex-1 flex flex-col min-h-0 relative">
       {/* Chat Header */}
-      <div className="p-4 border-b border-gray-200 dark:border-white/10 glass-dark">
+      <div className="sticky top-0 z-10 p-4 border-b border-gray-200 dark:border-white/10 glass-dark bg-opacity-95 backdrop-blur-md">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             {showBackButton && (

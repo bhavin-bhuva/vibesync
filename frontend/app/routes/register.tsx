@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import type { Route } from "./+types/register";
 import { AuthLayout } from "../components/auth-layout";
@@ -33,6 +33,13 @@ export default function Register() {
   }>({});
   const [isLoading, setIsLoading] = useState(false);
   const { connect } = useCall();
+
+  useEffect(() => {
+    const token = localStorage.getItem('vibesync_access_token');
+    if (token) {
+      navigate("/conversations");
+    }
+  }, [navigate]);
 
   const getPasswordStrength = (password: string) => {
     if (password.length === 0) return { strength: 0, label: "" };

@@ -40,9 +40,10 @@ export function MessageInput({ onSendMessage }: MessageInputProps) {
 
   const handleSendMessage = () => {
     if (editor && !editor.isEmpty) {
-        let html = editor.getHTML();
+        const html = editor.getHTML();
         onSendMessage(html);
-        editor.commands.clearContent();
+        // Keep focus to prevent keyboard from closing on mobile
+        editor.chain().focus().clearContent().run();
     }
   };
 

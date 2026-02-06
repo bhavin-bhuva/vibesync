@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router";
 import type { Route } from "./+types/conversation-detail";
 import { ConversationList, type Conversation, type CurrentUser } from "../components/chat/conversation-list";
@@ -179,7 +179,7 @@ export default function ConversationDetail() {
     navigate("/conversations");
   };
 
-  const handleSendMessage = async (text: string) => {
+  const handleSendMessage = useCallback(async (text: string) => {
     if (!currentUser || !conversationId) return;
 
     // Optimistic UI update
@@ -201,7 +201,7 @@ export default function ConversationDetail() {
         console.error("Failed to send message", error);
         setMessages(prev => prev.filter(m => m.id !== tempId));
     }
-  };
+  }, [currentUser, conversationId]);
 
   if (!loading && !activeConversation) {
     return (
