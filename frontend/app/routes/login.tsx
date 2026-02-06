@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import type { Route } from "./+types/login";
 import { AuthLayout } from "../components/auth-layout";
@@ -16,6 +16,26 @@ export function meta({ }: Route.MetaArgs) {
 
 export default function Login() {
   const navigate = useNavigate();
+  const { connect } = useCall(); // Ensure call context is available if needed, though mostly checking token here
+
+  useEffect(() => {
+    const initializeSession = async () => {
+      const token = localStorage.getItem('vibesync_access_token');
+      if (token) {
+        try {
+          // Attempt to connect socket before navigating
+          // We await in case connect becomes async in the future or acts as a promise
+          await connect(token);
+          navigate("/conversations");
+        } catch (error) {
+          console.error("Failed to restore session:", error);
+          // Stay on login page if connection fails
+        }
+      }
+    };
+
+    initializeSession();
+  }, [navigate, connect]);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -25,7 +45,7 @@ export default function Login() {
     {}
   );
   const [isLoading, setIsLoading] = useState(false);
-  const { connect } = useCall();
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

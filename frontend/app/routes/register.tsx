@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import type { Route } from "./+types/register";
 import { AuthLayout } from "../components/auth-layout";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { register, storeTokens } from "../services/auth.service";
+import { useCall } from "../contexts/call-context";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -31,6 +32,14 @@ export default function Register() {
     api?: string;
   }>({});
   const [isLoading, setIsLoading] = useState(false);
+  const { connect } = useCall();
+
+  useEffect(() => {
+    const token = localStorage.getItem('vibesync_access_token');
+    if (token) {
+      navigate("/conversations");
+    }
+  }, [navigate]);
 
   const getPasswordStrength = (password: string) => {
     if (password.length === 0) return { strength: 0, label: "" };
@@ -87,6 +96,7 @@ export default function Register() {
     try {
       const response = await register(formData.username, formData.email, formData.password);
       storeTokens(response.tokens.accessToken, response.tokens.refreshToken);
+      connect(response.tokens.accessToken);
       navigate("/conversations");
     } catch (error) {
       setErrors({ api: error instanceof Error ? error.message : "Registration failed" });

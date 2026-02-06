@@ -1,10 +1,13 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { storeTokens } from "../services/auth.service";
+import { useCall } from "../contexts/call-context";
 
 export default function GoogleCallback() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+
+  const { connect } = useCall();
 
   useEffect(() => {
     const accessToken = searchParams.get("accessToken");
@@ -12,11 +15,12 @@ export default function GoogleCallback() {
 
     if (accessToken && refreshToken) {
       storeTokens(accessToken, refreshToken);
+      connect(accessToken);
       navigate("/conversations");
     } else {
       navigate("/login?error=Google auth failed");
     }
-  }, [searchParams, navigate]);
+  }, [searchParams, navigate, connect]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-950 text-white">

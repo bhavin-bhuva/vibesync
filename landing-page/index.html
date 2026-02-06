@@ -101,11 +101,13 @@
         </nav>
 
         <div class="nav-actions">
-            <button class="btn btn-ghost">Sign In</button>
-            <button class="btn btn-primary">
+            <a href="https://app.vibesync.co.in/login" target="_blank" rel="noopener noreferrer"
+                class="btn btn-ghost">Sign In</a>
+            <a href="https://app.vibesync.co.in/register" target="_blank" rel="noopener noreferrer"
+                class="btn btn-primary">
                 Get Started
                 <i class="ph-bold ph-arrow-right"></i>
-            </button>
+            </a>
         </div>
 
         <button class="mobile-menu-btn">
@@ -115,6 +117,9 @@
 
     <!-- Hero Section -->
     <section class="hero">
+        <!-- Interactive Particle Canvas -->
+        <canvas id="particleCanvas"
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas>
         <div class="hero-content">
             <div class="hero-badge">
                 ✨ Real-time messaging reimagined
@@ -132,10 +137,11 @@
             </p>
 
             <div class="hero-actions">
-                <button class="btn btn-primary hero-btn">
+                <a href="https://app.vibesync.co.in/register" target="_blank" rel="noopener noreferrer"
+                    class="btn btn-primary hero-btn">
                     Get Started
                     <i class="ph-bold ph-arrow-right"></i>
-                </button>
+                </a>
                 <button class="btn btn-secondary hero-btn">
                     <i class="ph-fill ph-play-circle"></i>
                     Watch Demo
@@ -429,10 +435,11 @@
             <p style="font-size: 1.25rem; color: var(--text-secondary); margin-bottom: 48px;">
                 Join thousands of users already enjoying seamless communication on VibeSync.
             </p>
-            <button class="btn btn-primary" style="padding: 20px 48px; font-size: 1.25rem;">
+            <a href="https://app.vibesync.co.in/register" target="_blank" rel="noopener noreferrer"
+                class="btn btn-primary" style="padding: 20px 48px; font-size: 1.25rem;">
                 Get Started for Free
                 <i class="ph-bold ph-arrow-right"></i>
-            </button>
+            </a>
 
             <div style="margin-top: 64px; display: flex; justify-content: center; gap: 32px; flex-wrap: wrap;">
                 <div style="display: flex; align-items: center; gap: 8px; color: var(--text-secondary);">
@@ -570,6 +577,137 @@
                 }
             });
         });
+
+        // Particle Animation
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        const heroSection = document.querySelector('.hero');
+
+        let particles = [];
+        let mouseX = 0;
+        let mouseY = 0;
+        let isMouseInHero = false;
+
+        // Set canvas size
+        function resizeCanvas() {
+            canvas.width = heroSection.offsetWidth;
+            canvas.height = heroSection.offsetHeight;
+            initParticles();
+        }
+
+        // Particle class
+        class Particle {
+            constructor() {
+                this.reset();
+                this.y = Math.random() * canvas.height;
+                this.baseX = this.x;
+                this.baseY = this.y;
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.baseX = this.x;
+                this.baseY = this.y;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.5 - 0.25;
+                // Random purple/pink colors
+                const colors = [
+                    'rgba(162, 89, 255, 0.6)',   // purple
+                    'rgba(255, 100, 170, 0.6)',  // pink
+                    'rgba(108, 215, 255, 0.6)',  // blue
+                    'rgba(255, 200, 80, 0.6)'    // yellow
+                ];
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+            }
+
+            update() {
+                // Calculate distance from mouse
+                if (isMouseInHero) {
+                    const dx = mouseX - this.x;
+                    const dy = mouseY - this.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const maxDistance = 150;
+
+                    if (distance < maxDistance) {
+                        const force = (maxDistance - distance) / maxDistance;
+                        const angle = Math.atan2(dy, dx);
+                        this.x += Math.cos(angle) * force * 3;
+                        this.y += Math.sin(angle) * force * 3;
+                    } else {
+                        // Return to base position
+                        this.x += (this.baseX - this.x) * 0.05;
+                        this.y += (this.baseY - this.y) * 0.05;
+                    }
+                } else {
+                    // Gentle floating animation
+                    this.baseX += this.speedX;
+                    this.baseY += this.speedY;
+
+                    // Wrap around screen
+                    if (this.baseX < 0) this.baseX = canvas.width;
+                    if (this.baseX > canvas.width) this.baseX = 0;
+                    if (this.baseY < 0) this.baseY = canvas.height;
+                    if (this.baseY > canvas.height) this.baseY = 0;
+
+                    this.x += (this.baseX - this.x) * 0.05;
+                    this.y += (this.baseY - this.y) * 0.05;
+                }
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Add glow effect
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = this.color;
+            }
+        }
+
+        // Initialize particles
+        function initParticles() {
+            particles = [];
+            const numberOfParticles = Math.floor((canvas.width * canvas.height) / 4000);
+            for (let i = 0; i < numberOfParticles; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        // Animation loop
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.shadowBlur = 0;
+
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        // Mouse move event
+        heroSection.addEventListener('mousemove', (e) => {
+            const rect = heroSection.getBoundingClientRect();
+            mouseX = e.clientX - rect.left;
+            mouseY = e.clientY - rect.top;
+            isMouseInHero = true;
+        });
+
+        heroSection.addEventListener('mouseleave', () => {
+            isMouseInHero = false;
+        });
+
+        // Initialize
+        resizeCanvas();
+        animate();
+
+        // Handle window resize
+        window.addEventListener('resize', resizeCanvas);
     </script>
 </body>
 

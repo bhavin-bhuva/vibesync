@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Incoming Video Call</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#7f13ec",
+            "background-light": "#f7f6f8",
+            "background-dark": "#191022",
+            "success": "#22c55e",
+            "danger": "#ef4444"
+          },
+          fontFamily: {
+            "display": ["Manrope", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+  <style type="text/tailwindcss">
+    .blurred-bg {
+            background-image: linear-gradient(rgba(25, 16, 34, 0.7), rgba(25, 16, 34, 0.85)), url(https://lh3.googleusercontent.com/aida-public/AB6AXuDEu6hkfAwpe6U_8oioql25QnENVujql1h7AupF8PH4Iug0l1naHD9lewZiBDXfyTRAIXOWx4TRYLpUox0rKMjHTUSVvS7Bqzr3yuSuey_9BiAdmd6RLHZa0PlcZVxEXM86aUcVvIDWqhnG92yxOncGFYKArq7C9yOpR2MpyD7XXbNaHB4nthPcYyOgFjMeWdP39BI7B6oNWPjAQrRHFX3VrZj0Ca1lMneGZkOzbxxeOH4Pit3GdAE-JG3OYR9kWk_JCrrL9lKZubk);
+            background-size: cover;
+            background-position: center;
+        }
+        .pulse-ring {
+            box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+            } 70% {
+                box-shadow: 0 0 0 20px rgba(34, 197, 94, 0);
+            } 100% {
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+            }
+        }
+    </style>
+  <style>
+    body {
+      min-height: 100dvh;
+    }
+  </style>
+  <style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+
+<body class="font-display bg-background-dark text-white overflow-hidden">
+  <div class="relative h-screen w-full blurred-bg flex flex-col justify-between overflow-hidden">
+    <div class="flex flex-col items-center justify-center flex-grow pt-20">
+      <div class="relative">
+        <div class="absolute inset-0 bg-primary/30 rounded-full blur-2xl scale-125"></div>
+        <div class="relative size-40 md:size-48 rounded-full border-4 border-primary/40 p-1">
+          <div class="w-full h-full rounded-full bg-cover bg-center border-2 border-white/10"
+            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCS0QR3QfoX8i8-4IxW4Ft0bgldCYity1MYgI1BKb2HsnOlucUydey-8xA7PSGHJmCI3y5pG1g-ZjVpcxyr40q9oiSCDNp9XdedOJpCk2DM4U-wKmVrU2lmbJqp4bSR1OcAFYJ6Em7D2W30LvdzpsRc9VJeeE-NlQWX28Vzo6MaxXf2ulEccsQR6UUGVC2fzONYOMgaIqpONwEuYpB3E_tfM565jL7dEz7vfpU7v5xaTj_RznxhCPls-CcXVmE1qVWWXRvif_TPioc')">
+          </div>
+        </div>
+      </div>
+      <div class="mt-8 text-center space-y-2">
+        <h1 class="text-3xl font-bold tracking-tight">Dr. Livia Workman</h1>
+        <p class="text-primary font-medium text-lg tracking-wide uppercase text-sm">Incoming Video Call...</p>
+      </div>
+    </div>
+    <div class="px-10 pb-20 w-full max-w-md mx-auto">
+      <div class="flex justify-between items-center mb-12 px-4">
+        <button class="flex flex-col items-center gap-2 opacity-80 hover:opacity-100 transition-opacity">
+          <div class="size-10 rounded-full bg-white/10 flex items-center justify-center">
+            <span class="material-symbols-outlined text-xl">alarm</span>
+          </div>
+          <span class="text-xs font-medium">Remind Me</span>
+        </button>
+        <button class="flex flex-col items-center gap-2 opacity-80 hover:opacity-100 transition-opacity">
+          <div class="size-10 rounded-full bg-white/10 flex items-center justify-center">
+            <span class="material-symbols-outlined text-xl">chat_bubble</span>
+          </div>
+          <span class="text-xs font-medium">Message</span>
+        </button>
+      </div>
+      <div class="flex justify-between items-center">
+        <div class="flex flex-col items-center gap-3">
+          <button
+            class="size-20 bg-danger hover:bg-danger/90 transition-all rounded-full flex items-center justify-center shadow-lg shadow-danger/20">
+            <span class="material-symbols-outlined text-4xl text-white scale-x-[-1] rotate-[135deg]">call_end</span>
+          </button>
+          <span class="text-sm font-semibold opacity-90">Decline</span>
+        </div>
+        <div class="flex flex-col items-center gap-3">
+          <button
+            class="size-20 bg-success hover:bg-success/90 transition-all rounded-full flex items-center justify-center shadow-lg shadow-success/20 pulse-ring">
+            <span class="material-symbols-outlined text-4xl text-white">videocam</span>
+          </button>
+          <span class="text-sm font-semibold opacity-90">Accept</span>
+        </div>
+      </div>
+    </div>
+    <div class="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1.5 bg-white/20 rounded-full"></div>
+  </div>
+
+</body>
+
+</html>
