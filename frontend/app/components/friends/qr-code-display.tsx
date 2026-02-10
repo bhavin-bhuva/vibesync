@@ -10,12 +10,8 @@ interface QRCodeDisplayProps {
 export function QRCodeDisplay({ userId, userName, friendCode }: QRCodeDisplayProps) {
   const [copied, setCopied] = useState(false);
 
-  // Encode user data as JSON for QR code
-  const qrData = JSON.stringify({
-    type: "vibesync_friend",
-    userId,
-    friendCode,
-  });
+  // Encode user data as simple string for lower density QR code
+  const qrData = `vibesync:${friendCode}`;
 
   const handleCopyCode = async () => {
     try {
@@ -32,14 +28,13 @@ export function QRCodeDisplay({ userId, userName, friendCode }: QRCodeDisplayPro
       {/* QR Code Container */}
       <div className="relative mb-6">
         <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-3xl blur-xl" />
-        <div className="relative glass-dark p-6 rounded-3xl border-2 border-white/20">
+        <div className="relative bg-white p-6 rounded-3xl border-2 border-white/20 shadow-xl">
           <QRCode
             value={qrData}
             size={256}
-            level="H"
+            level="L"
             bgColor="#ffffff"
             fgColor="#000000"
-            style={{ borderRadius: "0.75rem" }}
           />
         </div>
       </div>
