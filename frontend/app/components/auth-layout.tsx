@@ -21,7 +21,7 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
         {/* Logo/Brand */}
         <div className="text-center mb-8">
           <img 
-            src="/images/logo-white.svg" 
+            src="/images/logo-full-color.svg" 
             alt="VibeSync Logo" 
             className="w-20 h-20 mx-auto mb-4 drop-shadow-[0_0_15px_rgba(168,85,247,0.5)]" 
           />

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Html5Qrcode } from "html5-qrcode";
+import { Html5Qrcode, Html5QrcodeSupportedFormats } from "html5-qrcode";
 
 interface QRScannerProps {
   onScanSuccess: (data: { userId: number; userName: string; friendCode: string }) => void;
@@ -9,58 +9,76 @@ interface QRScannerProps {
 export function QRScanner({ onScanSuccess, onClose }: QRScannerProps) {
   const [error, setError] = useState<string | null>(null);
   const [scanning, setScanning] = useState(true);
+  const [debugLogs, setDebugLogs] = useState<string[]>([]);
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const isStartingRef = useRef(false); // Prevent multiple initializations
   const qrCodeRegionId = "qr-reader";
 
+  const log = (msg: string) => {
+    // console.log("[QR Debug]", msg);
+    setDebugLogs((prev) => [`${new Date().toISOString().split("T")[1].slice(0, 8)}: ${msg}`, ...prev].slice(0, 50));
+  };
+
   useEffect(() => {
     // Prevent multiple scanner initializations
     if (isStartingRef.current) return;
-    
+
     let isMounted = true;
-    
+
     const startScanner = async () => {
       // Small delay to ensure previous cleanup is done
       await new Promise(resolve => setTimeout(resolve, 100));
-      
+
       if (!isMounted) return;
-      
+
       isStartingRef.current = true;
-      
+
       try {
         // Clear any existing instance first
         try {
-            await new Html5Qrcode(qrCodeRegionId).clear();
+          await new Html5Qrcode(qrCodeRegionId).clear();
         } catch (e) {
-            // Ignore clear errors
+          // Ignore clear errors
         }
 
-        const html5QrCode = new Html5Qrcode(qrCodeRegionId);
+        const html5QrCode = new Html5Qrcode(qrCodeRegionId, {
+          verbose: false
+        });
         scannerRef.current = html5QrCode;
 
+        log("Starting scanner...");
+
         await html5QrCode.start(
-          { facingMode: "environment" },
           {
-            fps: 10,
-            qrbox: { width: 250, height: 250 },
+            facingMode: "environment"
+          },
+          {
+            fps: 15,
+            aspectRatio: 1.0,
           },
           (decodedText) => {
+            log(`Decoded: ${decodedText.substring(0, 20)}...`);
             if (isMounted) handleScan(decodedText);
           },
           (errorMessage) => {
-            // Ignore scan errors
+            // Log 1 in 50 errors to avoid spamming but verify scanning is active
+            if (Math.random() < 0.02) {
+              log(`Scanning... (No code detected)`);
+            }
           }
         );
+        log("Scanner started successfully");
       } catch (err: any) {
         console.error("Scanner error:", err);
         if (isMounted) {
-            if (err?.name === "NotAllowedError") {
-              setError("Camera permission denied. Please allow camera access to scan QR codes.");
-            } else if (err?.name === "NotFoundError") {
-              setError("No camera found. Please ensure your device has a camera.");
-            } else {
-              setError("Failed to access camera. Please try again.");
-            }
+          if (err?.name === "NotAllowedError") {
+            setError("Camera permission denied. Please allow camera access to scan QR codes.");
+          } else if (err?.name === "NotFoundError") {
+            setError("No camera found. Please ensure your device has a camera.");
+          } else {
+            setError("Failed to access camera. Please try again.");
+          }
+          log(`Error: ${err.message || err}`);
         }
       } finally {
         isStartingRef.current = false;
@@ -98,32 +116,53 @@ export function QRScanner({ onScanSuccess, onClose }: QRScannerProps) {
 
   const handleScan = (decodedText: string) => {
     try {
-      const data = JSON.parse(decodedText);
-
-      // Validate that this is a VibeSync friend QR code
-      if (data.type === "vibesync_friend" && data.userId && data.userName && data.friendCode) {
-        setScanning(false);
-        if (scannerRef.current) {
-          const scanner = scannerRef.current;
-          // Only stop if scanner is running
-          if (scanner.getState && scanner.getState() === 2) {
-            scanner.stop().catch((err) => {
-              console.debug("Error stopping scanner after scan:", err);
-            });
-          }
+      // Handle new simple string format (vibesync:FRIEND_CODE)
+      if (typeof decodedText === "string" && decodedText.startsWith("vibesync:")) {
+        const code = decodedText.split(":")[1];
+        if (code) {
+          setScanning(false);
+          stopScanner(); // Helper to stop scanner
+          onScanSuccess({
+            userId: 0, // Not needed for friend request by code
+            userName: "User", // Not needed
+            friendCode: code,
+          });
+          return;
         }
-        onScanSuccess({
-          userId: data.userId,
-          userName: data.userName,
-          friendCode: data.friendCode,
-        });
-      } else {
-        setError("Invalid QR code. Please scan a VibeSync friend code.");
-        setTimeout(() => setError(null), 3000);
       }
+
+      // Legacy JSON handling (optional, but good for backward compat if needed)
+      try {
+        const data = JSON.parse(decodedText);
+        // Validate that this is a VibeSync friend QR code
+        if (data.type === "vibesync_friend" && data.userId && data.userName && data.friendCode) {
+          setScanning(false);
+          stopScanner();
+          onScanSuccess({
+            userId: data.userId,
+            userName: data.userName,
+            friendCode: data.friendCode,
+          });
+          return;
+        }
+      } catch (e) {
+        // Not a JSON object, fall through
+      }
+
+      setError("Invalid QR code. Please scan a VibeSync friend code.");
+      setTimeout(() => setError(null), 3000);
     } catch (err) {
       setError("Invalid QR code format. Please scan a VibeSync friend code.");
       setTimeout(() => setError(null), 3000);
+    }
+  };
+
+  const stopScanner = () => {
+    if (scannerRef.current) {
+      const scanner = scannerRef.current;
+      if (scanner.getState && scanner.getState() === 2) {
+        scanner.stop().catch((err) => console.debug(err));
+      }
     }
   };
 
@@ -193,11 +232,11 @@ export function QRScanner({ onScanSuccess, onClose }: QRScannerProps) {
               <div className="absolute top-0 right-0 w-16 h-16 border-t-4 border-r-4 border-purple-500 rounded-tr-2xl opacity-80" />
               <div className="absolute bottom-0 left-0 w-16 h-16 border-b-4 border-l-4 border-purple-500 rounded-bl-2xl opacity-80" />
               <div className="absolute bottom-0 right-0 w-16 h-16 border-b-4 border-r-4 border-purple-500 rounded-br-2xl opacity-80" />
-              
+
               {/* Scanning Laser Animation */}
               <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-purple-400 to-transparent opacity-50 shadow-[0_0_15px_2px_rgba(168,85,247,0.6)] animate-[scan_2s_ease-in-out_infinite]" />
             </div>
-            
+
             {/* Guide Text inside camera view */}
             <div className="absolute bottom-6 left-0 right-0 text-center z-10">
               <span className="px-3 py-1 bg-black/50 backdrop-blur-md rounded-full text-xs text-white/80">
@@ -266,6 +305,13 @@ export function QRScanner({ onScanSuccess, onClose }: QRScannerProps) {
           </div>
         </div>
       )}
+
+      {/* Debug Logs Overlay (Optional: remove or comment out for production) */}
+      {/* 
+      <div className="absolute top-20 left-4 bg-black/50 text-green-400 text-[10px] font-mono p-2 rounded max-h-40 overflow-y-auto z-50 pointer-events-none max-w-[200px]">
+        {debugLogs.map((l, i) => <div key={i}>{l}</div>)}
+      </div> 
+      */}
     </div>
   );
 }

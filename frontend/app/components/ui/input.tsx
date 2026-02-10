@@ -31,7 +31,7 @@ export function Input({ label, error, className = "", ...props }: InputProps) {
           peer w-full px-4 py-3 bg-white/5 border-2 rounded-lg
           ${error ? "border-red-500" : "border-white/10 focus:border-purple-500"}
           text-gray-900 dark:text-white placeholder-transparent
-          focus:outline-none transition-all duration-200
+          focus:outline-none focus:ring-0 transition-all duration-200
           ${className}
         `}
         placeholder={label}
@@ -39,10 +39,9 @@ export function Input({ label, error, className = "", ...props }: InputProps) {
       <label
         className={`
           absolute left-4 transition-all duration-200 pointer-events-none
-          ${
-            isFocused || hasValue || props.value
-              ? "-top-2.5 text-xs bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50 dark:from-gray-950 dark:via-purple-950/20 dark:to-blue-950/20 px-1"
-              : "top-3 text-base"
+          ${isFocused || hasValue || props.value
+            ? "-top-2.5 text-xs bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50 dark:from-gray-950 dark:via-purple-950/20 dark:to-blue-950/20 px-1"
+            : "top-3 text-base"
           }
           ${error ? "text-red-500" : isFocused ? "text-purple-500" : "text-gray-500 dark:text-gray-400"}
         `}

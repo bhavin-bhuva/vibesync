@@ -51,7 +51,7 @@ export function ConversationList({
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
-  
+
   // Get active tab from URL search params, default to "chats"
   const activeTab = (searchParams.get("tab") as "chats" | "status" | "calls" | "settings") || "chats";
 
@@ -94,11 +94,10 @@ export function ConversationList({
                 <button
                   key={conversation.id}
                   onClick={() => onConversationSelect(conversation.id)}
-                  className={`w-full p-4 flex items-start gap-3 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors border-l-2 ${
-                    activeConversationId === conversation.id
+                  className={`w-full p-4 flex items-start gap-3 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors border-l-2 ${activeConversationId === conversation.id
                       ? "bg-gray-100 dark:bg-white/5 border-purple-500"
                       : "border-transparent"
-                  }`}
+                    }`}
                 >
                   <Avatar
                     src={conversation.avatar}
@@ -156,7 +155,7 @@ export function ConversationList({
   };
 
   return (
-    <div className="h-screen flex flex-col glass-dark border-l border-gray-200 dark:border-white/10">
+    <div className="h-[100dvh] flex flex-col glass-dark border-l border-gray-200 dark:border-white/10">
       {/* Header */}
       <div className="p-4 border-b border-gray-200 dark:border-white/10">
         <div className="flex items-center gap-3 mb-4">
