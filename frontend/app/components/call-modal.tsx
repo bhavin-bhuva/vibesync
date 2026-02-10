@@ -14,6 +14,7 @@ export function CallModal() {
     endCall,
     toggleMute,
     toggleVideo,
+    flipCamera,
     isMuted,
     isVideoEnabled
   } = useCall();
@@ -24,6 +25,10 @@ export function CallModal() {
   // Timer state for connected calls
   const [callDuration, setCallDuration] = useState(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Speaker state
+  const [isSpeakerOn, setIsSpeakerOn] = useState(false);
+  const toggleSpeaker = () => setIsSpeakerOn(prev => !prev);
 
   // Start timer when call connects
   useEffect(() => {
@@ -169,9 +174,6 @@ export function CallModal() {
           </div>
           
           </div>{/* End Content Container */}
-          
-          {/* iOS Home Indicator */}
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1.5 bg-white/20 rounded-full"></div>
         </div>
 
         <style>{`
@@ -246,7 +248,12 @@ export function CallModal() {
                 style={{ transform: 'scaleX(-1)' }}
               />
               <div className="absolute bottom-2 right-2">
-                <span className="material-symbols-outlined text-white text-xs bg-black/40 p-1 rounded-full">flip_camera_ios</span>
+                <button 
+                  onClick={flipCamera}
+                  className="p-1 rounded-full bg-black/40 hover:bg-black/60 transition-colors"
+                >
+                  <span className="material-symbols-outlined text-white text-xs">flip_camera_ios</span>
+                </button>
               </div>
             </div>
           )}
@@ -254,11 +261,11 @@ export function CallModal() {
           {/* Bottom Controls Overlay */}
           <div className="absolute bottom-0 left-0 w-full z-30">
             <div 
-              className="rounded-t-[2.5rem] px-8 pt-8 pb-10 flex flex-col items-center space-y-6"
+              className="rounded-t-[2rem] px-6 pt-6 pb-8 flex flex-col items-center space-y-4 mx-auto max-w-sm mb-4 rounded-[2rem] shadow-2xl border border-white/10"
               style={{
-                background: 'rgba(16, 34, 34, 0.7)',
-                backdropFilter: 'blur(12px)',
-                WebkitBackdropFilter: 'blur(12px)',
+                background: 'rgba(16, 34, 34, 0.85)',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
               }}
             >
               {/* Main Control Buttons */}
@@ -287,18 +294,20 @@ export function CallModal() {
                   <span className="text-white/60 text-[10px] uppercase tracking-wider font-bold">End</span>
                 </div>
                 
-                {/* Flip Camera Button */}
+                {/* Video Toggle Button */}
                 <div className="flex flex-col items-center gap-2">
                   <button
                     onClick={toggleVideo}
-                    className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
+                    className={`w-14 h-14 rounded-full flex items-center justify-center transition-colors ${
+                       !isVideoEnabled ? 'bg-white text-[#120a1a] hover:bg-white/90' : 'bg-white/10 text-white hover:bg-white/20'
+                    }`}
                   >
-                    <span className="material-symbols-outlined text-white text-2xl">
-                      {isVideoEnabled ? 'flip_camera_android' : 'videocam_off'}
+                    <span className="material-symbols-outlined text-2xl">
+                      {isVideoEnabled ? 'videocam' : 'videocam_off'}
                     </span>
                   </button>
                   <span className="text-white/60 text-[10px] uppercase tracking-wider font-bold">
-                    {isVideoEnabled ? 'Flip' : 'Camera'}
+                    {isVideoEnabled ? 'Camera' : 'Off'}
                   </span>
                 </div>
               </div>
@@ -316,8 +325,6 @@ export function CallModal() {
                 </div>
               </div>
               
-              {/* iOS Home Indicator */}
-              <div className="w-32 h-1 bg-white/30 rounded-full mt-4"></div>
             </div>
           </div>
         </div>
@@ -439,11 +446,23 @@ export function CallModal() {
               </div>
               <div className="flex flex-col items-center gap-3">
                 <button
-                  className="flex w-20 h-20 items-center justify-center rounded-full bg-white text-[#120a1a] hover:bg-white/90 transition-all active:scale-95"
+                  onClick={toggleSpeaker}
+                  className={`flex w-20 h-20 items-center justify-center rounded-full transition-all active:scale-95 ${
+                    isSpeakerOn 
+                      ? 'bg-white text-[#120a1a] hover:bg-white/90' 
+                      : 'bg-white/5 text-white hover:bg-white/10'
+                  }`}
+                  style={!isSpeakerOn ? {
+                    backdropFilter: 'blur(12px)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                  } : {}}
+                  aria-pressed={isSpeakerOn}
                 >
-                  <span className="material-symbols-outlined text-3xl" style={{ fontVariationSettings: '"FILL" 1' }}>volume_up</span>
+                  <span className="material-symbols-outlined text-3xl" style={{ fontVariationSettings: '"FILL" 1' }}>
+                    {isSpeakerOn ? 'volume_up' : 'volume_down'}
+                  </span>
                 </button>
-                <span className="text-sm font-bold text-white">Speaker</span>
+                <span className={`text-sm font-bold ${isSpeakerOn ? 'text-white' : 'text-white/60'}`}>Speaker</span>
               </div>
             </div>
             
@@ -460,13 +479,7 @@ export function CallModal() {
               </button>
             </div>
           </div>
-          
           </div>{/* End Content Container */}
-          
-          {/* iOS Home Indicator */}
-          <div className="h-8 w-full flex justify-center items-end pb-2">
-            <div className="w-32 h-1.5 bg-white/20 rounded-full"></div>
-          </div>
         </div>
         
         {/* Background Decoration */}

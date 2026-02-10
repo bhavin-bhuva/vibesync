@@ -1,20 +1,14 @@
 
 
 // Mock calls removed
-import { useState, useEffect } from "react";
 import * as conversationService from "../../services/conversation.service";
-import type { CallLog } from "../../services/conversation.service";
+import { useQuery } from "@tanstack/react-query";
 
 export function CallHistoryList() {
-  const [calls, setCalls] = useState<CallLog[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    conversationService.getCallHistory()
-        .then(data => setCalls(data))
-        .catch(err => console.error("Failed to load call history", err))
-        .finally(() => setLoading(false));
-  }, []);
+  const { data: calls = [], isLoading: loading } = useQuery({
+    queryKey: ['callHistory'],
+    queryFn: conversationService.getCallHistory
+  });
   
   const formatTime = (dateStr: string) => {
       const date = new Date(dateStr);
@@ -22,7 +16,11 @@ export function CallHistoryList() {
   };
 
   if (loading) {
-      return <div className="p-8 text-center text-gray-400">Loading calls...</div>;
+      return (
+        <div className="flex-1 overflow-y-auto">
+            <div className="p-8 text-center text-gray-400">Loading calls...</div>
+        </div>
+      );
   }
 
   return (

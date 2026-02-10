@@ -21,6 +21,7 @@ interface CallContextType {
   endCall: (emitEvent?: boolean) => void;
   toggleMute: () => void;
   toggleVideo: () => void;
+  flipCamera: () => Promise<void>;
   isMuted: boolean;
   isVideoEnabled: boolean;
   connect: (token: string) => void;
@@ -236,6 +237,53 @@ export function CallProvider({ children }: { children: React.ReactNode }) {
       }
     }
   };
+
+  const flipCamera = async () => {
+    if (!localStream) return;
+
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const videoDevices = devices.filter(d => d.kind === 'videoinput');
+      if (videoDevices.length <= 1) return; // No other camera to flip to
+
+      const currentTrack = localStream.getVideoTracks()[0];
+      const currentSettings = currentTrack.getSettings();
+      const currentDeviceId = currentSettings.deviceId;
+
+      const currentDeviceIndex = videoDevices.findIndex(d => d.deviceId === currentDeviceId);
+      // Switch to next camera
+      const nextDeviceIndex = (currentDeviceIndex + 1) % videoDevices.length;
+      const nextDevice = videoDevices[nextDeviceIndex];
+
+      const newStream = await navigator.mediaDevices.getUserMedia({
+        video: { deviceId: { exact: nextDevice.deviceId } },
+        audio: false // Don't replace audio
+      });
+      const newVideoTrack = newStream.getVideoTracks()[0];
+
+      // Restore enabled state if it was off
+      if (!isVideoEnabled) {
+        newVideoTrack.enabled = false;
+      }
+
+      // Replace in local stream (for preview)
+      const audioTracks = localStream.getAudioTracks();
+      const newLocalStream = new MediaStream([...audioTracks, newVideoTrack]);
+      setLocalStream(newLocalStream);
+
+      // Replace in peer connection (for remote)
+      if (connectionRef.current) {
+        // SimplePeer supports replaceTrack
+        connectionRef.current.replaceTrack(currentTrack, newVideoTrack, localStream);
+      }
+
+      // Cleanup old track
+      currentTrack.stop();
+      
+    } catch (err) {
+      console.error('Error flipping camera:', err);
+    }
+  };
   // Listen for socket events
   useEffect(() => {
     if (!socket) return;
@@ -298,6 +346,7 @@ export function CallProvider({ children }: { children: React.ReactNode }) {
       endCall,
       toggleMute,
       toggleVideo,
+      flipCamera,
       isMuted,
       isVideoEnabled,
       connect,

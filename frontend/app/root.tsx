@@ -30,7 +30,20 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useState } from "react";
+
+// ... existing imports
+
 export function Layout({ children }: { children: React.ReactNode }) {
+  const [queryClient] = useState(() => new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 5 * 1000,
+      },
+    },
+  }));
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -57,12 +70,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
         />
       </head>
       <body suppressHydrationWarning>
-        <ThemeProvider>
-          <CallProvider>
-            {children}
-            <CallModal />
-          </CallProvider>
-        </ThemeProvider>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider>
+            <CallProvider>
+              {children}
+              <CallModal />
+            </CallProvider>
+          </ThemeProvider>
+        </QueryClientProvider>
         <ScrollRestoration />
         <Scripts />
       </body>
