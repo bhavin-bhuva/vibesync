@@ -100,14 +100,32 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _navigateAfterDelay() async {
-    // Wait for 2 seconds to show splash screen
-    await Future.delayed(const Duration(seconds: 2));
+    // Minimum splash screen duration
+    final minSplashTime = Future.delayed(const Duration(seconds: 2));
     
     if (!mounted) return;
     
-    // Check auth state and navigate accordingly
-    final authState = context.read<AuthBloc>().state;
+    final authBloc = context.read<AuthBloc>();
     
+    // Check current state or wait for terminal state
+    AuthState authState = authBloc.state;
+    if (authState is! Authenticated && authState is! Unauthenticated) {
+      try {
+        authState = await authBloc.stream.firstWhere(
+          (state) => state is Authenticated || state is Unauthenticated,
+        );
+      } catch (e) {
+        // Fallback if stream error
+        authState = const Unauthenticated();
+      }
+    }
+    
+    // Ensure minimum splash time has passed
+    await minSplashTime;
+    
+    if (!mounted) return;
+    
+    // Navigate based on resolved state
     if (authState is Authenticated) {
       context.go('/home');
     } else {

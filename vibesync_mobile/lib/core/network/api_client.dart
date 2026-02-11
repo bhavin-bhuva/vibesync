@@ -185,14 +185,19 @@ class ApiClient {
 
       case DioExceptionType.badResponse:
         final statusCode = error.response?.statusCode ?? 0;
-        final message = error.response?.data?['message'] ?? 
-                       error.response?.data?['error'] ?? 
-                       'An error occurred';
+        final data = error.response?.data;
+        
+        String message = 'An error occurred';
+        if (data is Map<String, dynamic>) {
+          message = data['message'] ?? data['error'] ?? message;
+        } else if (data != null) {
+          message = data.toString();
+        }
         
         return ApiException(
           message: message,
           statusCode: statusCode,
-          data: error.response?.data,
+          data: data,
         );
 
       case DioExceptionType.cancel:

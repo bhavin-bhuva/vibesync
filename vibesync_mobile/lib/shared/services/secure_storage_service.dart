@@ -81,6 +81,8 @@ class SecureStorageService {
     await write('access_token', accessToken);
     if (refreshToken != null) {
       await write('refresh_token', refreshToken);
+    } else {
+      await delete('refresh_token');
     }
   }
 

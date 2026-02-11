@@ -39,6 +39,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       // Check if we have a stored token
       final token = await secureStorage.getAccessToken();
+      final refreshToken = await secureStorage.getRefreshToken();
       
       if (token == null || token.isEmpty) {
         emit(const Unauthenticated(message: 'No authentication token found'));
@@ -55,7 +56,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final user = response.data['user'] ?? response.data;
         
         // Save user data to local storage
-        await _saveUserData(user, token);
+        await _saveUserData(user, token, refreshToken: refreshToken);
         
         emit(Authenticated(user: user, token: token));
       } else {
@@ -95,9 +96,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final data = response.data;
         final token = data['token'] ?? data['accessToken'];
         final user = data['user'];
+        final refreshToken = data['refreshToken'];
+
+        if (token == null || user == null) {
+          emit(const AuthError(message: 'Login failed: Invalid server response'));
+          return;
+        }
 
         // Save authentication data
-        await _saveUserData(user, token);
+        await _saveUserData(user, token, refreshToken: refreshToken);
         
         // Set token in API client
         apiClient.setAuthToken(token);
@@ -153,9 +160,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final data = response.data;
         final token = data['token'] ?? data['accessToken'];
         final user = data['user'];
+        final refreshToken = data['refreshToken'];
+
+        if (token == null || user == null) {
+          emit(const AuthError(message: 'Registration failed: Invalid server response'));
+          return;
+        }
 
         // Save authentication data
-        await _saveUserData(user, token);
+        await _saveUserData(user, token, refreshToken: refreshToken);
         
         // Set token in API client
         apiClient.setAuthToken(token);
@@ -218,8 +231,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         
         // Update user data in local storage
         final token = await secureStorage.getAccessToken();
+        final refreshToken = await secureStorage.getRefreshToken();
         if (token != null) {
-          await _saveUserData(user, token);
+          await _saveUserData(user, token, refreshToken: refreshToken);
         }
 
         emit(ProfileUpdated(user: user));
@@ -249,6 +263,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final refreshToken = await secureStorage.getRefreshToken();
       
       if (refreshToken == null) {
+        await _clearAuthData();
         emit(const Unauthenticated(message: 'No refresh token found'));
         return;
       }
@@ -286,9 +301,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   /// Save user data to storage
-  Future<void> _saveUserData(Map<String, dynamic> user, String token) async {
+  Future<void> _saveUserData(Map<String, dynamic> user, String token, {String? refreshToken}) async {
     // Save to secure storage
-    await secureStorage.saveTokens(accessToken: token);
+    await secureStorage.saveTokens(accessToken: token, refreshToken: refreshToken);
     
     // Save to local storage
     await localStorage.setBool(StorageKeys.isLoggedIn, true);
@@ -326,5 +341,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     await localStorage.remove(StorageKeys.userEmail);
     await localStorage.remove(StorageKeys.userAvatar);
     await localStorage.remove(StorageKeys.userFriendCode);
+    
+    // Clear API client token
+    apiClient.clearAuthToken();
   }
 }

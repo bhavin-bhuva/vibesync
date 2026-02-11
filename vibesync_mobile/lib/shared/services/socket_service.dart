@@ -110,27 +110,32 @@ class SocketService {
 
   /// Listen to an event from the server
   void on(String event, Function(dynamic) callback) {
-    // Add to our listeners map
+    // Register with socket only if it's the first listener for this event
     if (!_eventListeners.containsKey(event)) {
       _eventListeners[event] = [];
+      _socket?.on(event, (data) {
+        debugPrint('SocketService: Received event: $event');
+        _notifyListeners(event, data);
+      });
     }
+    
     _eventListeners[event]!.add(callback);
-
-    // Register with socket
-    _socket?.on(event, (data) {
-      debugPrint('SocketService: Received event: $event');
-      callback(data);
-    });
   }
 
   /// Remove a specific event listener
   void off(String event, [Function? callback]) {
     if (callback != null) {
-      _eventListeners[event]?.remove(callback);
+      if (_eventListeners.containsKey(event)) {
+        _eventListeners[event]?.remove(callback);
+        if (_eventListeners[event]?.isEmpty ?? true) {
+          _eventListeners.remove(event);
+          _socket?.off(event);
+        }
+      }
     } else {
       _eventListeners.remove(event);
+      _socket?.off(event);
     }
-    _socket?.off(event);
   }
 
   /// Notify all listeners for an event
@@ -143,15 +148,29 @@ class SocketService {
     }
   }
 
-  /// Update authentication token
+  /// Update authentication token and reconnect preserving listeners
   void updateAuthToken(String token) {
     _authToken = token;
-    if (_socket != null) {
-      _socket!.auth = {'token': token};
-      // Reconnect with new token
-      disconnect();
-      connect(token: token);
-    }
+    
+    // Snapshot current listeners
+    final savedListeners = Map<String, List<Function>>.from(_eventListeners);
+    
+    // Disconnect (clears _eventListeners)
+    disconnect();
+    
+    // Restore listeners to map
+    _eventListeners.addAll(savedListeners);
+    
+    // Reconnect
+    connect(token: token).then((_) {
+      // Re-register event handlers on the new socket
+      savedListeners.keys.forEach((event) {
+        _socket?.on(event, (data) {
+          debugPrint('SocketService: Received event: $event');
+          _notifyListeners(event, data);
+        });
+      });
+    });
   }
 
   // ============================================================================

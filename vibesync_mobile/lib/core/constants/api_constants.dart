@@ -1,4 +1,6 @@
 /// API constants for VibeSync backend integration
+import 'package:flutter/foundation.dart';
+
 class ApiConstants {
   // Private constructor to prevent instantiation
   ApiConstants._();
@@ -11,10 +13,16 @@ class ApiConstants {
   /// For Android emulator, use 10.0.2.2 instead of localhost
   /// For iOS simulator, use localhost
   /// For production, use actual domain
-  static const String baseUrl = 'http://10.0.2.2:3000/api/v1';
+  static const String _devBaseUrl = 'http://10.0.2.2:3000/api/v1';
   
   /// WebSocket URL for real-time communication
-  static const String socketUrl = 'http://10.0.2.2:3000';
+  static const String _devSocketUrl = 'http://10.0.2.2:3000';
+
+  /// Release-aware Base URL
+  static String get baseUrl => kReleaseMode ? productionBaseUrl : _devBaseUrl;
+
+  /// Release-aware Socket URL
+  static String get socketUrl => kReleaseMode ? productionSocketUrl : _devSocketUrl;
   
   /// Production base URL (to be updated)
   static const String productionBaseUrl = 'https://api.vibesync.com/api/v1';
