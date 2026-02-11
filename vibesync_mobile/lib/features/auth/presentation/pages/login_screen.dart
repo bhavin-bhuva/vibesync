@@ -115,13 +115,13 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                       animation: _pulseController1,
                       builder: (context, child) {
                         return Positioned(
-                          top: 80,
-                          left: 80,
+                          top: -100,
+                          left: -100,
                           child: Opacity(
-                            opacity: 0.3 * (0.5 + 0.5 * _pulseController1.value),
+                            opacity: 0.2 * (0.5 + 0.5 * _pulseController1.value),
                             child: Container(
-                              width: 300,
-                              height: 300,
+                              width: 400,
+                              height: 400,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 gradient: RadialGradient(
@@ -141,10 +141,10 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                       animation: _pulseController2,
                       builder: (context, child) {
                         return Positioned(
-                          top: 160,
-                          right: 80,
+                          top: 100,
+                          right: -100,
                           child: Opacity(
-                            opacity: 0.3 * (0.5 + 0.5 * _pulseController2.value),
+                            opacity: 0.2 * (0.5 + 0.5 * _pulseController2.value),
                             child: Container(
                               width: 300,
                               height: 300,
@@ -162,331 +162,190 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                         );
                       },
                     ),
-                    // Pink circle
-                    AnimatedBuilder(
-                      animation: _pulseController3,
-                      builder: (context, child) {
-                        return Positioned(
-                          bottom: 80,
-                          left: MediaQuery.of(context).size.width / 2 - 150,
-                          child: Opacity(
-                            opacity: 0.3 * (0.5 + 0.5 * _pulseController3.value),
-                            child: Container(
-                              width: 300,
-                              height: 300,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                gradient: RadialGradient(
-                                  colors: [
-                                    DesignTokens.accentPink.withOpacity(0.6),
-                                    DesignTokens.accentPink.withOpacity(0),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
                   ],
                 ),
               ),
-
+              
               // Content
               SafeArea(
                 child: Center(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(DesignTokens.space16),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // Logo with glow effect
-                        Container(
-                          width: 60,
-                          height: 60,
-                          padding: const EdgeInsets.all(DesignTokens.space12),
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                color: DesignTokens.primaryPurple.withOpacity(0.5),
-                                blurRadius: 20,
-                                spreadRadius: 5,
-                              ),
-                            ],
-                          ),
-                          child: SvgPicture.asset(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // Logo
+                          SvgPicture.asset(
                             DesignTokens.logoFullColor,
+                            width: 100,
+                            height: 100,
                           ),
-                        ),
-                        const SizedBox(height: DesignTokens.space12),
+                          const SizedBox(height: 48),
 
-                        // Gradient Text "VibeSync"
-                        ShaderMask(
-                          shaderCallback: (bounds) => DesignTokens.gradientPurpleBlue.createShader(bounds),
-                          child: const Text(
-                            'VibeSync',
-                            style: TextStyle(
-                              fontSize: 36,
-                              fontWeight: DesignTokens.fontWeightBold,
-                              color: Colors.white,
-                              letterSpacing: -1.5,
+                          // Email Field
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(  
+                              'EMAIL ADDRESS',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: DesignTokens.primaryPurpleLight, // Brand Color
+                                letterSpacing: 1.0,
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: DesignTokens.space4),
-
-                        // Subtitle
-                        const Text(
-                          'Connect. Chat. Vibe.',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Color(0xFF9CA3AF),
+                          const SizedBox(height: 8),
+                          VibeSyncTextField(
+                            hint: 'email@example.com',
+                            controller: _emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            textInputAction: TextInputAction.next,
+                            enabled: !isLoading,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Email is required';
+                              }
+                              if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
+                                return 'Email is invalid';
+                              }
+                              return null;
+                            },
                           ),
-                        ),
-                        const SizedBox(height: DesignTokens.space32),
+                          const SizedBox(height: 24),
 
-                        // Glass Card
-                        Container(
-                          constraints: const BoxConstraints(maxWidth: 450),
-                          padding: const EdgeInsets.all(DesignTokens.space24),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF1F2937).withOpacity(0.75),
-                            borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
-                            border: Border.all(
-                              color: Colors.white.withOpacity(0.1),
-                              width: 1,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.3),
-                                blurRadius: 20,
-                                offset: const Offset(0, 10),
+                          // Password Field
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'PASSWORD',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: DesignTokens.primaryPurpleLight, // Brand Color
+                                  letterSpacing: 1.0,
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: isLoading
+                                    ? null
+                                    : () {
+                                        context.push(RoutePaths.forgotPassword);
+                                      },
+                                child: Text(
+                                  'Forgot?',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.normal,
+                                    color: DesignTokens.accentPink, // Brand Color
+                                  ),
+                                ),
                               ),
                             ],
                           ),
-                          child: Form(
-                            key: _formKey,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Title
-                                const Text(
-                                  'Welcome Back',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: DesignTokens.fontWeightBold,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                const SizedBox(height: DesignTokens.space4),
-                                const Text(
-                                  'Sign in to continue your conversations',
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    color: Color(0xFF9CA3AF),
-                                  ),
-                                ),
-                                const SizedBox(height: DesignTokens.space24),
-
-                                // Email Field
-                                VibeSyncTextField(
-                                  label: 'Email Address',
-                                  hint: 'Enter your email',
-                                  controller: _emailController,
-                                  keyboardType: TextInputType.emailAddress,
-                                  prefixIcon: Icons.email_outlined,
-                                  textInputAction: TextInputAction.next,
-                                  enabled: !isLoading,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Email is required';
-                                    }
-                                    if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
-                                      return 'Email is invalid';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                const SizedBox(height: DesignTokens.space16),
-
-                                // Password Field
-                                VibeSyncTextField(
-                                  label: 'Password',
-                                  hint: 'Enter your password',
-                                  controller: _passwordController,
-                                  obscureText: true,
-                                  prefixIcon: Icons.lock_outlined,
-                                  textInputAction: TextInputAction.done,
-                                  enabled: !isLoading,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Password is required';
-                                    }
-                                    if (value.length < 6) {
-                                      return 'Password must be at least 6 characters';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                const SizedBox(height: DesignTokens.space12),
-
-                                // Remember Me & Forgot Password
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        SizedBox(
-                                          width: 20,
-                                          height: 20,
-                                          child: Checkbox(
-                                            value: _rememberMe,
-                                            onChanged: isLoading
-                                                ? null
-                                                : (value) {
-                                                    setState(() {
-                                                      _rememberMe = value ?? false;
-                                                    });
-                                                  },
-                                            activeColor: DesignTokens.primaryPurple,
-                                            side: const BorderSide(color: Color(0xFF4B5563)),
-                                          ),
-                                        ),
-                                        const SizedBox(width: DesignTokens.space8),
-                                        const Text(
-                                          'Remember me',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            color: Color(0xFFD1D5DB),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    TextButton(
-                                      onPressed: isLoading
-                                          ? null
-                                          : () {
-                                              context.push(RoutePaths.forgotPassword);
-                                            },
-                                      child: const Text(
-                                        'Forgot password?',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: DesignTokens.primaryPurple,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: DesignTokens.space16),
-
-                                // Error Display
-                                if (state is AuthError)
-                                  Container(
-                                    padding: const EdgeInsets.all(DesignTokens.space12),
-                                    margin: const EdgeInsets.only(bottom: DesignTokens.space16),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFFEF4444).withOpacity(0.1),
-                                      borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
-                                      border: Border.all(
-                                        color: const Color(0xFFEF4444).withOpacity(0.2),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      state.message,
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        color: Color(0xFFFCA5A5),
-                                      ),
-                                    ),
-                                  ),
-
-                                // Login Button
-                                GradientButton(
-                                  text: isLoading ? 'Signing in...' : 'Sign In',
-                                  onPressed: isLoading ? null : _handleLogin,
-                                  isLoading: isLoading,
-                                ),
-                                const SizedBox(height: DesignTokens.space16),
-
-                                // Divider
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Container(
-                                        height: 1,
-                                        color: Colors.white.withOpacity(0.1),
-                                      ),
-                                    ),
-                                    const Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: DesignTokens.space8),
-                                      child: Text(
-                                        'Or continue with',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Color(0xFF9CA3AF),
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        height: 1,
-                                        color: Colors.white.withOpacity(0.1),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: DesignTokens.space24),
-
-                                // Google Sign In Button
-                                VibeSyncButton(
-                                  text: 'Continue with Google',
-                                  onPressed: isLoading ? null : _handleGoogleLogin,
-                                  isOutlined: true,
-                                  icon: Icons.g_mobiledata,
-                                  backgroundColor: const Color(0xFF374151),
-                                  textColor: Colors.white,
-                                ),
-                                const SizedBox(height: DesignTokens.space16),
-
-                                // Sign Up Link
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Text(
-                                      "Don't have an account? ",
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Color(0xFF9CA3AF),
-                                      ),
-                                    ),
-                                    TextButton(
-                                      onPressed: isLoading
-                                          ? null
-                                          : () {
-                                              context.push(RoutePaths.register);
-                                            },
-                                      style: TextButton.styleFrom(
-                                        padding: EdgeInsets.zero,
-                                        minimumSize: const Size(0, 0),
-                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                      ),
-                                      child: const Text(
-                                        'Sign up',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: DesignTokens.primaryPurple,
-                                          fontWeight: DesignTokens.fontWeightSemiBold,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                          const SizedBox(height: 8),
+                          VibeSyncTextField(
+                            hint: '••••••••',
+                            controller: _passwordController,
+                            obscureText: true,
+                            textInputAction: TextInputAction.done,
+                            enabled: !isLoading,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Password is required';
+                              }
+                              if (value.length < 6) {
+                                return 'Password must be at least 6 characters';
+                              }
+                              return null;
+                            },
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 32),
+
+                          // Sign In Button (Gradient - Brand Color)
+                          GradientButton(
+                            text: 'Sign In',
+                            onPressed: isLoading ? null : _handleLogin,
+                            isLoading: isLoading,
+                            gradient: DesignTokens.gradientPrimaryPurplePink,
+                          ),
+                          const SizedBox(height: 32),
+
+                          // Divider
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Divider(
+                                  color: Colors.white.withOpacity(0.1),
+                                  thickness: 1,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                child: Text(
+                                  'OR CONTINUE WITH',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey[600],
+                                    letterSpacing: 1.5,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Divider(
+                                  color: Colors.white.withOpacity(0.1),
+                                  thickness: 1,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 32),
+
+                          // Google Button
+                          VibeSyncButton(
+                            text: 'Google',
+                            onPressed: isLoading ? null : _handleGoogleLogin,
+                            isOutlined: true,
+                            icon: Icons.g_mobiledata, 
+                            backgroundColor: const Color(0xFF0A0A0F),
+                            textColor: Colors.white,
+                          ),
+                          const SizedBox(height: 48),
+
+                          // Create Account Link
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "New here? ",
+                                style: TextStyle(
+                                  color: Colors.grey[500],
+                                  fontSize: 14,
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: isLoading
+                                    ? null
+                                    : () {
+                                        context.push(RoutePaths.register);
+                                      },
+                                child: const Text(
+                                  "Create account",
+                                  style: TextStyle(
+                                    color: DesignTokens.primaryPurple, // Brand Color
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

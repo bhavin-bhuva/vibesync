@@ -54,12 +54,12 @@ class VibeSyncButton extends StatelessWidget {
           ),
         ),
         child: isLoading
-            ? const SizedBox(
+            ? SizedBox(
                 width: 20,
                 height: 20,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  valueColor: AlwaysStoppedAnimation<Color>(textColor ?? Colors.white),
                 ),
               )
             : Row(

@@ -92,11 +92,37 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMixin {
+  late AnimationController _pulseController1;
+  late AnimationController _pulseController2;
+
   @override
   void initState() {
     super.initState();
+    
+    // Initialize pulse animations
+    _pulseController1 = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 4),
+    )..repeat(reverse: true);
+    
+    _pulseController2 = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 4),
+    )..repeat(reverse: true);
+
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) _pulseController2.forward();
+    });
+
     _navigateAfterDelay();
+  }
+
+  @override
+  void dispose() {
+    _pulseController1.dispose();
+    _pulseController2.dispose();
+    super.dispose();
   }
 
   Future<void> _navigateAfterDelay() async {
@@ -136,79 +162,95 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: DesignTokens.gradientPurpleBlue,
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Logo with glow effect
-              Container(
-                width: 120,
-                height: 120,
-                padding: const EdgeInsets.all(DesignTokens.space24),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(DesignTokens.radiusXLarge),
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.3),
-                    width: 2,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: DesignTokens.primaryPurple.withValues(alpha: 0.5),
-                      blurRadius: 40,
-                      spreadRadius: 10,
-                    ),
-                  ],
+      backgroundColor: const Color(0xFF0A0A0F),
+      body: Stack(
+        children: [
+          // Animated Background Mesh
+          Positioned.fill(
+            child: Stack(
+              children: [
+                // Purple circle
+                AnimatedBuilder(
+                  animation: _pulseController1,
+                  builder: (context, child) {
+                    return Positioned(
+                      top: -100,
+                      left: -100,
+                      child: Opacity(
+                        opacity: 0.2 * (0.5 + 0.5 * _pulseController1.value),
+                        child: Container(
+                          width: 400,
+                          height: 400,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: RadialGradient(
+                              colors: [
+                                DesignTokens.primaryPurple.withOpacity(0.6),
+                                DesignTokens.primaryPurple.withOpacity(0),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
-                child: SvgPicture.asset(
-                  DesignTokens.logoFullColor, 
-                  colorFilter: const ColorFilter.mode(
-                    Colors.white,
-                    BlendMode.srcIn,
-                  ),
+                // Blue circle
+                AnimatedBuilder(
+                  animation: _pulseController2,
+                  builder: (context, child) {
+                    return Positioned(
+                      top: 100,
+                      right: -100,
+                      child: Opacity(
+                        opacity: 0.2 * (0.5 + 0.5 * _pulseController2.value),
+                        child: Container(
+                          width: 300,
+                          height: 300,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: RadialGradient(
+                              colors: [
+                                DesignTokens.accentBlue.withOpacity(0.6),
+                                DesignTokens.accentBlue.withOpacity(0),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
-              ),
-              const SizedBox(height: DesignTokens.space32),
-              
-              // App Name
-              const Text(
-                'VibeSync',
-                style: TextStyle(
-                  fontSize: 48,
-                  fontWeight: DesignTokens.fontWeightBold,
-                  color: Colors.white,
-                  letterSpacing: -2,
-                ),
-              ),
-              const SizedBox(height: DesignTokens.space8),
-              
-              // Tagline
-              Text(
-                'Stay connected, stay in sync',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.white.withValues(alpha: 0.9),
-                  letterSpacing: 0.5,
-                ),
-              ),
-              const SizedBox(height: DesignTokens.space48),
-              
-              // Loading indicator
-              const SizedBox(
-                width: 40,
-                height: 40,
-                child: CircularProgressIndicator(
-                  strokeWidth: 3,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
+
+          // Content
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Logo
+                SvgPicture.asset(
+                  DesignTokens.logoFullColor,
+                  width: 150,
+                  height: 150,
+                ),
+                const SizedBox(height: 48),
+
+                // Loading indicator
+                const SizedBox(
+                  width: 32,
+                  height: 32,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 3,
+                    valueColor: AlwaysStoppedAnimation<Color>(DesignTokens.primaryPurple),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

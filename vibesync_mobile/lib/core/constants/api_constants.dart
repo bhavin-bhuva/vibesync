@@ -13,22 +13,24 @@ class ApiConstants {
   /// For Android emulator, use 10.0.2.2 instead of localhost
   /// For iOS simulator, use localhost
   /// For production, use actual domain
-  static const String _devBaseUrl = 'http://10.0.2.2:3000/api/v1';
+  /// Base URL for API endpoints
+  /// Updated to point to real backend as requested
+  static const String _devBaseUrl = 'https://api.vibesync.co.in/api/v1';
   
   /// WebSocket URL for real-time communication
-  static const String _devSocketUrl = 'http://10.0.2.2:3000';
+  static const String _devSocketUrl = 'https://api.vibesync.co.in';
 
   /// Release-aware Base URL
-  static String get baseUrl => kReleaseMode ? productionBaseUrl : _devBaseUrl;
+  static String get baseUrl => _devBaseUrl; // Using dev/prod same URL for now
 
   /// Release-aware Socket URL
-  static String get socketUrl => kReleaseMode ? productionSocketUrl : _devSocketUrl;
+  static String get socketUrl => _devSocketUrl; // Using dev/prod same URL for now
   
   /// Production base URL (to be updated)
-  static const String productionBaseUrl = 'https://api.vibesync.com/api/v1';
+  static const String productionBaseUrl = 'https://api.vibesync.co.in/api/v1';
   
   /// Production WebSocket URL (to be updated)
-  static const String productionSocketUrl = 'https://api.vibesync.com';
+  static const String productionSocketUrl = 'https://api.vibesync.co.in';
 
   // ============================================================================
   // AUTH ENDPOINTS

@@ -18,7 +18,22 @@ export function createApp() {
   // Security middleware
   app.use(helmet());
   app.use(cors({
-    origin: env.CORS_ORIGIN,
+    origin: (requestOrigin, callback) => {
+      // Allow requests with no origin (mobile apps, curl, etc.)
+      if (!requestOrigin) return callback(null, true);
+
+      // Allow localhost for development/testing (Flutter Web defaults to localhost:port)
+      if (requestOrigin.startsWith('http://localhost') || requestOrigin.startsWith('http://127.0.0.1')) {
+        return callback(null, true);
+      }
+
+      // Check if origin matches allowed origin from env
+      if (env.CORS_ORIGIN === '*' || requestOrigin === env.CORS_ORIGIN) {
+        return callback(null, true);
+      }
+
+      callback(new Error('Not allowed by CORS'));
+    },
     credentials: true,
   }));
   app.use(passport.initialize());

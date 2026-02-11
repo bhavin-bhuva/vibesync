@@ -30,6 +30,33 @@ class MockApiClient extends ApiClient {
    
    @override
    void clearAuthToken() {}
+
+   @override
+   Future<Response> get(
+     String path, {
+     Map<String, dynamic>? queryParameters,
+     Options? options,
+   }) async {
+     return Response(
+       requestOptions: RequestOptions(path: path),
+       statusCode: 200,
+       data: {'user': {'id': '123', 'email': 'test@example.com'}},
+     );
+   }
+
+   @override
+   Future<Response> post(
+     String path, {
+     dynamic data,
+     Map<String, dynamic>? queryParameters,
+     Options? options,
+   }) async {
+     return Response(
+       requestOptions: RequestOptions(path: path),
+       statusCode: 200,
+       data: {'token': 'dummy_token', 'user': {'id': '123'}},
+     );
+   }
 }
 
 class MockSocketService extends SocketService {
@@ -52,7 +79,8 @@ void main() {
     ));
 
     // Initial state: Splash Screen
-    expect(find.text('VibeSync'), findsOneWidget);
+    expect(find.text('VibeSync'), findsNothing); // Title removed
+    expect(find.byType(SvgPicture), findsWidgets); // Logo exists
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
     
     // Wait for Splash Screen delay (2 seconds) + transitions
@@ -61,9 +89,8 @@ void main() {
     await tester.pump(); // Build next screen
     
     // Should now be on Login Screen
-    // Login screen has "Welcome Back" based on design analysis
-    // Or we can check for email field
-    expect(find.text('VibeSync'), findsOneWidget); // Logo text exists on both
-    // Check for login specific widgets if possible, or just pass if no crash
+    // Verify we are on Login Screen (check for SvgPicture logo instead of text)
+    expect(find.text('VibeSync'), findsNothing); // Title removed
+    expect(find.byType(SvgPicture), findsWidgets); // Logo exists
   });
 }
