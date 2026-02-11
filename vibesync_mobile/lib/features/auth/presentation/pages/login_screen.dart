@@ -216,10 +216,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                           ),
                           child: SvgPicture.asset(
                             DesignTokens.logoFullColor,
-                            colorFilter: const ColorFilter.mode(
-                              Colors.white,
-                              BlendMode.srcIn,
-                            ),
                           ),
                         ),
                         const SizedBox(height: DesignTokens.space12),

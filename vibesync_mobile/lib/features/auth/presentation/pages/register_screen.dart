@@ -244,11 +244,7 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                             ],
                           ),
                           child: SvgPicture.asset(
-                            DesignTokens.logoWhite,
-                            colorFilter: const ColorFilter.mode(
-                              Colors.white,
-                              BlendMode.srcIn,
-                            ),
+                            DesignTokens.logoFullColor,
                           ),
                         ),
                         const SizedBox(height: DesignTokens.space12),
