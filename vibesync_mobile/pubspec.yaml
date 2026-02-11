@@ -1,0 +1,60 @@
+name: vibesync_mobile
+description: VibeSync mobile application - Stay connected, stay in sync
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # UI
+  cupertino_icons: ^1.0.8
+  
+  # State Management
+  flutter_bloc: ^8.1.3
+  equatable: ^2.0.5
+  
+  # Navigation
+  go_router: ^13.0.0
+  
+  # Network
+  dio: ^5.4.0
+  socket_io_client: ^2.0.3
+  connectivity_plus: ^5.0.2
+  
+  # Storage
+  shared_preferences: ^2.2.2
+  flutter_secure_storage: ^9.0.0
+  
+  # JSON Serialization
+  json_annotation: ^4.8.1
+  
+  # UI/UX
+  google_fonts: ^6.1.0
+  cached_network_image: ^3.3.1
+  flutter_svg: ^2.0.9
+  
+  # Utilities
+  intl: ^0.19.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  
+  # Linting
+  flutter_lints: ^5.0.0
+  
+  # Code Generation
+  build_runner: ^2.4.8
+  json_serializable: ^6.7.1
+
+flutter:
+  uses-material-design: true
+  
+  # Assets
+  assets:
+    - assets/images/logos/
+    - assets/vibesync-brand-kit.json

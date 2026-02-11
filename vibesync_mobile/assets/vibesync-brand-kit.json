@@ -1,0 +1,662 @@
+{
+  "brandKit": {
+    "metadata": {
+      "brandName": "VibeSync",
+      "version": "1.0",
+      "lastUpdated": "2026-01-30",
+      "industry": "Communication / Messaging App",
+      "platform": "Web, Mobile (iOS, Android)"
+    },
+    "brandOverview": {
+      "tagline": "Connect. Share. Vibe.",
+      "mission": "To create a next-generation chat application that reimagines how people stay connected with friends and family through innovative features and stunning design.",
+      "vision": "A world where digital communication is seamless, beautiful, and respects user privacy while fostering genuine connections.",
+      "values": [
+        "Modern & Innovative",
+        "User-Centric",
+        "Privacy-First",
+        "Premium Quality",
+        "Trustworthy"
+      ],
+      "personality": {
+        "traits": [
+          "Modern",
+          "Friendly",
+          "Premium",
+          "Innovative",
+          "Trustworthy"
+        ],
+        "tone": "Approachable yet sophisticated, warm but professional",
+        "voice": "Clear, concise, empathetic, and encouraging"
+      },
+      "targetAudience": {
+        "primaryAge": "18-45 years old",
+        "techSavviness": "Medium to high",
+        "userNeeds": [
+          "Easy friend connections",
+          "Privacy control",
+          "Beautiful design",
+          "Fast messaging",
+          "Status sharing"
+        ]
+      }
+    },
+    "logo": {
+      "concept": {
+        "name": "Abstract Sync",
+        "description": "Two overlapping circles representing connection and synchronization with a glassmorphic center point",
+        "symbolism": "Left circle represents sender, right circle represents receiver, center represents the synchronized connection"
+      },
+      "specifications": {
+        "minimumSize": {
+          "value": 32,
+          "unit": "px",
+          "note": "Never use smaller than 32×32px"
+        },
+        "aspectRatio": "1:1",
+        "clearSpace": {
+          "description": "Maintain X space on all sides",
+          "note": "X = height of logo / 8"
+        },
+        "fileFormats": [
+          "SVG",
+          "PNG",
+          "AI",
+          "EPS"
+        ]
+      },
+      "variations": {
+        "primary": {
+          "name": "Full Color Gradient",
+          "usage": "Primary logo for all digital applications",
+          "background": "Dark backgrounds preferred",
+          "svgCode": "<svg viewBox=\"0 0 200 200\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><defs><linearGradient id=\"gradient-purple\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" style=\"stop-color:#A259FF;stop-opacity:1\" /><stop offset=\"100%\" style=\"stop-color:#6CD7FF;stop-opacity:1\" /></linearGradient><linearGradient id=\"gradient-pink\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" style=\"stop-color:#FF64AA;stop-opacity:1\" /><stop offset=\"100%\" style=\"stop-color:#FFC850;stop-opacity:1\" /></linearGradient></defs><circle cx=\"80\" cy=\"100\" r=\"45\" fill=\"url(#gradient-purple)\" opacity=\"0.8\"/><circle cx=\"120\" cy=\"100\" r=\"45\" fill=\"url(#gradient-pink)\" opacity=\"0.8\"/><circle cx=\"100\" cy=\"100\" r=\"25\" fill=\"rgba(255, 255, 255, 0.15)\"/><circle cx=\"100\" cy=\"100\" r=\"18\" fill=\"url(#gradient-purple)\"/><circle cx=\"100\" cy=\"100\" r=\"10\" fill=\"white\" opacity=\"0.3\"/></svg>"
+        },
+        "white": {
+          "name": "White",
+          "usage": "For dark backgrounds, overlays",
+          "background": "Dark backgrounds only"
+        },
+        "black": {
+          "name": "Black",
+          "usage": "For light backgrounds, print materials",
+          "background": "Light backgrounds only"
+        },
+        "monochrome": {
+          "name": "Purple Monochrome",
+          "usage": "Single color applications, icons",
+          "background": "Dark or light with sufficient contrast"
+        }
+      },
+      "appIconSizes": [
+        { "size": "16x16", "format": "ICO", "usage": "Favicon" },
+        { "size": "32x32", "format": "PNG", "usage": "Small icon" },
+        { "size": "64x64", "format": "PNG", "usage": "Medium icon" },
+        { "size": "128x128", "format": "PNG", "usage": "Large icon" },
+        { "size": "256x256", "format": "PNG", "usage": "Extra large icon" },
+        { "size": "512x512", "format": "PNG", "usage": "App store icon" },
+        { "size": "1024x1024", "format": "PNG", "usage": "iOS App Store" }
+      ]
+    },
+    "colorPalette": {
+      "primary": {
+        "purple": {
+          "name": "Primary Purple",
+          "hex": "#A259FF",
+          "rgb": { "r": 162, "g": 89, "b": 255 },
+          "hsl": { "h": 262, "s": 83, "l": 58 },
+          "cmyk": { "c": 36, "m": 65, "y": 0, "k": 0 },
+          "usage": "Primary brand color, CTAs, headings, main UI elements",
+          "accessibility": {
+            "onWhite": "AA (normal text), AAA (large text)",
+            "onBlack": "AAA"
+          }
+        }
+      },
+      "secondary": {
+        "blue": {
+          "name": "Secondary Blue",
+          "hex": "#6CD7FF",
+          "rgb": { "r": 108, "g": 215, "b": 255 },
+          "hsl": { "h": 198, "s": 93, "l": 60 },
+          "cmyk": { "c": 58, "m": 16, "y": 0, "k": 0 },
+          "usage": "Secondary elements, links, trust indicators, highlights",
+          "accessibility": {
+            "onWhite": "AA (normal text)",
+            "onBlack": "AAA"
+          }
+        }
+      },
+      "accent": {
+        "pink": {
+          "name": "Accent Pink",
+          "hex": "#FF64AA",
+          "rgb": { "r": 255, "g": 100, "b": 170 },
+          "hsl": { "h": 330, "s": 85, "l": 65 },
+          "cmyk": { "c": 0, "m": 61, "y": 33, "k": 0 },
+          "usage": "Accent elements, notifications, energy, warmth",
+          "accessibility": {
+            "onWhite": "AA (large text)",
+            "onBlack": "AAA"
+          }
+        },
+        "yellow": {
+          "name": "Accent Yellow",
+          "hex": "#FFC850",
+          "rgb": { "r": 255, "g": 200, "b": 80 },
+          "hsl": { "h": 45, "s": 100, "l": 65 },
+          "cmyk": { "c": 0, "m": 22, "y": 69, "k": 0 },
+          "usage": "Highlights, optimism, calls-to-attention",
+          "accessibility": {
+            "onWhite": "AA (large text)",
+            "onBlack": "AAA"
+          }
+        }
+      },
+      "neutral": {
+        "darkBackground": {
+          "primary": "#0a0a14",
+          "secondary": "#1a0a2e",
+          "tertiary": "#2a1a3e"
+        },
+        "text": {
+          "primary": "rgba(255, 255, 255, 0.95)",
+          "secondary": "rgba(255, 255, 255, 0.7)",
+          "muted": "rgba(255, 255, 255, 0.5)"
+        }
+      },
+      "gradients": {
+        "primary": {
+          "name": "Purple to Pink",
+          "css": "linear-gradient(135deg, #A259FF, #FF64AA)",
+          "stops": [
+            { "color": "#A259FF", "position": "0%" },
+            { "color": "#FF64AA", "position": "100%" }
+          ],
+          "usage": "Primary CTAs, hero sections, premium elements"
+        },
+        "secondary": {
+          "name": "Purple to Blue",
+          "css": "linear-gradient(135deg, #A259FF, #6CD7FF)",
+          "stops": [
+            { "color": "#A259FF", "position": "0%" },
+            { "color": "#6CD7FF", "position": "100%" }
+          ],
+          "usage": "Secondary buttons, backgrounds, accents"
+        },
+        "accent": {
+          "name": "Pink to Yellow",
+          "css": "linear-gradient(135deg, #FF64AA, #FFC850)",
+          "stops": [
+            { "color": "#FF64AA", "position": "0%" },
+            { "color": "#FFC850", "position": "100%" }
+          ],
+          "usage": "Highlights, special features, success states"
+        }
+      },
+      "semantic": {
+        "success": {
+          "hex": "#50C878",
+          "name": "Success Green",
+          "usage": "Success messages, confirmations, positive actions"
+        },
+        "warning": {
+          "hex": "#FFA500",
+          "name": "Warning Orange",
+          "usage": "Warnings, cautions, important notices"
+        },
+        "error": {
+          "hex": "#FF5C5C",
+          "name": "Error Red",
+          "usage": "Errors, deletions, critical alerts"
+        },
+        "info": {
+          "hex": "#6CD7FF",
+          "name": "Info Blue",
+          "usage": "Informational messages, tips, helpers"
+        }
+      }
+    },
+    "typography": {
+      "fontFamily": {
+        "primary": {
+          "name": "Outfit",
+          "source": "Google Fonts",
+          "url": "https://fonts.google.com/specimen/Outfit",
+          "fallback": "system-ui, -apple-system, sans-serif",
+          "weights": [400, 600, 700, 800],
+          "usage": "All text content, headings, body, UI elements"
+        }
+      },
+      "typeScale": {
+        "h1": {
+          "fontSize": "4.5rem",
+          "fontSizePx": "72px",
+          "fontWeight": 800,
+          "lineHeight": 1.1,
+          "letterSpacing": "-0.02em",
+          "usage": "Hero headings, main page titles",
+          "mobile": "3rem"
+        },
+        "h2": {
+          "fontSize": "3.5rem",
+          "fontSizePx": "56px",
+          "fontWeight": 800,
+          "lineHeight": 1.2,
+          "letterSpacing": "-0.01em",
+          "usage": "Section headings",
+          "mobile": "2.5rem"
+        },
+        "h3": {
+          "fontSize": "2.5rem",
+          "fontSizePx": "40px",
+          "fontWeight": 700,
+          "lineHeight": 1.3,
+          "letterSpacing": "0",
+          "usage": "Subsection headings",
+          "mobile": "2rem"
+        },
+        "h4": {
+          "fontSize": "2rem",
+          "fontSizePx": "32px",
+          "fontWeight": 700,
+          "lineHeight": 1.4,
+          "letterSpacing": "0",
+          "usage": "Card titles, feature headings",
+          "mobile": "1.5rem"
+        },
+        "body": {
+          "fontSize": "1rem",
+          "fontSizePx": "16px",
+          "fontWeight": 400,
+          "lineHeight": 1.6,
+          "letterSpacing": "0",
+          "usage": "Body text, paragraphs, descriptions",
+          "mobile": "1rem"
+        },
+        "bodyLarge": {
+          "fontSize": "1.25rem",
+          "fontSizePx": "20px",
+          "fontWeight": 400,
+          "lineHeight": 1.6,
+          "letterSpacing": "0",
+          "usage": "Lead paragraphs, important text",
+          "mobile": "1.125rem"
+        },
+        "small": {
+          "fontSize": "0.875rem",
+          "fontSizePx": "14px",
+          "fontWeight": 400,
+          "lineHeight": 1.5,
+          "letterSpacing": "0",
+          "usage": "Captions, small text, metadata",
+          "mobile": "0.875rem"
+        },
+        "button": {
+          "fontSize": "1rem",
+          "fontSizePx": "16px",
+          "fontWeight": 700,
+          "lineHeight": 1,
+          "letterSpacing": "0.5px",
+          "textTransform": "none",
+          "usage": "Buttons, CTAs, interactive elements",
+          "mobile": "1rem"
+        }
+      }
+    },
+    "spacing": {
+      "baseUnit": 4,
+      "scale": {
+        "xs": { "value": 8, "rem": "0.5rem", "multiplier": 2 },
+        "sm": { "value": 12, "rem": "0.75rem", "multiplier": 3 },
+        "md": { "value": 16, "rem": "1rem", "multiplier": 4 },
+        "lg": { "value": 24, "rem": "1.5rem", "multiplier": 6 },
+        "xl": { "value": 32, "rem": "2rem", "multiplier": 8 },
+        "2xl": { "value": 48, "rem": "3rem", "multiplier": 12 },
+        "3xl": { "value": 64, "rem": "4rem", "multiplier": 16 },
+        "4xl": { "value": 96, "rem": "6rem", "multiplier": 24 },
+        "5xl": { "value": 128, "rem": "8rem", "multiplier": 32 }
+      },
+      "usage": {
+        "componentPadding": "md to lg (16-24px)",
+        "sectionSpacing": "2xl to 3xl (48-64px)",
+        "elementGap": "xs to md (8-16px)",
+        "containerPadding": "lg to xl (24-32px)"
+      }
+    },
+    "borderRadius": {
+      "scale": {
+        "sm": { "value": "8px", "usage": "Small components, inputs, badges" },
+        "md": { "value": "12px", "usage": "Cards, buttons, images" },
+        "lg": { "value": "16px", "usage": "Large cards, modals" },
+        "xl": { "value": "24px", "usage": "Hero sections, prominent containers" },
+        "2xl": { "value": "32px", "usage": "Extra large containers" },
+        "full": { "value": "9999px", "usage": "Pills, circular elements, infinite radius" }
+      }
+    },
+    "shadows": {
+      "sm": {
+        "value": "0 2px 8px rgba(0, 0, 0, 0.3)",
+        "usage": "Subtle elevation, hover states"
+      },
+      "md": {
+        "value": "0 4px 16px rgba(0, 0, 0, 0.4)",
+        "usage": "Cards, dropdowns, tooltips"
+      },
+      "lg": {
+        "value": "0 8px 32px rgba(0, 0, 0, 0.5)",
+        "usage": "Modals, popovers, prominent elements"
+      },
+      "xl": {
+        "value": "0 16px 48px rgba(0, 0, 0, 0.6)",
+        "usage": "Hero elements, dramatic elevation"
+      },
+      "glow": {
+        "purple": "0 0 20px rgba(162, 89, 255, 0.4)",
+        "blue": "0 0 20px rgba(108, 215, 255, 0.4)",
+        "pink": "0 0 20px rgba(255, 100, 170, 0.4)",
+        "usage": "Accent elements, focus states, CTAs"
+      }
+    },
+    "glassmorphism": {
+      "default": {
+        "background": "rgba(255, 255, 255, 0.05)",
+        "backdropFilter": "blur(16px)",
+        "border": "1px solid rgba(255, 255, 255, 0.1)",
+        "usage": "Cards, containers, overlays"
+      },
+      "prominent": {
+        "background": "rgba(255, 255, 255, 0.1)",
+        "backdropFilter": "blur(20px)",
+        "border": "1px solid rgba(255, 255, 255, 0.2)",
+        "usage": "Hero sections, important cards"
+      },
+      "subtle": {
+        "background": "rgba(255, 255, 255, 0.03)",
+        "backdropFilter": "blur(12px)",
+        "border": "1px solid rgba(255, 255, 255, 0.05)",
+        "usage": "Backgrounds, subtle elevation"
+      }
+    },
+    "animations": {
+      "duration": {
+        "fast": "150ms",
+        "normal": "300ms",
+        "slow": "500ms",
+        "slower": "800ms"
+      },
+      "easing": {
+        "default": "ease",
+        "in": "ease-in",
+        "out": "ease-out",
+        "inOut": "ease-in-out",
+        "bounce": "cubic-bezier(0.68, -0.55, 0.265, 1.55)"
+      },
+      "common": {
+        "fadeIn": {
+          "keyframes": "opacity: 0 → 1",
+          "duration": "500ms",
+          "easing": "ease-out"
+        },
+        "slideInUp": {
+          "keyframes": "transform: translateY(30px) → translateY(0), opacity: 0 → 1",
+          "duration": "500ms",
+          "easing": "ease-out"
+        },
+        "float": {
+          "keyframes": "transform: translateY(0) → translateY(-15px) → translateY(0)",
+          "duration": "3s",
+          "easing": "ease-in-out",
+          "iteration": "infinite"
+        },
+        "pulse": {
+          "keyframes": "opacity: 1 → 0.6 → 1",
+          "duration": "2s",
+          "easing": "ease-in-out",
+          "iteration": "infinite"
+        },
+        "glow": {
+          "keyframes": "box-shadow: glow-0 → glow-max → glow-0",
+          "duration": "2s",
+          "easing": "ease-in-out",
+          "iteration": "infinite"
+        }
+      }
+    },
+    "breakpoints": {
+      "mobile": {
+        "max": "767px",
+        "description": "Mobile phones"
+      },
+      "tablet": {
+        "min": "768px",
+        "max": "1023px",
+        "description": "Tablets and small laptops"
+      },
+      "desktop": {
+        "min": "1024px",
+        "max": "1439px",
+        "description": "Desktops and laptops"
+      },
+      "wide": {
+        "min": "1440px",
+        "description": "Large desktops and ultra-wide screens"
+      }
+    },
+    "usageGuidelines": {
+      "logo": {
+        "do": [
+          "Use approved logo variations",
+          "Maintain minimum size of 32×32px",
+          "Keep adequate clear space around logo",
+          "Use on appropriate backgrounds",
+          "Maintain aspect ratio (1:1)",
+          "Use SVG format for web when possible"
+        ],
+        "dont": [
+          "Don't distort or stretch the logo",
+          "Don't rotate or tilt the logo",
+          "Don't add effects, shadows, or filters",
+          "Don't use logo smaller than 32px",
+          "Don't place on busy backgrounds",
+          "Don't modify colors outside brand palette"
+        ]
+      },
+      "colors": {
+        "do": [
+          "Use brand colors consistently",
+          "Ensure sufficient color contrast (WCAG AA)",
+          "Use gradients for premium elements",
+          "Test colors in both light and dark modes",
+          "Use semantic colors for their intended purpose"
+        ],
+        "dont": [
+          "Don't use colors outside the brand palette",
+          "Don't mix too many colors at once",
+          "Don't ignore accessibility guidelines",
+          "Don't use low-contrast color combinations"
+        ]
+      },
+      "typography": {
+        "do": [
+          "Use Outfit font family consistently",
+          "Follow type hierarchy",
+          "Maintain proper line heights",
+          "Use appropriate font weights",
+          "Ensure text is readable at all sizes"
+        ],
+        "dont": [
+          "Don't use other font families",
+          "Don't use all caps for body text",
+          "Don't use too many font sizes",
+          "Don't compromise readability for style"
+        ]
+      },
+      "accessibility": {
+        "requirements": [
+          "WCAG 2.1 AA compliance minimum",
+          "Color contrast ratio 4.5:1 for normal text",
+          "Color contrast ratio 3:1 for large text",
+          "Minimum touch target size 44×44px",
+          "Keyboard navigation support",
+          "Screen reader compatibility",
+          "Alt text for all meaningful images",
+          "ARIA labels for interactive elements"
+        ]
+      },
+      "communication": {
+        "voice": {
+          "characteristics": [
+            "Friendly and approachable",
+            "Clear and concise",
+            "Empathetic and caring",
+            "Professional but not corporate",
+            "Optimistic and encouraging"
+          ]
+        },
+        "tone": {
+          "do": [
+            "Be conversational and natural",
+            "Show empathy for user needs",
+            "Celebrate user achievements",
+            "Provide clear explanations",
+            "Use positive language"
+          ],
+          "dont": [
+            "Don't be overly formal or corporate",
+            "Don't use technical jargon unnecessarily",
+            "Don't be condescending",
+            "Don't use negative language",
+            "Don't make assumptions about users"
+          ]
+        },
+        "messaging": {
+          "errorMessages": "Clear, helpful, and actionable",
+          "successMessages": "Celebratory and affirming",
+          "emptyStates": "Encouraging and guiding",
+          "onboarding": "Friendly and educational",
+          "notifications": "Timely and relevant"
+        }
+      }
+    },
+    "components": {
+      "buttons": {
+        "primary": {
+          "background": "linear-gradient(135deg, #A259FF, #FF64AA)",
+          "color": "#FFFFFF",
+          "padding": "12px 32px",
+          "borderRadius": "9999px",
+          "fontWeight": 700,
+          "boxShadow": "0 4px 16px rgba(162, 89, 255, 0.4)",
+          "hoverTransform": "translateY(-2px)",
+          "hoverShadow": "0 6px 20px rgba(162, 89, 255, 0.5)"
+        },
+        "secondary": {
+          "background": "rgba(255, 255, 255, 0.1)",
+          "backdropFilter": "blur(16px)",
+          "border": "1px solid rgba(255, 255, 255, 0.2)",
+          "color": "#FFFFFF",
+          "padding": "12px 32px",
+          "borderRadius": "9999px",
+          "fontWeight": 700
+        },
+        "ghost": {
+          "background": "transparent",
+          "color": "#FFFFFF",
+          "padding": "12px 32px",
+          "border": "none",
+          "fontWeight": 600
+        }
+      },
+      "cards": {
+        "default": {
+          "background": "rgba(255, 255, 255, 0.05)",
+          "backdropFilter": "blur(16px)",
+          "border": "1px solid rgba(255, 255, 255, 0.1)",
+          "borderRadius": "24px",
+          "padding": "32px",
+          "boxShadow": "0 4px 16px rgba(0, 0, 0, 0.3)"
+        },
+        "prominent": {
+          "background": "rgba(255, 255, 255, 0.1)",
+          "backdropFilter": "blur(20px)",
+          "border": "1px solid rgba(255, 255, 255, 0.2)",
+          "borderRadius": "32px",
+          "padding": "48px",
+          "boxShadow": "0 8px 32px rgba(162, 89, 255, 0.2)"
+        }
+      },
+      "inputs": {
+        "default": {
+          "background": "rgba(255, 255, 255, 0.05)",
+          "border": "1px solid rgba(255, 255, 255, 0.1)",
+          "borderRadius": "12px",
+          "padding": "12px 16px",
+          "color": "#FFFFFF",
+          "fontSize": "1rem",
+          "focusBorder": "1px solid #A259FF",
+          "focusShadow": "0 0 0 3px rgba(162, 89, 255, 0.2)"
+        }
+      }
+    },
+    "assets": {
+      "required": [
+        "Logo - Full color (SVG, PNG)",
+        "Logo - White (SVG, PNG)",
+        "Logo - Black (SVG, PNG)",
+        "Logo - Purple monochrome (SVG, PNG)",
+        "App icons (16px to 1024px)",
+        "Favicon (ICO, 16x16, 32x32)",
+        "Social media preview images",
+        "Brand guidelines PDF"
+      ],
+      "recommended": [
+        "Hero illustrations",
+        "Feature icons",
+        "Decorative shapes/blobs",
+        "UI component library",
+        "Marketing templates",
+        "Presentation templates"
+      ]
+    },
+    "platformSpecific": {
+      "web": {
+        "favicon": "16×16, 32×32, ICO format",
+        "appleTouchIcon": "180×180",
+        "manifestIcon": "192×192, 512×512",
+        "ogImage": "1200×630",
+        "twitterCard": "1200×675"
+      },
+      "ios": {
+        "appIcon": "1024×1024",
+        "launchScreen": "2778×1284",
+        "notificationIcon": "40×40"
+      },
+      "android": {
+        "appIcon": "512×512",
+        "adaptiveIcon": "foreground + background layers",
+        "notificationIcon": "48×48"
+      }
+    },
+    "fileNaming": {
+      "convention": "kebab-case",
+      "examples": [
+        "vibesync-logo-full-color.svg",
+        "vibesync-logo-white.png",
+        "vibesync-icon-512x512.png",
+        "vibesync-hero-illustration.svg"
+      ]
+    },
+    "version": {
+      "number": "1.0",
+      "date": "2026-01-30",
+      "changelog": [
+        "Initial brand kit release",
+        "Logo variations finalized",
+        "Color palette established",
+        "Typography system defined",
+        "Component guidelines created"
+      ]
+    }
+  }
+}
