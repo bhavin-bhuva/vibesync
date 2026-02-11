@@ -196,33 +196,33 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
               SafeArea(
                 child: Center(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(DesignTokens.space24),
+                    padding: const EdgeInsets.all(DesignTokens.space16),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         // Logo with glow effect
                         Container(
-                          width: 80,
-                          height: 80,
-                          padding: const EdgeInsets.all(DesignTokens.space16),
+                          width: 60,
+                          height: 60,
+                          padding: const EdgeInsets.all(DesignTokens.space12),
                           decoration: BoxDecoration(
                             boxShadow: [
                               BoxShadow(
                                 color: DesignTokens.primaryPurple.withOpacity(0.5),
-                                blurRadius: 30,
-                                spreadRadius: 10,
+                                blurRadius: 20,
+                                spreadRadius: 5,
                               ),
                             ],
                           ),
                           child: SvgPicture.asset(
-                            DesignTokens.logoWhite,
+                            DesignTokens.logoFullColor,
                             colorFilter: const ColorFilter.mode(
                               Colors.white,
                               BlendMode.srcIn,
                             ),
                           ),
                         ),
-                        const SizedBox(height: DesignTokens.space16),
+                        const SizedBox(height: DesignTokens.space12),
 
                         // Gradient Text "VibeSync"
                         ShaderMask(
@@ -230,29 +230,29 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                           child: const Text(
                             'VibeSync',
                             style: TextStyle(
-                              fontSize: 48,
+                              fontSize: 36,
                               fontWeight: DesignTokens.fontWeightBold,
                               color: Colors.white,
-                              letterSpacing: -2,
+                              letterSpacing: -1.5,
                             ),
                           ),
                         ),
-                        const SizedBox(height: DesignTokens.space8),
+                        const SizedBox(height: DesignTokens.space4),
 
                         // Subtitle
                         const Text(
                           'Connect. Chat. Vibe.',
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 13,
                             color: Color(0xFF9CA3AF),
                           ),
                         ),
-                        const SizedBox(height: DesignTokens.space48),
+                        const SizedBox(height: DesignTokens.space32),
 
                         // Glass Card
                         Container(
                           constraints: const BoxConstraints(maxWidth: 450),
-                          padding: const EdgeInsets.all(DesignTokens.space32),
+                          padding: const EdgeInsets.all(DesignTokens.space24),
                           decoration: BoxDecoration(
                             color: const Color(0xFF1F2937).withOpacity(0.75),
                             borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
@@ -277,20 +277,20 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                                 const Text(
                                   'Welcome Back',
                                   style: TextStyle(
-                                    fontSize: 24,
+                                    fontSize: 20,
                                     fontWeight: DesignTokens.fontWeightBold,
                                     color: Colors.white,
                                   ),
                                 ),
-                                const SizedBox(height: DesignTokens.space8),
+                                const SizedBox(height: DesignTokens.space4),
                                 const Text(
                                   'Sign in to continue your conversations',
                                   style: TextStyle(
-                                    fontSize: 14,
+                                    fontSize: 13,
                                     color: Color(0xFF9CA3AF),
                                   ),
                                 ),
-                                const SizedBox(height: DesignTokens.space32),
+                                const SizedBox(height: DesignTokens.space24),
 
                                 // Email Field
                                 VibeSyncTextField(
@@ -332,7 +332,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                                     return null;
                                   },
                                 ),
-                                const SizedBox(height: DesignTokens.space16),
+                                const SizedBox(height: DesignTokens.space12),
 
                                 // Remember Me & Forgot Password
                                 Row(
@@ -382,7 +382,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: DesignTokens.space24),
+                                const SizedBox(height: DesignTokens.space16),
 
                                 // Error Display
                                 if (state is AuthError)
@@ -411,7 +411,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                                   onPressed: isLoading ? null : _handleLogin,
                                   isLoading: isLoading,
                                 ),
-                                const SizedBox(height: DesignTokens.space24),
+                                const SizedBox(height: DesignTokens.space16),
 
                                 // Divider
                                 Row(
@@ -451,7 +451,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                                   backgroundColor: const Color(0xFF374151),
                                   textColor: Colors.white,
                                 ),
-                                const SizedBox(height: DesignTokens.space24),
+                                const SizedBox(height: DesignTokens.space16),
 
                                 // Sign Up Link
                                 Row(

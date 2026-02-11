@@ -165,7 +165,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   ],
                 ),
                 child: SvgPicture.asset(
-                  DesignTokens.logoWhite,
+                  DesignTokens.logoFullColor, 
                   colorFilter: const ColorFilter.mode(
                     Colors.white,
                     BlendMode.srcIn,

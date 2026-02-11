@@ -225,21 +225,21 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
               SafeArea(
                 child: Center(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(DesignTokens.space24),
+                    padding: const EdgeInsets.all(DesignTokens.space16),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         // Logo with glow
                         Container(
-                          width: 80,
-                          height: 80,
-                          padding: const EdgeInsets.all(DesignTokens.space16),
+                          width: 60,
+                          height: 60,
+                          padding: const EdgeInsets.all(DesignTokens.space12),
                           decoration: BoxDecoration(
                             boxShadow: [
                               BoxShadow(
                                 color: DesignTokens.primaryPurple.withOpacity(0.5),
-                                blurRadius: 30,
-                                spreadRadius: 10,
+                                blurRadius: 20,
+                                spreadRadius: 5,
                               ),
                             ],
                           ),
@@ -251,7 +251,7 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                             ),
                           ),
                         ),
-                        const SizedBox(height: DesignTokens.space16),
+                        const SizedBox(height: DesignTokens.space12),
 
                         // Gradient Text
                         ShaderMask(
@@ -259,28 +259,28 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                           child: const Text(
                             'VibeSync',
                             style: TextStyle(
-                              fontSize: 48,
+                              fontSize: 36,
                               fontWeight: DesignTokens.fontWeightBold,
                               color: Colors.white,
-                              letterSpacing: -2,
+                              letterSpacing: -1.5,
                             ),
                           ),
                         ),
-                        const SizedBox(height: DesignTokens.space8),
+                        const SizedBox(height: DesignTokens.space4),
 
                         const Text(
                           'Connect. Chat. Vibe.',
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 13,
                             color: Color(0xFF9CA3AF),
                           ),
                         ),
-                        const SizedBox(height: DesignTokens.space48),
+                        const SizedBox(height: DesignTokens.space32),
 
                         // Glass Card
                         Container(
                           constraints: const BoxConstraints(maxWidth: 450),
-                          padding: const EdgeInsets.all(DesignTokens.space32),
+                          padding: const EdgeInsets.all(DesignTokens.space24),
                           decoration: BoxDecoration(
                             color: const Color(0xFF1F2937).withOpacity(0.75),
                             borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
@@ -304,20 +304,20 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                                 const Text(
                                   'Create Account',
                                   style: TextStyle(
-                                    fontSize: 24,
+                                    fontSize: 20,
                                     fontWeight: DesignTokens.fontWeightBold,
                                     color: Colors.white,
                                   ),
                                 ),
-                                const SizedBox(height: DesignTokens.space8),
+                                const SizedBox(height: DesignTokens.space4),
                                 const Text(
                                   'Join VibeSync and start connecting',
                                   style: TextStyle(
-                                    fontSize: 14,
+                                    fontSize: 13,
                                     color: Color(0xFF9CA3AF),
                                   ),
                                 ),
-                                const SizedBox(height: DesignTokens.space32),
+                                const SizedBox(height: DesignTokens.space24),
 
                                 // Username Field
                                 VibeSyncTextField(
@@ -338,7 +338,7 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                                     return null;
                                   },
                                 ),
-                                const SizedBox(height: DesignTokens.space16),
+                                const SizedBox(height: DesignTokens.space12),
 
                                 // Email Field
                                 VibeSyncTextField(
@@ -359,7 +359,7 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                                     return null;
                                   },
                                 ),
-                                const SizedBox(height: DesignTokens.space16),
+                                const SizedBox(height: DesignTokens.space12),
 
                                 // Password Field with Strength Indicator
                                 Column(
@@ -429,7 +429,7 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                                     ],
                                   ],
                                 ),
-                                const SizedBox(height: DesignTokens.space16),
+                                const SizedBox(height: DesignTokens.space12),
 
                                 // Confirm Password Field
                                 VibeSyncTextField(
@@ -450,7 +450,7 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                                     return null;
                                   },
                                 ),
-                                const SizedBox(height: DesignTokens.space16),
+                                const SizedBox(height: DesignTokens.space12),
 
                                 // Terms & Conditions
                                 Row(
@@ -501,7 +501,7 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: DesignTokens.space24),
+                                const SizedBox(height: DesignTokens.space16),
 
                                 // Error Display
                                 if (state is AuthError)
@@ -531,7 +531,7 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                                   isLoading: isLoading,
                                   gradient: DesignTokens.gradientPrimaryPurplePink,
                                 ),
-                                const SizedBox(height: DesignTokens.space24),
+                                const SizedBox(height: DesignTokens.space16),
 
                                 // Divider
                                 Row(
@@ -560,7 +560,7 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: DesignTokens.space24),
+                                const SizedBox(height: DesignTokens.space16),
 
                                 // Google Sign Up Button
                                 VibeSyncButton(
@@ -571,7 +571,7 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                                   backgroundColor: const Color(0xFF374151),
                                   textColor: Colors.white,
                                 ),
-                                const SizedBox(height: DesignTokens.space24),
+                                const SizedBox(height: DesignTokens.space16),
 
                                 // Login Link
                                 Row(
