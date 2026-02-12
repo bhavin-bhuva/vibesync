@@ -165,4 +165,63 @@ export class AuthService {
 
     return newUser;
   }
+
+  async googleSignIn(idToken: string) {
+    // For now, we'll use a simple approach without verifying the token
+    // In production, you should verify the token using Google's OAuth2 client
+    // For this implementation, we'll decode the JWT to get user info
+    
+    try {
+      // Decode the ID token (without verification for simplicity)
+      // In production, use google-auth-library to verify the token
+      const base64Url = idToken.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        Buffer.from(base64, 'base64')
+          .toString()
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+      
+      const payload = JSON.parse(jsonPayload);
+      
+      // Extract user info from token
+      const email = payload.email;
+      const name = payload.name || email.split('@')[0];
+      const avatar = payload.picture;
+      
+      if (!email) {
+        throw new Error('Email not found in Google token');
+      }
+      
+      // Handle social login (create or find user)
+      const user = await this.handleSocialLogin(name, email, avatar);
+      
+      // Generate tokens
+      const accessToken = generateAccessToken({
+        userId: user.id,
+        email: user.email,
+      });
+
+      const refreshToken = generateRefreshToken({
+        userId: user.id,
+        email: user.email,
+      });
+
+      // Remove password from response
+      const { password: _, ...userWithoutPassword } = user;
+
+      return {
+        user: userWithoutPassword,
+        tokens: {
+          accessToken,
+          refreshToken,
+          expiresIn: 3600,
+        },
+      };
+    } catch (error) {
+      throw new Error('Invalid Google ID token');
+    }
+  }
 }

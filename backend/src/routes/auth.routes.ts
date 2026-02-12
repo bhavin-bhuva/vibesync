@@ -22,6 +22,10 @@ const refreshTokenSchema = z.object({
   refreshToken: z.string().min(1, 'Refresh token is required'),
 });
 
+const googleSignInSchema = z.object({
+  idToken: z.string().min(1, 'Google ID token is required'),
+});
+
 import passport from 'passport';
 import { env } from '../config/env';
 
@@ -29,6 +33,7 @@ import { env } from '../config/env';
 router.post('/register', validate(registerSchema), authController.register.bind(authController));
 router.post('/login', validate(loginSchema), authController.login.bind(authController));
 router.post('/refresh', validate(refreshTokenSchema), authController.refreshToken.bind(authController));
+router.post('/google/signin', validate(googleSignInSchema), authController.googleSignIn.bind(authController));
 
 // Google Auth Routes
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'], session: false }));

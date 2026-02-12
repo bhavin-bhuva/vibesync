@@ -93,4 +93,38 @@ export class AuthController {
       next(error);
     }
   }
+
+  async googleSignIn(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { idToken } = req.body;
+
+      if (!idToken) {
+        return res.status(400).json({
+          success: false,
+          error: {
+            code: 'MISSING_ID_TOKEN',
+            message: 'Google ID token is required',
+          },
+        });
+      }
+
+      const result = await authService.googleSignIn(idToken);
+
+      res.status(200).json({
+        success: true,
+        data: result,
+      });
+    } catch (error) {
+      if (error instanceof Error && error.message === 'Invalid Google ID token') {
+        return res.status(401).json({
+          success: false,
+          error: {
+            code: 'INVALID_TOKEN',
+            message: error.message,
+          },
+        });
+      }
+      next(error);
+    }
+  }
 }
