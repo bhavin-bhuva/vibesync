@@ -166,38 +166,85 @@ export class AuthService {
     return newUser;
   }
 
-  async googleSignIn(idToken: string) {
-    // For now, we'll use a simple approach without verifying the token
-    // In production, you should verify the token using Google's OAuth2 client
-    // For this implementation, we'll decode the JWT to get user info
-    
+  async googleSignIn(token: string) {
     try {
-      // Decode the ID token (without verification for simplicity)
-      // In production, use google-auth-library to verify the token
-      const base64Url = idToken.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(
-        Buffer.from(base64, 'base64')
-          .toString()
-          .split('')
-          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-          .join('')
-      );
-      
-      const payload = JSON.parse(jsonPayload);
-      
-      // Extract user info from token
-      const email = payload.email;
-      const name = payload.name || email.split('@')[0];
-      const avatar = payload.picture;
-      
+      let email: string;
+      let name: string;
+      let avatar: string | undefined;
+
+      // Check if token is a JWT (ID token) or an access token
+      // JWTs have 3 parts separated by dots
+      const isJWT = token.split('.').length === 3;
+
+      if (isJWT) {
+        // Handle ID token (JWT format)
+        try {
+          const base64Url = token.split('.')[1];
+          const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+          const jsonPayload = decodeURIComponent(
+            Buffer.from(base64, 'base64')
+              .toString()
+              .split('')
+              .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+              .join('')
+          );
+
+          const payload = JSON.parse(jsonPayload);
+          email = payload.email;
+          name = payload.name || email.split('@')[0];
+          avatar = payload.picture;
+        } catch (error) {
+          throw new Error('Invalid Google ID token');
+        }
+      } else {
+        // Handle access token - verify with Google's tokeninfo endpoint
+        try {
+          const response = await fetch(
+            `https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${token}`
+          );
+
+          if (!response.ok) {
+            throw new Error('Invalid access token');
+          }
+
+          const tokenInfo = await response.json();
+
+          // Verify the token is valid
+          if (!tokenInfo.email || !tokenInfo.email_verified) {
+            throw new Error('Email not verified or not found');
+          }
+
+          // Get user profile information using the access token
+          const profileResponse = await fetch(
+            'https://www.googleapis.com/oauth2/v2/userinfo',
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (!profileResponse.ok) {
+            throw new Error('Failed to fetch user profile');
+          }
+
+          const profile = await profileResponse.json();
+          email = profile.email;
+          name = profile.name || email.split('@')[0];
+          avatar = profile.picture;
+        } catch (error) {
+          console.error('Access token verification error:', error);
+          throw new Error('Invalid Google access token');
+        }
+      }
+
       if (!email) {
         throw new Error('Email not found in Google token');
       }
-      
+
       // Handle social login (create or find user)
       const user = await this.handleSocialLogin(name, email, avatar);
-      
+
       // Generate tokens
       const accessToken = generateAccessToken({
         userId: user.id,
@@ -221,7 +268,8 @@ export class AuthService {
         },
       };
     } catch (error) {
-      throw new Error('Invalid Google ID token');
+      console.error('Google Sign-In error:', error);
+      throw error;
     }
   }
 }

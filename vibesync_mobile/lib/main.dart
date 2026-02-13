@@ -10,6 +10,7 @@ import 'shared/services/local_storage_service.dart';
 import 'shared/services/secure_storage_service.dart';
 import 'shared/services/socket_service.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
+import 'core/theme/theme_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -63,31 +64,38 @@ class VibeSyncApp extends StatelessWidget {
               socketService: socketService, // Pass socketService to AuthBloc
             )..add(const CheckAuthStatusEvent()),
           ),
+          BlocProvider(
+            create: (context) => ThemeCubit(localStorage),
+          ),
         ],
-        child: MaterialApp.router(
-        title: 'VibeSync',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: DesignTokens.primaryPurple,
-            brightness: Brightness.light,
-          ),
-          textTheme: GoogleFonts.outfitTextTheme(),
-          useMaterial3: true,
+        child: BlocBuilder<ThemeCubit, ThemeMode>(
+          builder: (context, themeMode) {
+            return MaterialApp.router(
+              title: 'VibeSync',
+              debugShowCheckedModeBanner: false,
+              theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(
+                  seedColor: DesignTokens.primaryPurple,
+                  brightness: Brightness.light,
+                ),
+                textTheme: GoogleFonts.outfitTextTheme(),
+                useMaterial3: true,
+              ),
+              darkTheme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(
+                  seedColor: DesignTokens.primaryPurple,
+                  brightness: Brightness.dark,
+                ),
+                textTheme: GoogleFonts.outfitTextTheme(
+                  ThemeData.dark().textTheme,
+                ),
+                useMaterial3: true,
+              ),
+              themeMode: themeMode,
+              routerConfig: AppRouter.router,
+            );
+          },
         ),
-        darkTheme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: DesignTokens.primaryPurple,
-            brightness: Brightness.dark,
-          ),
-          textTheme: GoogleFonts.outfitTextTheme(
-            ThemeData.dark().textTheme,
-          ),
-          useMaterial3: true,
-        ),
-        themeMode: ThemeMode.system,
-        routerConfig: AppRouter.router,
-      ), // MaterialApp
     )); // MultiBlocProvider and MultiRepositoryProvider
   }
 }
