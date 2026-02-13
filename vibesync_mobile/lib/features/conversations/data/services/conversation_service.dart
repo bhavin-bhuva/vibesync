@@ -45,6 +45,32 @@ class ConversationService {
     }
   }
 
+  /// Get cached conversations
+  List<Conversation> getCachedConversations() {
+    if (_localStorage == null) return [];
+    try {
+      final jsonString = _localStorage!.getString(StorageKeys.cachedConversations);
+      if (jsonString != null && jsonString.isNotEmpty) {
+        final List<dynamic> jsonList = jsonDecode(jsonString);
+        return jsonList.map((json) => Conversation.fromJson(json)).toList();
+      }
+    } catch (e) {
+      // Ignore cache errors
+    }
+    return [];
+  }
+
+  /// Cache conversations
+  Future<void> cacheConversations(List<Conversation> conversations) async {
+    if (_localStorage == null) return;
+    try {
+      final jsonList = conversations.map((c) => c.toJson()).toList();
+      await _localStorage!.setString(StorageKeys.cachedConversations, jsonEncode(jsonList));
+    } catch (e) {
+      // Ignore cache errors
+    }
+  }
+
   /// Get all conversations for the current user
   Future<List<Conversation>> getConversations() async {
     try {

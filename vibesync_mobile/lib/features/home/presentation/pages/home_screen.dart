@@ -9,6 +9,7 @@ import 'package:vibesync_mobile/shared/services/socket_service.dart';
 import 'package:vibesync_mobile/features/conversations/data/services/conversation_service.dart';
 import 'package:vibesync_mobile/features/conversations/data/models/conversation_model.dart';
 import 'package:vibesync_mobile/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:vibesync_mobile/shared/services/local_storage_service.dart';
 
 /// Home screen with conversation list and bottom navigation
 class HomeScreen extends StatefulWidget {
@@ -35,7 +36,11 @@ class _HomeScreenState extends State<HomeScreen> {
     // Get ApiClient from AuthBloc and initialize ConversationService
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final authBloc = context.read<AuthBloc>();
-      _conversationService = ConversationService(apiClient: authBloc.apiClient);
+      final localStorage = context.read<LocalStorageService>();
+      _conversationService = ConversationService(
+        apiClient: authBloc.apiClient,
+        localStorage: localStorage,
+      );
       _setupSocketListeners();
       _loadConversations();
     });
@@ -94,6 +99,8 @@ class _HomeScreenState extends State<HomeScreen> {
            _loadConversations();
          }
        });
+       // Update cache
+       _conversationService.cacheConversations(_conversations);
     }
   }
 
@@ -137,26 +144,48 @@ class _HomeScreenState extends State<HomeScreen> {
           return c;
         }).toList();
       });
+      // Update cache
+      _conversationService.cacheConversations(_conversations);
     }
   }
 
   Future<void> _loadConversations() async {
+    // Load cache first
+    try {
+      final cached = _conversationService.getCachedConversations();
+      if (cached.isNotEmpty && mounted) {
+        setState(() {
+          _conversations = cached;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading cached conversations: $e');
+    }
+
     setState(() {
-      _isLoading = true;
+      _isLoading = _conversations.isEmpty;
       _error = null;
     });
 
     try {
       final conversations = await _conversationService.getConversations();
-      setState(() {
-        _conversations = conversations;
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _conversations = conversations;
+          _isLoading = false;
+        });
+        // Cache the new list
+        _conversationService.cacheConversations(conversations);
+      }
     } catch (e) {
-      setState(() {
-        _error = e.toString();
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          if (_conversations.isEmpty) {
+             _error = e.toString();
+          }
+          _isLoading = false;
+        });
+      }
     }
   }
 

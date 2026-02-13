@@ -186,10 +186,13 @@ class _ChatScreenState extends State<ChatScreen> with SingleTickerProviderStateM
       } else if (tempIndex != -1) {
         _messages[tempIndex] = Map<String, dynamic>.from(data);
       } else {
-        // Append to end of list
-        _messages.add(Map<String, dynamic>.from(data));
+        // Prepend to start of list
+        _messages.insert(0, Map<String, dynamic>.from(data));
       }
     });
+
+    // Update cache with new message
+    _conversationService.cacheMessages(widget.conversationId, _messages);
 
     _scrollToBottom();
   }
@@ -203,7 +206,7 @@ class _ChatScreenState extends State<ChatScreen> with SingleTickerProviderStateM
           _messages = cached;
           if (_messages.isNotEmpty) {
              // Scroll to bottom after frame
-             WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+             _scrollToBottom();
           }
         });
       }
@@ -229,7 +232,7 @@ class _ChatScreenState extends State<ChatScreen> with SingleTickerProviderStateM
       if (mounted) {
         setState(() {
           _conversation = conversation;
-          _messages = messages.reversed.toList(); // Reverse to show oldest first
+          _messages = messages; // No reverse needed for reverse: true ListView
           _isLoading = false;
         });
         
@@ -237,9 +240,7 @@ class _ChatScreenState extends State<ChatScreen> with SingleTickerProviderStateM
         _conversationService.cacheMessages(widget.conversationId, _messages);
 
         // Scroll to bottom
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          _scrollToBottom();
-        });
+        _scrollToBottom();
       }
     } catch (e) {
       if (mounted) {
@@ -260,13 +261,15 @@ class _ChatScreenState extends State<ChatScreen> with SingleTickerProviderStateM
   }
 
   void _scrollToBottom() {
-    if (_scrollController.hasClients) {
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          0.0, // Bottom of reversed list
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
   }
 
   Future<void> _sendMessage() async {
@@ -293,7 +296,7 @@ class _ChatScreenState extends State<ChatScreen> with SingleTickerProviderStateM
     };
 
     setState(() {
-      _messages.add(tempMessage);
+      _messages.insert(0, tempMessage);
     });
 
     _messageController.clear();
@@ -314,6 +317,9 @@ class _ChatScreenState extends State<ChatScreen> with SingleTickerProviderStateM
         }).toList();
         _isSending = false;
       });
+      
+      // Update cache with sent message
+      _conversationService.cacheMessages(widget.conversationId, _messages);
     } catch (e) {
       // Remove optimistic message on error
       setState(() {
@@ -599,6 +605,7 @@ class _ChatScreenState extends State<ChatScreen> with SingleTickerProviderStateM
         }
       },
       child: ListView.builder(
+        reverse: true,
         controller: _scrollController,
         padding: const EdgeInsets.all(16),
         itemCount: _messages.length,
@@ -607,12 +614,14 @@ class _ChatScreenState extends State<ChatScreen> with SingleTickerProviderStateM
           final isMe = message['senderId'] == _currentUserId;
           final messageType = message['messageType'] ?? 'text';
 
-          // Date Header Logic
+          // Date Header Logic (Reversed List)
           Widget? dateHeader;
-          if (index == 0) {
+          if (index == _messages.length - 1) {
+            // Oldest message gets header
             dateHeader = _buildDateHeader(message['createdAt']);
           } else {
-            final previousMessage = _messages[index - 1];
+            // Check if previous message (in time, which is handle index+1 in list) is different day
+            final previousMessage = _messages[index + 1];
             if (!_isSameDay(message['createdAt'], previousMessage['createdAt'])) {
               dateHeader = _buildDateHeader(message['createdAt']);
             }
