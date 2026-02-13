@@ -9,6 +9,7 @@ import 'package:vibesync_mobile/shared/services/socket_service.dart';
 import 'package:vibesync_mobile/features/conversations/data/services/conversation_service.dart';
 import 'package:vibesync_mobile/features/conversations/data/models/conversation_model.dart';
 import 'package:vibesync_mobile/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:vibesync_mobile/features/settings/presentation/pages/settings_screen.dart';
 import 'package:vibesync_mobile/shared/services/local_storage_service.dart';
 
 /// Home screen with conversation list and bottom navigation
@@ -192,7 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0A0F),
+      // backgroundColor: const Color(0xFF0A0A0F), // Use Theme
       body: SafeArea(
         child: Column(
           children: [
@@ -641,26 +642,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildSettingsList() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.settings,
-            size: 64,
-            color: Colors.white.withOpacity(0.3),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Settings coming soon',
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.5),
-              fontSize: 16,
-            ),
-          ),
-        ],
-      ),
-    );
+    return const SettingsScreen();
   }
 
   String _getHeaderTitle() {

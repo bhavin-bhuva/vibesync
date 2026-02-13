@@ -7,6 +7,7 @@ import 'package:vibesync_mobile/features/auth/presentation/pages/login_screen.da
 import 'package:vibesync_mobile/features/auth/presentation/pages/register_screen.dart';
 import 'package:vibesync_mobile/features/messages/presentation/pages/chat_screen.dart';
 import 'package:vibesync_mobile/features/conversations/data/models/conversation_model.dart';
+import 'package:vibesync_mobile/features/friends/presentation/pages/add_friend_screen.dart';
 
 /// App router configuration using GoRouter
 class AppRouter {
@@ -138,9 +139,7 @@ class AppRouter {
       GoRoute(
         path: RoutePaths.addFriend,
         name: RouteNames.addFriend,
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text('Add Friend - Coming Soon')),
-        ),
+        builder: (context, state) => const AddFriendScreen(),
       ),
 
       GoRoute(

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/utils/base_event.dart';
@@ -57,7 +58,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final response = await apiClient.get('/users/me');
       
       if (response.statusCode == 200) {
-        final user = response.data['user'] ?? response.data;
+        final responseData = response.data['data'] ?? response.data;
+        final user = responseData['user'] ?? responseData;
         
         // Save user data to local storage
         await _saveUserData(user, token, refreshToken: refreshToken);
@@ -168,10 +170,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
 
       if (response.statusCode == 200) {
+        print('Google Sign-In Response: ${response.data}');
+        
         final data = response.data['data'];
+        print('Data: $data');
+        
         final token = data['tokens']['accessToken'];
         final user = data['user'];
         final refreshToken = data['tokens']['refreshToken'];
+
+        print('Token: $token');
+        print('User: $user');
+        print('RefreshToken: $refreshToken');
 
         if (token == null || user == null) {
           emit(const AuthError(message: 'Google Sign-In failed: Invalid server response'));
@@ -187,6 +197,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         // Connect socket
         socketService.connect(token: token);
 
+        print('Emitting Authenticated state');
         emit(Authenticated(user: user, token: token));
       } else {
         emit(AuthError(
@@ -298,7 +309,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
 
       if (response.statusCode == 200) {
-        final user = response.data['user'] ?? response.data;
+        final responseData = response.data['data'] ?? response.data;
+        final user = responseData['user'] ?? responseData;
         
         // Update user data in local storage
         final token = await secureStorage.getAccessToken();

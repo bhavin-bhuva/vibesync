@@ -35,7 +35,7 @@ class GoogleSignInService {
     }
   }
 
-  /// Sign in with Google and return the ID token
+  /// Sign in with Google and return the ID token (or access token on web)
   Future<String?> signIn() async {
     try {
       // Ensure initialized
@@ -47,19 +47,36 @@ class GoogleSignInService {
         throw Exception('Google Sign-In not initialized');
       }
 
+      print('Starting Google Sign-In...');
+      
       // Trigger the sign-in flow
       final GoogleSignInAccount? account = await _googleSignIn!.signIn();
       
       if (account == null) {
         // User cancelled the sign-in
+        print('User cancelled Google Sign-In');
         return null;
       }
+
+      print('Google Sign-In account obtained: ${account.email}');
 
       // Get authentication details
       final GoogleSignInAuthentication auth = await account.authentication;
       
-      // Return the ID token
-      return auth.idToken;
+      print('ID Token: ${auth.idToken != null ? "Present" : "NULL"}');
+      print('Access Token: ${auth.accessToken != null ? "Present" : "NULL"}');
+      
+      // On web, idToken might be null, so we use accessToken instead
+      // The backend will need to verify the access token with Google
+      final token = auth.idToken ?? auth.accessToken;
+      
+      if (token == null) {
+        print('ERROR: Both ID token and access token are null!');
+        throw Exception('Failed to get authentication token from Google');
+      }
+      
+      print('Returning token to AuthBloc');
+      return token;
     } catch (error) {
       print('Error signing in with Google: $error');
       rethrow;
