@@ -211,8 +211,14 @@ class ApiConstants {
   /// Socket error event
   static const String socketError = 'error';
   
-  /// New message event
-  static const String messageNew = 'message:new';
+  /// New message event - Matches frontend 'new_message'
+  static const String messageNew = 'new_message';
+  
+  /// Join conversation event
+  static const String joinConversation = 'join_conversation';
+
+  /// Leave conversation event
+  static const String leaveConversation = 'leave_conversation';
   
   /// Send message event
   static const String messageSend = 'message:send';
@@ -226,10 +232,16 @@ class ApiConstants {
   /// Typing stop event
   static const String typingStop = 'typing:stop';
   
-  /// User online event
+  /// Conversation updated event
+  static const String conversationUpdated = 'conversation_updated';
+
+  /// User status event (online/offline)
+  static const String userStatus = 'user:status';
+  
+  /// User online event (Legacy/Specific)
   static const String userOnline = 'user:online';
   
-  /// User offline event
+  /// User offline event (Legacy/Specific)
   static const String userOffline = 'user:offline';
   
   /// Call initiate event

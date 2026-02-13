@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vibesync_mobile/core/constants/route_constants.dart';
 import 'package:vibesync_mobile/main.dart';
-import 'package:vibesync_mobile/shared/widgets/home_screen.dart';
+import 'package:vibesync_mobile/features/home/presentation/pages/home_screen.dart';
 import 'package:vibesync_mobile/features/auth/presentation/pages/login_screen.dart';
 import 'package:vibesync_mobile/features/auth/presentation/pages/register_screen.dart';
+import 'package:vibesync_mobile/features/messages/presentation/pages/chat_screen.dart';
+import 'package:vibesync_mobile/features/conversations/data/models/conversation_model.dart';
 
 /// App router configuration using GoRouter
 class AppRouter {
@@ -121,11 +123,11 @@ class AppRouter {
         path: RoutePaths.chatDetail,
         name: RouteNames.chatDetail,
         builder: (context, state) {
-          final conversationId = state.pathParameters['conversationId'];
-          return Scaffold(
-            body: Center(
-              child: Text('Chat Detail: $conversationId - Coming Soon'),
-            ),
+          final conversationId = state.pathParameters['conversationId']!;
+          final conversation = state.extra is Conversation ? state.extra as Conversation : null;
+          return ChatScreen(
+            conversationId: conversationId,
+            conversation: conversation,
           );
         },
       ),

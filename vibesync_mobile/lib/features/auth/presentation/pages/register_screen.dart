@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vibesync_mobile/core/theme/design_tokens.dart';
 import 'package:vibesync_mobile/core/constants/route_constants.dart';
+import 'package:vibesync_mobile/core/utils/app_router.dart';
 import 'package:vibesync_mobile/shared/widgets/vibesync_button.dart';
 import 'package:vibesync_mobile/shared/widgets/vibesync_text_field.dart';
 import 'package:vibesync_mobile/features/auth/presentation/bloc/auth_bloc.dart';
@@ -119,6 +120,9 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is Authenticated) {
+            // Set authentication status in router
+            AppRouter.setAuthenticated(true);
+            // Navigate to home
             context.go(RoutePaths.home);
           } else if (state is AuthError) {
             ScaffoldMessenger.of(context).showSnackBar(
