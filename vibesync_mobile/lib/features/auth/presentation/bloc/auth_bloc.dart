@@ -5,6 +5,7 @@ import '../../../../core/utils/base_state.dart';
 import '../../../../shared/services/local_storage_service.dart';
 import '../../../../shared/services/secure_storage_service.dart';
 import '../../../../shared/services/google_signin_service.dart';
+import '../../../../shared/services/socket_service.dart';
 import '../../../../core/constants/storage_keys.dart';
 
 part 'auth_event.dart';
@@ -15,11 +16,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final ApiClient apiClient;
   final SecureStorageService secureStorage;
   final LocalStorageService localStorage;
+  final SocketService socketService;
 
   AuthBloc({
     required this.apiClient,
     required this.secureStorage,
     required this.localStorage,
+    required this.socketService,
   }) : super(const AuthInitial()) {
     on<CheckAuthStatusEvent>(_onCheckAuthStatus);
     on<LoginEvent>(_onLogin);
@@ -59,6 +62,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         // Save user data to local storage
         await _saveUserData(user, token, refreshToken: refreshToken);
         
+        // Connect to socket
+        socketService.connect(token: token);
+
         emit(Authenticated(user: user, token: token));
       } else {
         // Token is invalid, clear it
@@ -94,10 +100,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
 
       if (response.statusCode == 200) {
-        final data = response.data;
-        final token = data['token'] ?? data['accessToken'];
-        final user = data['user'];
-        final refreshToken = data['refreshToken'];
+        // The response has structure: { success: true, data: { user: {...}, tokens: {...} } }
+        final responseData = response.data['data'] ?? response.data;
+        final token = responseData['tokens']?['accessToken'] ?? 
+                      responseData['token'] ?? 
+                      responseData['accessToken'];
+        final user = responseData['user'];
+        final refreshToken = responseData['tokens']?['refreshToken'] ?? 
+                            responseData['refreshToken'];
 
         if (token == null || user == null) {
           emit(const AuthError(message: 'Login failed: Invalid server response'));
@@ -109,6 +119,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         
         // Set token in API client
         apiClient.setAuthToken(token);
+        
+        // Connect socket
+        socketService.connect(token: token);
 
         emit(Authenticated(user: user, token: token));
       } else {
@@ -170,6 +183,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         
         // Set token in API client
         apiClient.setAuthToken(token);
+        
+        // Connect socket
+        socketService.connect(token: token);
 
         emit(Authenticated(user: user, token: token));
       } else {
@@ -202,10 +218,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final data = response.data;
-        final token = data['token'] ?? data['accessToken'];
-        final user = data['user'];
-        final refreshToken = data['refreshToken'];
+        // The response has structure: { success: true, data: { user: {...}, tokens: {...} } }
+        final responseData = response.data['data'] ?? response.data;
+        final token = responseData['tokens']?['accessToken'] ?? 
+                      responseData['token'] ?? 
+                      responseData['accessToken'];
+        final user = responseData['user'];
+        final refreshToken = responseData['tokens']?['refreshToken'] ?? 
+                            responseData['refreshToken'];
 
         if (token == null || user == null) {
           emit(const AuthError(message: 'Registration failed: Invalid server response'));
@@ -217,6 +237,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         
         // Set token in API client
         apiClient.setAuthToken(token);
+        
+        // Connect socket
+        socketService.connect(token: token);
 
         emit(Authenticated(user: user, token: token));
       } else {
@@ -251,6 +274,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       
       // Clear API client token
       apiClient.clearAuthToken();
+      
+      // Disconnect socket
+      socketService.disconnect();
 
       emit(const Unauthenticated(message: 'Logged out successfully'));
     } catch (e) {
@@ -331,6 +357,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         
         // Set new token in API client
         apiClient.setAuthToken(newToken);
+        
+        // Update socket token
+        socketService.updateAuthToken(newToken);
 
         emit(Authenticated(user: user, token: newToken));
       } else {
@@ -389,5 +418,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     
     // Clear API client token
     apiClient.clearAuthToken();
+    
+    // Disconnect socket
+    socketService.disconnect();
   }
 }

@@ -46,17 +46,25 @@ class VibeSyncApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
+    return MultiRepositoryProvider(
       providers: [
-        BlocProvider(
-          create: (context) => AuthBloc(
-            apiClient: apiClient,
-            secureStorage: secureStorage,
-            localStorage: localStorage,
-          )..add(const CheckAuthStatusEvent()),
-        ),
+        RepositoryProvider<LocalStorageService>.value(value: localStorage),
+        RepositoryProvider<SecureStorageService>.value(value: secureStorage),
+        RepositoryProvider<ApiClient>.value(value: apiClient),
+        RepositoryProvider<SocketService>.value(value: socketService),
       ],
-      child: MaterialApp.router(
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => AuthBloc(
+              apiClient: apiClient,
+              secureStorage: secureStorage,
+              localStorage: localStorage,
+              socketService: socketService, // Pass socketService to AuthBloc
+            )..add(const CheckAuthStatusEvent()),
+          ),
+        ],
+        child: MaterialApp.router(
         title: 'VibeSync',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -79,8 +87,8 @@ class VibeSyncApp extends StatelessWidget {
         ),
         themeMode: ThemeMode.system,
         routerConfig: AppRouter.router,
-      ),
-    );
+      ), // MaterialApp
+    )); // MultiBlocProvider and MultiRepositoryProvider
   }
 }
 

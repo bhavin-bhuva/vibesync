@@ -98,6 +98,9 @@ class StorageKeys {
   
   /// Cached friends list (JSON string)
   static const String cachedFriends = 'cached_friends';
+  
+  /// Cached messages prefix (appended with conversationId)
+  static const String cachedMessagesPrefix = 'cached_messages_';
 
   // ============================================================================
   // FCM / PUSH NOTIFICATIONS
