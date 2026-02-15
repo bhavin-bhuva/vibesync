@@ -24,6 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String _activeTab = 'chats';
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
+  bool _isSearchVisible = false;
   late ConversationService _conversationService;
   SocketService? _socketService;
   
@@ -193,34 +194,39 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: const Color(0xFF0A0A0F), // Use Theme
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Header
-            _buildHeader(),
-            
-            // Search Bar (only for chats tab)
-            if (_activeTab == 'chats') _buildSearchBar(),
-            
-            // Content
-            Expanded(
+      backgroundColor: const Color(0xFF1A1A24), // Match nav bar color so bottom edge is seamless
+      body: Column(
+        children: [
+          // Top safe area for status bar only
+          SafeArea(
+            bottom: false,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildHeader(),
+                if (_activeTab == 'chats' && _isSearchVisible) _buildSearchBar(),
+              ],
+            ),
+          ),
+          // Content area with its own dark background
+          Expanded(
+            child: Container(
+              color: const Color(0xFF0A0A0F),
               child: _buildContent(),
             ),
-            
-            // Bottom Navigation
-            BottomNavBar(
-              activeTab: _activeTab,
-              onTabChange: (tab) {
-                setState(() {
-                  _activeTab = tab;
-                  _searchQuery = '';
-                  _searchController.clear();
-                });
-              },
-            ),
-          ],
-        ),
+          ),
+          // Bottom Navigation (handles its own bottom padding via viewPadding)
+          BottomNavBar(
+            activeTab: _activeTab,
+            onTabChange: (tab) {
+              setState(() {
+                _activeTab = tab;
+                _searchQuery = '';
+                _searchController.clear();
+              });
+            },
+          ),
+        ],
       ),
     );
   }
@@ -249,6 +255,25 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           if (_activeTab == 'chats') ...[
+            // Search Toggle Button
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  _isSearchVisible = !_isSearchVisible;
+                  if (!_isSearchVisible) {
+                    _searchQuery = '';
+                    _searchController.clear();
+                  }
+                });
+              },
+              icon: Icon(
+                _isSearchVisible ? Icons.search_off : Icons.search,
+                color: const Color(0xFF9CA3AF),
+                size: 24,
+              ),
+              tooltip: _isSearchVisible ? 'Hide Search' : 'Search',
+            ),
+            const SizedBox(width: 4),
             // Manage Requests Button
             IconButton(
               onPressed: () {
@@ -282,7 +307,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildSearchBar() {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: TextField(
         controller: _searchController,
         onChanged: (value) {
@@ -290,13 +315,22 @@ class _HomeScreenState extends State<HomeScreen> {
             _searchQuery = value;
           });
         },
-        style: const TextStyle(color: Colors.white),
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 14, // Smaller font
+        ),
         decoration: InputDecoration(
+          isDense: true, // Reduces height
+          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
           hintText: 'Search conversations...',
-          hintStyle: const TextStyle(color: Color(0xFF6B7280)),
+          hintStyle: const TextStyle(
+            color: Color(0xFF6B7280),
+            fontSize: 14,
+          ),
           prefixIcon: const Icon(
             Icons.search,
             color: Color(0xFF6B7280),
+            size: 20, // Smaller icon
           ),
           suffixIcon: _searchQuery.isNotEmpty
               ? IconButton(
@@ -433,6 +467,7 @@ class _HomeScreenState extends State<HomeScreen> {
       color: const Color(0xFF9333EA),
       backgroundColor: const Color(0xFF1A1A24),
       child: ListView.builder(
+        padding: EdgeInsets.zero,
         itemCount: filteredConversations.length,
         itemBuilder: (context, index) {
           final conversation = filteredConversations[index];

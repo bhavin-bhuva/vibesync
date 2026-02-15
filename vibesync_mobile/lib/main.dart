@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,6 +15,14 @@ import 'core/theme/theme_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Enable edge-to-edge rendering
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    systemNavigationBarColor: Colors.transparent,
+    systemNavigationBarDividerColor: Colors.transparent,
+  ));
   
   // Initialize services
   final localStorage = LocalStorageService();
@@ -154,7 +163,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     if (authState is! Authenticated && authState is! Unauthenticated) {
       try {
         authState = await authBloc.stream.firstWhere(
-          (state) => state is Authenticated || state is Unauthenticated,
+          (state) => state is Authenticated || state is Unauthenticated || state is AuthError,
         );
       } catch (e) {
         // Fallback if stream error

@@ -308,7 +308,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                 }
               }
             },
-            errorBuilder: (context, error, child) {
+            errorBuilder: (context, error, {child}) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

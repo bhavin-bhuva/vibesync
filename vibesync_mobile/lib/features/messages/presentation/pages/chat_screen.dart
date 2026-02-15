@@ -839,7 +839,7 @@ class _ChatScreenState extends State<ChatScreen> with SingleTickerProviderStateM
 
   Widget _buildMessageInput() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.only(top: 12, left: 16, right: 16, bottom: 0),
       decoration: const BoxDecoration(
         color: Color(0xFF1A1A24),
         border: Border(
@@ -850,6 +850,8 @@ class _ChatScreenState extends State<ChatScreen> with SingleTickerProviderStateM
         ),
       ),
       child: SafeArea(
+        top: false,
+        minimum: const EdgeInsets.only(bottom: 8),
         child: Row(
           children: [
             // Attachment button

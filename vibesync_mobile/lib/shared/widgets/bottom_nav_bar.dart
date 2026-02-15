@@ -13,9 +13,10 @@ class BottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bottomPadding = MediaQuery.of(context).viewPadding.bottom;
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF1A1A24).withOpacity(0.8),
+        color: const Color(0xFF1A1A24),
         border: const Border(
           top: BorderSide(
             color: Color(0xFF2A2A3C),
@@ -23,43 +24,45 @@ class BottomNavBar extends StatelessWidget {
           ),
         ),
       ),
-      child: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _NavButton(
-                active: activeTab == 'chats',
-                onTap: () => onTabChange('chats'),
-                label: 'Chats',
-                icon: Icons.chat_bubble_outline,
-                activeIcon: Icons.chat_bubble,
-              ),
-              _NavButton(
-                active: activeTab == 'status',
-                onTap: () => onTabChange('status'),
-                label: 'Status',
-                icon: Icons.radio_button_unchecked,
-                activeIcon: Icons.radio_button_checked,
-              ),
-              _NavButton(
-                active: activeTab == 'calls',
-                onTap: () => onTabChange('calls'),
-                label: 'Calls',
-                icon: Icons.phone_outlined,
-                activeIcon: Icons.phone,
-              ),
-              _NavButton(
-                active: activeTab == 'settings',
-                onTap: () => onTabChange('settings'),
-                label: 'Settings',
-                icon: Icons.settings_outlined,
-                activeIcon: Icons.settings,
-              ),
-            ],
-          ),
+      child: Padding(
+        padding: EdgeInsets.only(
+          top: 12,
+          bottom: bottomPadding > 0 ? bottomPadding : 12,
+          left: 8,
+          right: 8,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _NavButton(
+              active: activeTab == 'chats',
+              onTap: () => onTabChange('chats'),
+              label: 'Chats',
+              icon: Icons.chat_bubble_outline,
+              activeIcon: Icons.chat_bubble,
+            ),
+            _NavButton(
+              active: activeTab == 'status',
+              onTap: () => onTabChange('status'),
+              label: 'Status',
+              icon: Icons.radio_button_unchecked,
+              activeIcon: Icons.radio_button_checked,
+            ),
+            _NavButton(
+              active: activeTab == 'calls',
+              onTap: () => onTabChange('calls'),
+              label: 'Calls',
+              icon: Icons.phone_outlined,
+              activeIcon: Icons.phone,
+            ),
+            _NavButton(
+              active: activeTab == 'settings',
+              onTap: () => onTabChange('settings'),
+              label: 'Settings',
+              icon: Icons.settings_outlined,
+              activeIcon: Icons.settings,
+            ),
+          ],
         ),
       ),
     );

@@ -50,7 +50,7 @@ class VibeSyncButton extends StatelessWidget {
           ),
           padding: const EdgeInsets.symmetric(
             horizontal: DesignTokens.space24,
-            vertical: DesignTokens.space16,
+            vertical: DesignTokens.space12,
           ),
         ),
         child: isLoading
@@ -131,7 +131,7 @@ class GradientButton extends StatelessWidget {
             ),
             padding: const EdgeInsets.symmetric(
               horizontal: DesignTokens.space24,
-              vertical: DesignTokens.space16,
+              vertical: DesignTokens.space12,
             ),
           ),
           child: isLoading
