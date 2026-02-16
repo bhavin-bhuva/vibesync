@@ -25,7 +25,7 @@ jobs:
     - name: Bump LTS version
       id: bump
       run: |
-        VERSION=$(cat config/lts.json | jq -r .version)
+        VERSION=$(cat backend/config/lts.json | jq -r .version)
 
         IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
         PATCH=$((PATCH+1))
@@ -36,9 +36,9 @@ jobs:
         jq --arg v "$NEW_VERSION" \
            --arg date "$(date +%F)" \
            '.version=$v | .docker_tag=("v"+$v) | .released_at=$date' \
-           config/lts.json > config/lts_tmp.json
+           backend/config/lts.json > backend/config/lts_tmp.json
 
-        mv config/lts_tmp.json config/lts.json
+        mv backend/config/lts_tmp.json backend/config/lts.json
 
         echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
 
@@ -47,7 +47,7 @@ jobs:
       run: |
         git config user.name "github-actions"
         git config user.email "actions@github.com"
-        git add config/lts.json
+        git add backend/config/lts.json
         git commit -m "chore: bump LTS version to ${{ steps.bump.outputs.version }}"
         git push
 
