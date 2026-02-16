@@ -66,12 +66,7 @@ jobs:
         git commit -m "chore: bump LTS version to ${{ steps.bump.outputs.version }}"
         git push
 
-    # 5️⃣ Build docker image locally (optional but good for caching future)
-    - name: Build Docker image
-      run: |
-        docker build -t vibesync-backend:v${{ steps.bump.outputs.version }} .
-
-    # 6️⃣ Deploy to EC2 via SSH
+    # 5️⃣ Deploy to EC2 via SSH
     - name: Deploy to EC2
       uses: appleboy/ssh-action@master
       with:
