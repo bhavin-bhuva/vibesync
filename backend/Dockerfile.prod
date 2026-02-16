@@ -29,6 +29,7 @@ RUN npm ci --only=production
 
 # Copy built files
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/src/config/lts.json ./dist/config/lts.json
 
 # Copy drizzle config and schema for migrations
 COPY --from=builder /app/drizzle.config.ts ./

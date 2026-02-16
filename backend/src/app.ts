@@ -9,6 +9,7 @@ import conversationRoutes from './routes/conversation.routes';
 import { errorHandler } from './middleware/error.middleware';
 import { logger } from './utils/logger.util';
 import fs from "fs";
+import path from "path";
 
 import './config/passport';
 import passport from 'passport';
@@ -52,7 +53,8 @@ export function createApp() {
   // Health check
   app.get('/health', (req, res) => {
 
-    const data = JSON.parse(fs.readFileSync("./config/lts.json", "utf-8"));
+    const configPath = path.join(__dirname, "config", "lts.json");
+    const data = JSON.parse(fs.readFileSync(configPath, "utf-8"));
 
     res.json({ status: 'ok', timestamp: new Date().toISOString(), version: data });
   });
