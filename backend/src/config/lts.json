@@ -1,6 +1,6 @@
 {
-  "version": "1.0.2",
-  "docker_tag": "v1.0.2",
+  "version": "1.0.3",
+  "docker_tag": "v1.0.3",
   "released_at": "2026-02-16",
   "notes": "Stable production release"
 }
