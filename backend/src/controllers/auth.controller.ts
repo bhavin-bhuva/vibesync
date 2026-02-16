@@ -108,6 +108,8 @@ export class AuthController {
         });
       }
 
+      console.log('Google Sign-In: Token type:', idToken.split('.').length === 3 ? 'JWT (ID Token)' : 'Access Token');
+
       const result = await authService.googleSignIn(idToken);
 
       res.status(200).json({
@@ -115,7 +117,11 @@ export class AuthController {
         data: result,
       });
     } catch (error) {
-      if (error instanceof Error && error.message === 'Invalid Google ID token') {
+      if (error instanceof Error && (
+        error.message.includes('Invalid Google') ||
+        error.message.includes('Invalid access token') ||
+        error.message.includes('Email not')
+      )) {
         return res.status(401).json({
           success: false,
           error: {
