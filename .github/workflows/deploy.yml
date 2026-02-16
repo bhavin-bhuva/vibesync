@@ -25,7 +25,22 @@ jobs:
     - name: Bump LTS version
       id: bump
       run: |
-        VERSION=$(cat backend/config/lts.json | jq -r .version)
+        FILE="backend/src/config/lts.json"
+
+        # Ensure directory exists
+        mkdir -p backend/src/config
+
+        # If file doesn't exist, create it
+        if [ ! -f $FILE ]; then
+          echo '{
+            "version": "1.0.0",
+            "docker_tag": "v1.0.0",
+            "released_at": "'$(date +%F)'",
+            "notes": "Initial production release"
+          }' > $FILE
+        fi
+
+        VERSION=$(cat $FILE | jq -r .version)
 
         IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
         PATCH=$((PATCH+1))
@@ -34,11 +49,11 @@ jobs:
         echo "New version: $NEW_VERSION"
 
         jq --arg v "$NEW_VERSION" \
-           --arg date "$(date +%F)" \
-           '.version=$v | .docker_tag=("v"+$v) | .released_at=$date' \
-           backend/config/lts.json > backend/config/lts_tmp.json
+          --arg date "$(date +%F)" \
+          '.version=$v | .docker_tag=("v"+$v) | .released_at=$date' \
+          $FILE > backend/src/config/lts_tmp.json
 
-        mv backend/config/lts_tmp.json backend/config/lts.json
+        mv backend/src/config/lts_tmp.json $FILE
 
         echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
 
@@ -47,7 +62,7 @@ jobs:
       run: |
         git config user.name "github-actions"
         git config user.email "actions@github.com"
-        git add backend/config/lts.json
+        git add backend/src/config/lts.json
         git commit -m "chore: bump LTS version to ${{ steps.bump.outputs.version }}"
         git push
 
