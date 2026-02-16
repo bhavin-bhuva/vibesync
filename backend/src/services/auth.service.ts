@@ -207,7 +207,7 @@ export class AuthService {
             throw new Error('Invalid access token');
           }
 
-          const tokenInfo = await response.json();
+          const tokenInfo = await response.json() as any;
 
           // Verify the token is valid
           if (!tokenInfo.email || !tokenInfo.email_verified) {
@@ -228,7 +228,7 @@ export class AuthService {
             throw new Error('Failed to fetch user profile');
           }
 
-          const profile = await profileResponse.json();
+          const profile = await profileResponse.json() as any;
           email = profile.email;
           name = profile.name || email.split('@')[0];
           avatar = profile.picture;
