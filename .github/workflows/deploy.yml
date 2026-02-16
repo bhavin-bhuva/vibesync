@@ -5,14 +5,58 @@ on:
     branches:
       - master
 
+permissions:
+  contents: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
+    # 1️⃣ Checkout
     - name: Checkout code
       uses: actions/checkout@v3
-    
+
+    # 2️⃣ Install jq for JSON processing
+    - name: Install jq
+      run: sudo apt-get install -y jq
+
+    # 3️⃣ Bump LTS version
+    - name: Bump LTS version
+      id: bump
+      run: |
+        VERSION=$(cat config/lts.json | jq -r .version)
+
+        IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+        PATCH=$((PATCH+1))
+        NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+
+        echo "New version: $NEW_VERSION"
+
+        jq --arg v "$NEW_VERSION" \
+           --arg date "$(date +%F)" \
+           '.version=$v | .docker_tag=("v"+$v) | .released_at=$date' \
+           config/lts.json > config/lts_tmp.json
+
+        mv config/lts_tmp.json config/lts.json
+
+        echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+    # 4️⃣ Commit updated version file back to repo
+    - name: Commit updated LTS file
+      run: |
+        git config user.name "github-actions"
+        git config user.email "actions@github.com"
+        git add config/lts.json
+        git commit -m "chore: bump LTS version to ${{ steps.bump.outputs.version }}"
+        git push
+
+    # 5️⃣ Build docker image locally (optional but good for caching future)
+    - name: Build Docker image
+      run: |
+        docker build -t vibesync-backend:v${{ steps.bump.outputs.version }} .
+
+    # 6️⃣ Deploy to EC2 via SSH
     - name: Deploy to EC2
       uses: appleboy/ssh-action@master
       with:
@@ -23,7 +67,11 @@ jobs:
         script: |
           cd /home/ubuntu/vibesync
           git pull origin master
+          
+          echo "Using version v${{ steps.bump.outputs.version }}"
+          
           docker compose -f docker-compose.ec2.yml down
           docker compose -f docker-compose.ec2.yml build --no-cache
           docker compose -f docker-compose.ec2.yml up -d
-          echo "Deployment completed successfully!"
+
+          echo "Deployment completed successfully with version v${{ steps.bump.outputs.version }} 🚀"

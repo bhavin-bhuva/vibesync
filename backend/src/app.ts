@@ -8,6 +8,7 @@ import friendRoutes from './routes/friend.routes';
 import conversationRoutes from './routes/conversation.routes';
 import { errorHandler } from './middleware/error.middleware';
 import { logger } from './utils/logger.util';
+import fs from "fs";
 
 import './config/passport';
 import passport from 'passport';
@@ -50,7 +51,10 @@ export function createApp() {
 
   // Health check
   app.get('/health', (req, res) => {
-    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+
+    const data = JSON.parse(fs.readFileSync("./config/lts.json", "utf-8"));
+
+    res.json({ status: 'ok', timestamp: new Date().toISOString(), version: data });
   });
 
   // API routes
